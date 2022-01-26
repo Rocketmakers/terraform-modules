@@ -44,7 +44,7 @@ setup-terraform:
 	asdf install terraform-docs
 
 .PHONY: validate
-validate: validate-aws validate-azure validate-gcp validate-shared
+validate: setup-terraform validate-aws validate-azure validate-gcp validate-shared
 	$(info $(M) Finished)
 
 .PHONY: validate-aws

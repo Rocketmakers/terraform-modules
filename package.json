@@ -3,10 +3,6 @@
   "version": "0.0.1",
   "description": "Terraform modules for use in Rocketmakers projects",
   "private": true,
-  "scripts": {
-    "postinstall": "make setup-terraform",
-    "postversion": "make changelog"
-  },
   "license": "MIT",
   "devDependencies": {
     "@rocketmakers/shell-commands": "^1.7.0",
