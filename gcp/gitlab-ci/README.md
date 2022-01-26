@@ -29,6 +29,7 @@ Follow the GCR [Quickstart](https://cloud.google.com/container-registry/docs/qui
 | `project_id` | Google Cloud project ID where the runner instance and related resources will be created | string |
 | `project_prefix` | A prefix given to resource names related to the runner instance | string |
 | `runner_tags` | List of tags for gitlab runner (no tags will be added by default) | list(string) |
+| `service_account_email` | The email address of the service account to use for the instance | string |
 | `zones` | List of Google Cloud zones where instances should be placed (the zones will be used in a round-robin strategy when creating instances) | list(string) |
 
 ## Optional Inputs
@@ -49,7 +50,6 @@ Follow the GCR [Quickstart](https://cloud.google.com/container-registry/docs/qui
 | `instance_count` | The number of VM instances to create | number | 1 |
 | `machine_type` | Machine type of the vm | string | f1-micro |
 | `name` | Main name of resources created | string | ci |
-| `service_account_roles` | The roles that should be assigned to the service account running the CI box | list(string) | ["roles/monitoring.metricWriter"] |
 | `service_account_scopes` | The scopes that should be supported by the CI service account | list(string) | ["storage-rw","monitoring-write"] |
 | `tags` | List of tags to enable ssh access | list(string) | ["ci","externalssh"] |
 | `username` | Username for CI box | string | ci |
