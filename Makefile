@@ -41,28 +41,9 @@ setup-terraform:
 	asdf install terraform-docs
 
 .PHONY: validate
-validate: setup-terraform validate-aws validate-azure validate-gcp validate-shared
-	$(info $(M) Finished)
-
-.PHONY: validate-aws
-validate-aws:
-	$(info $(M) Validating aws...)
-	${TSNODE} $(TSNODE_SCRIPTS)/validate.ts --directory=aws
-
-.PHONY: validate-azure
-validate-azure:
-	$(info $(M) Validating azure...)
-	${TSNODE} $(TSNODE_SCRIPTS)/validate.ts --directory=azure
-
-.PHONY: validate-gcp
-validate-gcp:
-	$(info $(M) Validating gcp...)
-	${TSNODE} $(TSNODE_SCRIPTS)/validate.ts --directory=gcp
-
-.PHONY: validate-shared
-validate-shared:
-	$(info $(M) Validating shared...)
-	${TSNODE} $(TSNODE_SCRIPTS)/validate.ts --directory=shared
+validate: setup-terraform
+	$(info $(M) Validating modules)
+	${TSNODE} $(TSNODE_SCRIPTS)/validate.ts
 
 .PHONY: format-all
 format-all:

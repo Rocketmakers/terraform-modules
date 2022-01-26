@@ -1,12 +1,8 @@
-import { join } from 'path';
 import { LoggerLevel } from '@rocketmakers/log';
 import { Args } from '@rocketmakers/shell-commands/lib/args';
-import { FileSystem } from '@rocketmakers/shell-commands/lib/fs';
 import { createLogger, setDefaultLoggerLevel } from '@rocketmakers/shell-commands/lib/logger';
 import { Prerequisites } from '@rocketmakers/shell-commands/lib/prerequisites';
-import { Terraform } from '@rocketmakers/shell-commands/lib/terraform';
-import { RepositoryPaths } from './paths/repositoryPaths';
-import { writeAwsProviderConfig, writeAzureProviderConfig } from './providers/providers';
+import { validateSubdirectories } from './validate/validate';
 
 const logger = createLogger('temp-provider-config');
 
@@ -17,10 +13,6 @@ async function run() {
       shortName: 'l',
       defaultValue: process.env.LOG_LEVEL || 'info',
       validValues: ['trace', 'debug', 'info', 'warn', 'error', 'fatal'],
-    }),
-    directory: Args.single({
-      description: 'The directory to validate',
-      mandatory: true,
     }),
   });
 
@@ -38,22 +30,17 @@ async function run() {
 
   await Prerequisites.check();
 
-  const parentDirectoryPath = RepositoryPaths.resolve(args.directory);
-  const moduleDirectories = FileSystem.getFolders(parentDirectoryPath);
+  const parentDirectories = ['aws', 'azure', 'gcp', 'shared'];
+  const failedModules: string[] = [];
+  for (const parentDirectory of parentDirectories) {
+    const failed = await validateSubdirectories(parentDirectory, logger);
+    failedModules.push(...failed);
+  }
 
-  for (const moduleDirectory of moduleDirectories) {
-    if (args.directory === 'aws') {
-      logger.debug(`Writing aws provider config to directory: '${moduleDirectory.path}'`);
-      await writeAwsProviderConfig(moduleDirectory.path);
-    } else if (args.directory === 'azure') {
-      logger.debug(`Writing azurerm provider config to directory: '${moduleDirectory.path}'`);
-      await writeAzureProviderConfig(moduleDirectory.path);
-    }
-
-    const relativePath = join(args.directory, moduleDirectory.name);
-    logger.info(`Validating ${relativePath}`);
-    await Terraform.init(moduleDirectory.path);
-    await Terraform.validate(moduleDirectory.path);
+  if (failedModules.length > 0) {
+    const s = failedModules.length === 1 ? '' : 's';
+    logger.error(`The following module${s} failed to validate (see logs for details)`, failedModules);
+    process.exit(1);
   }
 }
 
