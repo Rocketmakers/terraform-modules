@@ -1,0 +1,69 @@
+variables:
+  PROJECT_NAME: terraform-modules
+  LOG_LEVEL: info
+
+stages:
+  - analysis
+  - notify
+
+.internal-runner:
+  tags:
+    - rocketmakers-internal-dind
+
+##############
+## Validate ##
+##############
+
+validate:
+  extends:
+    - .internal-runner
+  stage: analysis
+  retry:
+    max: 2
+    when: runner_system_failure
+  image: rocketmakers/ci-terraform-gcp:3.1.0
+  before_script:
+    - make install-node-modules
+  script:
+    - make validate
+    - make format-all
+    - git diff HEAD --exit-code
+
+##########
+## Docs ##
+##########
+
+docs:
+  extends:
+    - .internal-runner
+  stage: analysis
+  retry:
+    max: 2
+    when: runner_system_failure
+  image: rocketmakers/ci-build-node-gcp:3.1.0
+  before_script:
+    - make install-node-modules
+    - curl -Lo ./terraform-docs https://github.com/terraform-docs/terraform-docs/releases/download/v0.10.1/terraform-docs-v0.10.1-$(uname | tr '[:upper:]' '[:lower:]')-amd64
+    - chmod +x ./terraform-docs
+    - sudo mv ./terraform-docs /usr/local/bin/terraform-docs
+  script:
+    - make generate-docs
+    - git diff HEAD --exit-code
+
+############################
+## Merge Request Reminder ##
+############################
+
+notify:merge-requests:
+  extends:
+    - .internal-runner
+  stage: notify
+  image: bottlecapdave/gitlab-merge-request-reminder:v1.3.0
+  only:
+    variables:
+      - $MERGE_REQUEST_REMINDER == "true"
+  retry:
+    max: 2
+    when: runner_system_failure
+  script:
+    - node /app/lib/index.js

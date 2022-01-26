@@ -1,0 +1,33 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2017",
+    "lib": ["es6", "esnext", "dom"],
+    "sourceMap": true,
+    "allowJs": false,
+    "jsx": "react",
+    "moduleResolution": "node",
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strict": true,
+    "isolatedModules": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declaration": false,
+    "strictPropertyInitialization": false,
+    "removeComments": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "noLib": false,
+    "preserveConstEnums": false,
+    "importHelpers": true,
+    "baseUrl": "./",
+    "typeRoots": ["./node_modules/@types"],
+    "paths": {
+      "~/*": ["./*"]
+    }
+  }
+}
