@@ -4,7 +4,7 @@ import { createLogger, setDefaultLoggerLevel } from '@rocketmakers/shell-command
 import { Prerequisites } from '@rocketmakers/shell-commands/lib/prerequisites';
 import { validateSubdirectories } from './validate/validate';
 
-const logger = createLogger('temp-provider-config');
+const logger = createLogger('validate');
 
 async function run() {
   const args = await Args.match({
