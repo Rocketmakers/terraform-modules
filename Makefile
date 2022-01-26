@@ -21,8 +21,15 @@ ifeq ($(detected_OS),Darwin)
 	sed = $(shell printf "gsed")
 endif
 
+# Due to https://github.com/hashicorp/terraform-provider-azurerm/issues/7359#issuecomment-648711339 we need to setup
+# an azure providers record in order for terraform-providers to pass.
+# However, according to https://www.terraform.io/docs/language/modules/develop/providers.html we should not be defining
+# provider blocks in reusable modules.
 define Validate
 	for d in $(1)/* ; do \
+		if [ "$(1)" = "azure" ]; then \
+			(cd $${d} && (rm providers.tf || true) && echo 'provider "azurerm" {' > providers.tf && echo 'features {}' >> providers.tf && echo '}' >> providers.tf); \
+		fi; \
     (cd $${d} && echo "Validating" $${d} && terraform init && terraform validate) || exit; \
 	done
 endef
