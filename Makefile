@@ -41,6 +41,7 @@ install-node-modules: node-setup
 setup-terraform:
 	$(info $(M) Setting up terraform)
 	asdf install terraform
+	asdf install terraform-docs
 
 .PHONY: validate
 validate: validate-aws validate-azure validate-gcp validate-shared

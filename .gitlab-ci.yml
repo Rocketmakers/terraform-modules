@@ -10,20 +10,25 @@ stages:
   tags:
     - rocketmakers-internal-dind
 
+.defaults:
+  extends:
+    - .internal-runner
+  retry:
+    max: 2
+    when: runner_system_failure
+  image: rocketmakers/ci-terraform-gcp:preview
+  before_script:
+    - make install-node-modules
+
+
 ##############
 ## Validate ##
 ##############
 
 validate:
   extends:
-    - .internal-runner
+    - .defaults
   stage: analysis
-  retry:
-    max: 2
-    when: runner_system_failure
-  image: rocketmakers/ci-terraform-gcp:3.1.0
-  before_script:
-    - make install-node-modules
   script:
     - make validate
     - make format-all
@@ -35,17 +40,8 @@ validate:
 
 docs:
   extends:
-    - .internal-runner
+    - .defaults
   stage: analysis
-  retry:
-    max: 2
-    when: runner_system_failure
-  image: rocketmakers/ci-build-node-gcp:3.1.0
-  before_script:
-    - make install-node-modules
-    - curl -Lo ./terraform-docs https://github.com/terraform-docs/terraform-docs/releases/download/v0.10.1/terraform-docs-v0.10.1-$(uname | tr '[:upper:]' '[:lower:]')-amd64
-    - chmod +x ./terraform-docs
-    - sudo mv ./terraform-docs /usr/local/bin/terraform-docs
   script:
     - make generate-docs
     - git diff HEAD --exit-code
