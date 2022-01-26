@@ -1,13 +1,16 @@
 #############################
 # VARIABLES
 #############################
-M 							= $(shell printf "\033[34;1m▶\033[0m")
-sed 						= $(shell printf "sed")
-SHELL 					:= /bin/bash
-SHELL_SCRIPTS 	:= _build/scripts
-TSNODE 					:= node_modules/.bin/ts-node
-TSNODE_SCRIPTS 	:= _build/run
-LOG_LEVEL				?= info
+M 									= $(shell printf "\033[34;1m▶\033[0m")
+sed 								= $(shell printf "sed")
+SHELL 							:= /bin/bash
+SHELL_SCRIPTS 			:= _build/scripts
+TSNODE 							:= node_modules/.bin/ts-node
+TSNODE_SCRIPTS			:= _build/run
+LOG_LEVEL						?= info
+
+# To allow terraform init to work without having to hardcode an AWS region into a provider block
+AWS_DEFAULT_REGION	?= eu-west-1
 
 # Detect OS
 ifeq ($(OS),Windows_NT) 
@@ -28,7 +31,10 @@ endif
 define Validate
 	for d in $(1)/* ; do \
 		if [ "$(1)" = "azure" ]; then \
-			(cd $${d} && (rm providers.tf || true) && echo 'provider "azurerm" {' > providers.tf && echo 'features {}' >> providers.tf && echo '}' >> providers.tf); \
+			(cd $${d} && (rm -f providers.tf) && echo 'provider "azurerm" {' > providers.tf && echo 'features {}' >> providers.tf && echo '}' >> providers.tf); \
+		fi; \
+		if [ "$(1)" = "aws" ]; then \
+			(cd $${d} && (rm -f providers.tf) && echo 'provider "aws" {' > providers.tf && echo 'region = "${AWS_DEFAULT_REGION}"' >> providers.tf && echo '}' >> providers.tf); \
 		fi; \
     (cd $${d} && echo "Validating" $${d} && terraform init && terraform validate) || exit; \
 	done
