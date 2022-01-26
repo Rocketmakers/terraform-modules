@@ -5,8 +5,8 @@
   "private": true,
   "license": "MIT",
   "devDependencies": {
-    "@rocketmakers/shell-commands": "^1.7.0",
-    "@types/node": "^14.11.2",
+    "@rocketmakers/shell-commands": "^5.1.0",
+    "@types/node": "^16.11.21",
     "@types/underscore": "^1.10.23",
     "commitizen": "^4.2.4",
     "cz-customizable": "^6.3.0",
