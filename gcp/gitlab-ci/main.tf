@@ -27,6 +27,28 @@ resource google_project_service compute {
   disable_on_destroy         = var.disable_compute_on_destroy.disable_service
 }
 
+resource google_service_account ci_account {
+  project      = var.project_id
+  account_id   = "${var.project_prefix}-ci-runner"
+  display_name = "Gitlab CI runner service account"
+}
+
+resource google_project_iam_member ci_roles {
+  count = length(var.service_account_roles)
+
+  project = var.project_id
+  role    = var.service_account_roles[count.index]
+  member  = "serviceAccount:${google_service_account.ci_account.email}"
+}
+
+resource google_storage_bucket_iam_member member {
+  count = length(var.gcr_bucket_names)
+
+  bucket = var.gcr_bucket_names[count.index]
+  role   = "roles/storage.admin"
+  member = "serviceAccount:${google_service_account.ci_account.email}"
+}
+
 resource tls_private_key ci_ssh {
   algorithm = "RSA"
   rsa_bits  = 4096
@@ -78,7 +100,7 @@ resource google_compute_instance ci_box {
   zone                      = var.zones[count.index % length(var.zones)]
 
   service_account {
-    email  = var.service_account_email
+    email  = google_service_account.ci_account.email
     scopes = var.service_account_scopes
   }
 

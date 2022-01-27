@@ -144,9 +144,10 @@ variable docker_prune_cron_schedule {
   default     = "0 4 * * 0"
 }
 
-variable service_account_email {
-  type        = string
-  description = "The email address of the service account to use for the instance"
+variable service_account_roles {
+  type        = list(string)
+  description = "The roles that should be assigned to the service account running the CI box"
+  default     = ["roles/monitoring.metricWriter"]
 }
 
 variable service_account_scopes {
