@@ -196,13 +196,9 @@ resource azurerm_role_assignment acr {
   principal_id         = azurerm_virtual_machine.ci_box[count.index].identity[0].principal_id
 }
 
-module hq {
-  source = "../../hq"
-}
-
 locals {
   sanitised_project_name = replace(var.project_name, "/-/", "")
-  whitelist              = concat([module.hq.hq_cidr], var.whitelist)
+  whitelist              = var.whitelist
   runner_tags            = concat([var.project_name], var.runner_tags)
   username               = "app"
 }

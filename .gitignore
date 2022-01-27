@@ -205,4 +205,6 @@ override.tf.json
 
 # End of https://www.toptal.com/developers/gitignore/api/terraform,visualstudiocode,node,macos
 
+aws/**/providers.tf
 azure/**/providers.tf
+gcp/**/providers.tf

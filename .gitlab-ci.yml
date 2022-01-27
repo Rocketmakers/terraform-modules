@@ -16,10 +16,9 @@ stages:
   retry:
     max: 2
     when: runner_system_failure
-  image: rocketmakers/ci-terraform-gcp:preview
+  image: rocketmakers/ci-terraform-gcp:3.2.0
   before_script:
     - make install-node-modules
-
 
 ##############
 ## Validate ##
