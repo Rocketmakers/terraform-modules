@@ -10,7 +10,7 @@ const logger = createLogger('readmes');
 Prerequisites.register({
   command: 'terraform-docs',
   description: 'Generates docs for terraform',
-  installInstructions: 'brew install terraform-docs',
+  installInstructions: 'asdf plugin add terraform-docs https://github.com/looztra/asdf-terraform-docs',
 });
 
 async function run() {
