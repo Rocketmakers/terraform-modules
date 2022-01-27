@@ -43,7 +43,7 @@ setup-terraform:
 .PHONY: validate
 validate: setup-terraform
 	$(info $(M) Validating modules)
-	${TSNODE} $(TSNODE_SCRIPTS)/validate.ts
+	${TSNODE} $(TSNODE_SCRIPTS)/validate.ts --directory=$(VALIDATE_DIR)
 
 .PHONY: format-all
 format-all:

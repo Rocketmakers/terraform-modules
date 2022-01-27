@@ -14,6 +14,10 @@ async function run() {
       defaultValue: process.env.LOG_LEVEL || 'info',
       validValues: ['trace', 'debug', 'info', 'warn', 'error', 'fatal'],
     }),
+    directory: Args.single({
+      description: 'Optionally only target this parent directory',
+      shortName: 'd',
+    }),
   });
 
   if (args?.log) {
@@ -30,7 +34,7 @@ async function run() {
 
   await Prerequisites.check();
 
-  const parentDirectories = ['aws', 'azure', 'gcp', 'shared'];
+  const parentDirectories = args.directory ? [args.directory] : ['aws', 'azure', 'gcp', 'shared'];
   const failedModules: string[] = [];
   for (const parentDirectory of parentDirectories) {
     const failed = await validateSubdirectories(parentDirectory, logger);
