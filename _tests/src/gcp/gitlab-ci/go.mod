@@ -59,9 +59,11 @@ require (
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 
+	backendconfig v1.0.0
 	gitlabapi v1.0.0
 )
 
 replace (
+	backendconfig v1.0.0 => ../../backend-config
 	gitlabapi v1.0.0 => ../../gitlab-api
 )

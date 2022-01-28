@@ -1,6 +1,7 @@
 package gcpgitlabci
 
 import (
+	"backendconfig"
 	"fmt"
 	"gitlabapi"
 	"testing"
@@ -15,9 +16,10 @@ func TestGcpGitlabCi(t *testing.T) {
 	instanceCount := 2
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		// Set the path to the Terraform code that will be tested.
+		BackendConfig: map[string]interface{}{
+			"bucket": backendconfig.GetBackendBucketName(),
+		},
 		TerraformDir: "../../../config/gcp/gitlab-ci",
-
 		Vars: map[string]interface{}{
 			"runner_tag":     runnerTag,
 			"instance_count": instanceCount,
