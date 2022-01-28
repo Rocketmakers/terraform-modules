@@ -80,6 +80,16 @@ validate-shared:
 	$(info $(M) Validating shared...)
 	$(call Validate,shared)
 
+.PHONY: setup-go
+setup-go:
+	$(info $(M) Setting up golang...)
+	asdf install golang
+
+.PHONY: test
+test: setup-go
+	$(info $(M) Running tests for $(TERRATEST_DIR)...)
+	(cd _tests/src/$(TERRATEST_DIR) && go test)
+
 .PHONY: format-all
 format-all:
 	$(info $(M) Formatting...)

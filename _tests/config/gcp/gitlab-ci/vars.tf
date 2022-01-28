@@ -12,3 +12,8 @@ variable crypto_key_self_link {
   type        = string
   description = "Self link for the KMS crypto key"
 }
+
+variable instance_count {
+  type        = number
+  description = "The number of VM instances to create"
+}

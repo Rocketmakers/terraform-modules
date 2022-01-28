@@ -12,4 +12,5 @@ module gitlab_ci {
   runner_tags            = [var.runner_tag]
   encrypted_gitlab_token = var.encrypted_gitlab_token
   crypto_key_self_link   = var.crypto_key_self_link
+  instance_count         = var.instance_count
 }
