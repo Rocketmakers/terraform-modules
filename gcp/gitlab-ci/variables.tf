@@ -30,6 +30,11 @@ variable crypto_key_self_link {
   description = "Self link for the KMS crypto key"
 }
 
+variable gcp_region {
+  type        = string
+  description = "The Google Cloud region where resources should be created"
+}
+
 variable zones {
   type        = list(string)
   description = "List of Google Cloud zones where instances should be placed (the zones will be used in a round-robin strategy when creating instances)"
