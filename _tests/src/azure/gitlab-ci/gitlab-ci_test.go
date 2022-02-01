@@ -12,17 +12,21 @@ import (
 func TestGcpGitlabCi(t *testing.T) {
 	// Construct the terraform options with default retryable errors to handle the most common
 	// retryable errors in terraform testing.
-	runnerTag := "gcp-d7500544-e29d-451b-bd3f-083065f46b67"
+	runnerTag := "azure-1f9044b0-231a-4d92-a4b1-7fddbe19bb0d"
 	instanceCount := 2
 
+	backendConfigOptions := backendconfig.AzureBackendConfigOptions{
+		Key: "gitlab-ci.tfstate",
+	}
+	backendConfig := backendconfig.GetAzureBackendBucketConfig(&backendConfigOptions)
+
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		BackendConfig: map[string]interface{}{
-			"bucket": backendconfig.GetGcsBackendBucketName(),
-		},
-		TerraformDir: "../../../config/gcp/gitlab-ci",
+		BackendConfig: backendConfig,
+		TerraformDir:  "../../../config/azure/gitlab-ci",
 		Vars: map[string]interface{}{
-			"runner_tag":     runnerTag,
-			"instance_count": instanceCount,
+			"runner_tag":          runnerTag,
+			"instance_count":      instanceCount,
+			"resource_group_name": backendConfig["resource_group_name"],
 		},
 	})
 
