@@ -114,14 +114,14 @@ resource azurerm_virtual_machine ci_box {
   delete_os_disk_on_termination = true
 
   storage_os_disk {
-    name              = "${var.project_name}-ci"
+    name              = "${var.project_name}-ci-${count.index + 1}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
 
   os_profile {
-    computer_name  = "${var.project_name}-ci"
+    computer_name  = "${var.project_name}-ci-${count.index + 1}"
     admin_username = local.username
   }
 
