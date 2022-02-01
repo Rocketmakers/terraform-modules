@@ -9,7 +9,6 @@ Creates a CI runner for use within gitlab
 | `container_registry_name` | Container registry name to enable access to | string |
 | `key_vault_name` | Azure key vault id that stores the gitlab token | string |
 | `primary_location` | Main location to store everything (e.g. westeurope) | string |
-| `primary_zones` | Main zone to store everything (e.g. [2]) | list(number) |
 | `project_name` | Project name | string |
 | `resource_group` | Resource group | string |
 

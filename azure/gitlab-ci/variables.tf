@@ -24,11 +24,6 @@ variable primary_location {
   description = "Main location to store everything (e.g. westeurope)"
 }
 
-variable primary_zones {
-  type        = list(number)
-  description = "Main zone to store everything (e.g. [2])"
-}
-
 variable whitelist {
   type        = list(string)
   description = "CIDR whitelist of entities allowed to access resource"
