@@ -27,7 +27,11 @@ variable primary_location {
 variable whitelist {
   type        = list(string)
   description = "CIDR whitelist of entities allowed to access resource"
-  default     = []
+
+  validation {
+    condition = length(var.whitelist) > 0
+    error_message = "The whitelist must contain at least one CIDR."
+  }
 }
 
 variable key_vault_name {

@@ -11,6 +11,7 @@ Creates a CI runner for use within gitlab
 | `primary_location` | Main location to store everything (e.g. westeurope) | string |
 | `project_name` | Project name | string |
 | `resource_group` | Resource group | string |
+| `whitelist` | CIDR whitelist of entities allowed to access resource | list(string) |
 
 ## Optional Inputs
 
@@ -29,7 +30,6 @@ Creates a CI runner for use within gitlab
 | `public_ip_sku` | The sku for the public ip associated with the cluster | string | Standard |
 | `runner_tags` | List of tags for gitlab runner | list(string) | ["rocketmakers","docker"] |
 | `vm_size` | Size of VM to deploy | string | Standard_B2s |
-| `whitelist` | CIDR whitelist of entities allowed to access resource | list(string) | [] |
 
 ## Outputs
 
