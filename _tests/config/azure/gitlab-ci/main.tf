@@ -11,7 +11,7 @@ module gitlab_ci {
   project_name            = local.project_name
   container_registry_name = azurerm_container_registry.acr.name
   key_vault_name          = "terratest"
-  whitelist               = [
+  whitelist = [
     # Rocketmakers office
     "212.139.176.173",
   ]

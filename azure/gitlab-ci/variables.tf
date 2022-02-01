@@ -29,7 +29,7 @@ variable whitelist {
   description = "CIDR whitelist of entities allowed to access resource"
 
   validation {
-    condition = length(var.whitelist) > 0
+    condition     = length(var.whitelist) > 0
     error_message = "The whitelist must contain at least one CIDR."
   }
 }
