@@ -1,7 +1,14 @@
 package backendconfig
 
-func GetGcsBackendBucketName() string {
-	return "rocketmakers-terratest"
+type GcsBackendConfigOptions struct {
+	Prefix string
+}
+
+func GetGcsBackendBucketConfig(options *GcsBackendConfigOptions) map[string]interface{} {
+	return map[string]interface{}{
+		"bucket": "rocketmakers-terratest",
+		"prefix": options.Prefix,
+	}
 }
 
 type AzureBackendConfigOptions struct {

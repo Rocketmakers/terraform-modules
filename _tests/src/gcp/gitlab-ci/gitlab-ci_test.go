@@ -15,11 +15,14 @@ func TestGcpGitlabCi(t *testing.T) {
 	runnerTag := "gcp-d7500544-e29d-451b-bd3f-083065f46b67"
 	instanceCount := 2
 
+	backendConfigOptions := backendconfig.GcsBackendConfigOptions{
+		Prefix: "gcp/gitlab-ci",
+	}
+	backendConfig := backendconfig.GetGcsBackendBucketConfig(&backendConfigOptions)
+
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		BackendConfig: map[string]interface{}{
-			"bucket": backendconfig.GetGcsBackendBucketName(),
-		},
-		TerraformDir: "../../../config/gcp/gitlab-ci",
+		BackendConfig: backendConfig,
+		TerraformDir:  "../../../config/gcp/gitlab-ci",
 		Vars: map[string]interface{}{
 			"runner_tag":     runnerTag,
 			"instance_count": instanceCount,
