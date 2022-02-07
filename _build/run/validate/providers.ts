@@ -3,12 +3,14 @@ import { FileSystem } from '@rocketmakers/shell-commands/lib/fs';
 
 const providersFilename = 'providers.tf';
 
-async function writeProviderConfig(moduleDirectoryPath: string, providerConfig: string): Promise<void> {
+async function writeProviderConfig(moduleDirectoryPath: string, providerConfig: string): Promise<string> {
   const providersPath = join(moduleDirectoryPath, providersFilename);
 
   const silentFail = true;
   await FileSystem.unlinkAsync(providersPath, silentFail);
   await FileSystem.writeFileAsync(providersPath, providerConfig, { encoding: 'utf-8' });
+
+  return providersPath;
 }
 
 /**
@@ -17,8 +19,9 @@ async function writeProviderConfig(moduleDirectoryPath: string, providerConfig: 
  *
  * @description The AWS provider needs a default region so we write one here.
  * This allows terraform init to pass without having to hard code a region into the module configuration.
+ * @returns The path to the file that was written
  */
-export function writeAwsProviderConfig(moduleDirectoryPath: string): Promise<void> {
+export function writeAwsProviderConfig(moduleDirectoryPath: string): Promise<string> {
   return writeProviderConfig(
     moduleDirectoryPath,
     `provider "aws" {
@@ -38,7 +41,7 @@ export function writeAwsProviderConfig(moduleDirectoryPath: string): Promise<voi
  * provider blocks in reusable modules.
  * This allows terraform init to pass without having to hard code a region into the module configuration.
  */
-export function writeAzureProviderConfig(moduleDirectoryPath: string): Promise<void> {
+export function writeAzureProviderConfig(moduleDirectoryPath: string): Promise<string> {
   return writeProviderConfig(
     moduleDirectoryPath,
     `provider "azurerm" {
