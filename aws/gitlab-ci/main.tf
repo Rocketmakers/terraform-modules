@@ -18,7 +18,7 @@ module shared_ci {
 }
 
 data aws_secretsmanager_secret_version gitlab_token {
-  secret_id  = var.gitlab_token_secret_id
+  secret_id = var.gitlab_token_secret_id
 }
 
 resource tls_private_key ci_ssh {
