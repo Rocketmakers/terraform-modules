@@ -4,7 +4,7 @@ module gitlab_ci {
   availability_zones = ["a", "b"]
   cidr_ranges = [
     # Rocketmakers office
-    "212.139.176.173",
+    "212.139.176.173/32",
   ]
   project_prefix          = "terratest"
   gitlab_token_secret_id  = "arn:aws:secretsmanager:eu-west-2:971573726931:secret:Terratest-X4XqSp"
