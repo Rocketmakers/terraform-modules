@@ -6,8 +6,9 @@ module gitlab_ci {
     # Rocketmakers office
     "212.139.176.173",
   ]
-  encrypted_gitlab_token = "AQICAHg12jDlvNJ/GP8ilAvSbzMZOODNi/D58G2Sh7CBISsa0AFHtysY2Cuhc5NayHFUbrREAAAAcjBwBgkqhkiG9w0BBwagYzBhAgEAMFwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMX8q5Dc4cX87WVxOXAgEQgC913jn8AJz6jtgSUdHWaftjgLR/V8ZhIUvU3gVzUPsN+Wydr3HDBhtz3fDRmPkv8Q=="
-  project_prefix         = "terratest"
+  project_prefix          = "terratest"
+  gitlab_token_secret_id  = "arn:aws:secretsmanager:eu-west-2:971573726931:secret:Terratest-X4XqSp"
+  gitlab_token_secret_key = "gitlab-ci-key"
 
   # The following are provided via test code
   runner_tags    = [var.runner_tag]

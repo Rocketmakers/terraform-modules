@@ -8,7 +8,8 @@ Creates an EC2 instance in a VPC and configures the instance as a gitlab runner.
 | ------- | -------------------- | ------ |
 | `availability_zones` | The availability zones that the instance should be created in | list(string) |
 | `cidr_ranges` | CIDR ranges allowed to access CI | list(string) |
-| `encrypted_gitlab_token` | Base64 encoded KMS encrypted gitlab token | string |
+| `gitlab_token_secret_id` | The name or AWS ARN of the secret containing the gitlab registration token | string |
+| `gitlab_token_secret_key` | The name of the key within gitlab_token_secret_id containing the gitlab registration token | string |
 | `project_prefix` | Project prefix | string |
 | `runner_tags` | List of tags for gitlab runner (no tags will be added by default) | list(string) |
 

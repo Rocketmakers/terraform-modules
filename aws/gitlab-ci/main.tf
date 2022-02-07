@@ -9,7 +9,7 @@ module shared_ci {
   names                      = local.names
   username                   = var.username
   runner_tags                = var.runner_tags
-  gitlab_token               = data.aws_kms_secrets.ci.plaintext["gitlab_token"]
+  gitlab_token               = jsondecode(data.aws_secretsmanager_secret_version.gitlab_token.secret_string)[var.gitlab_token_secret_key]
   gitlab_runner_concurrency  = var.gitlab_runner_concurrency
   gitlab_runner_version      = var.gitlab_runner_version
   gitlab_runner_docker_image = var.gitlab_runner_docker_image
@@ -17,15 +17,8 @@ module shared_ci {
   docker_prune_cron_schedule = var.docker_prune_cron_schedule
 }
 
-data aws_kms_secrets ci {
-  secret {
-    name    = "gitlab_token"
-    payload = var.encrypted_gitlab_token
-
-    context = {
-      usage = "gitlab-token"
-    }
-  }
+data aws_secretsmanager_secret_version gitlab_token {
+  secret_id  = var.gitlab_token_secret_id
 }
 
 resource tls_private_key ci_ssh {

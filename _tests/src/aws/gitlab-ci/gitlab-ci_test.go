@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/stretchr/testify/require"
 )
 
 func TestAwsGitlabCi(t *testing.T) {
@@ -23,8 +24,9 @@ func TestAwsGitlabCi(t *testing.T) {
 
 	if err != nil {
 		fmt.Printf("Error assuming role: %v", err)
-		return
 	}
+
+	require.NoError(t, err)
 
 	backendConfigOptions := backendconfig.AwsBackendConfigOptions{
 		Key: "gitlab-ci",
