@@ -27,7 +27,7 @@ resource tls_private_key ci_ssh {
 }
 
 resource aws_key_pair ci_ssh {
-  key_name   = "ci-ssh"
+  key_name   = "${var.project_prefix}-ci-ssh"
   public_key = tls_private_key.ci_ssh.public_key_openssh
   tags       = var.tags
 }
