@@ -2,16 +2,9 @@ import { LoggerLevel } from '@rocketmakers/log';
 import { Args } from '@rocketmakers/shell-commands/lib/args';
 import { createLogger, setDefaultLoggerLevel } from '@rocketmakers/shell-commands/lib/logger';
 import { Prerequisites } from '@rocketmakers/shell-commands/lib/prerequisites';
-import { generateReadmes } from './readme/readme';
-import { RepositoryPaths } from './paths/repositoryPaths';
+import { validateSubdirectories } from './validate/validate';
 
-const logger = createLogger('readmes');
-
-Prerequisites.register({
-  command: 'terraform-docs',
-  description: 'Generates docs for terraform',
-  installInstructions: 'asdf plugin add terraform-docs https://github.com/looztra/asdf-terraform-docs',
-});
+const logger = createLogger('validate');
 
 async function run() {
   const args = await Args.match({
@@ -20,6 +13,10 @@ async function run() {
       shortName: 'l',
       defaultValue: process.env.LOG_LEVEL || 'info',
       validValues: ['trace', 'debug', 'info', 'warn', 'error', 'fatal'],
+    }),
+    directory: Args.single({
+      description: 'Optionally only target this parent directory',
+      shortName: 'd',
     }),
   });
 
@@ -37,7 +34,18 @@ async function run() {
 
   await Prerequisites.check();
 
-  await generateReadmes(RepositoryPaths.resolve());
+  const parentDirectories = args.directory ? [args.directory] : ['aws', 'azure', 'gcp', 'shared'];
+  const failedModules: string[] = [];
+  for (const parentDirectory of parentDirectories) {
+    const failed = await validateSubdirectories(parentDirectory, logger);
+    failedModules.push(...failed);
+  }
+
+  if (failedModules.length > 0) {
+    const s = failedModules.length === 1 ? '' : 's';
+    logger.error(`The following module${s} failed to validate (see logs for details)`, failedModules);
+    process.exit(1);
+  }
 }
 
 run()
