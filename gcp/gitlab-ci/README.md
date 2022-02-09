@@ -25,6 +25,7 @@ Follow the GCR [Quickstart](https://cloud.google.com/container-registry/docs/qui
 | `cidr_ranges` | CIDR ranges allowed to access the runner instance | list(string) |
 | `crypto_key_self_link` | Self link for the KMS crypto key | string |
 | `encrypted_gitlab_token` | Base64 encoded KMS encrypted gitlab token | string |
+| `gcp_region` | The Google Cloud region where resources should be created | string |
 | `gcr_bucket_names` | Names of google container registry buckets that the runner instance has permission to access e.g. ["eu.artifacts.my-cool-project.appspot.com"] | list(string) |
 | `project_id` | Google Cloud project ID where the runner instance and related resources will be created | string |
 | `project_prefix` | A prefix given to resource names related to the runner instance | string |

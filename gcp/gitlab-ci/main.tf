@@ -78,6 +78,7 @@ resource google_compute_firewall ci_firewall {
 resource google_compute_address ci_static_ip {
   count   = var.instance_count
   project = google_compute_firewall.ci_firewall.project
+  region  = var.gcp_region
   name    = "${google_compute_firewall.ci_firewall.name}-${count.index + 1}"
 }
 
@@ -92,6 +93,7 @@ data google_kms_secret gitlab_token {
 }
 
 resource google_compute_instance ci_box {
+  project                   = var.project_id
   count                     = var.instance_count
   name                      = google_compute_address.ci_static_ip[count.index].name
   machine_type              = var.machine_type
