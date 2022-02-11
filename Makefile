@@ -53,7 +53,7 @@ setup-go:
 .PHONY: test
 test: setup-go
 	$(info $(M) Running tests for $(TERRATEST_DIR)...)
-	(cd _tests/src/$(TERRATEST_DIR) && go test)
+	(cd _tests/src/$(TERRATEST_DIR) && go test -timeout 60m)
 
 .PHONY: format-all
 format-all:

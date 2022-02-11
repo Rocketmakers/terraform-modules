@@ -19,7 +19,7 @@ type TestGitlabRunnerOptions struct {
 }
 
 func createGitlabApiClient() (*gitlab.Client, error) {
-	variableName := "GITLAB_API_TOKEN"
+	variableName := "GITLAB_TOKEN"
 	gitlabApiToken := os.Getenv(variableName)
 	if gitlabApiToken == "" {
 		return nil, fmt.Errorf("Missing %v variable", variableName)

@@ -11,7 +11,7 @@ module shared_ci {
   names                      = tolist(azurerm_public_ip.ci[*].name)
   username                   = local.username
   runner_tags                = local.runner_tags
-  gitlab_token               = data.azurerm_key_vault_secret.gitlab_token.value
+  gitlab_token               = data.gitlab_project.runner_token.runners_token
   gitlab_runner_concurrency  = var.gitlab_runner_concurrency
   gitlab_runner_version      = var.gitlab_runner_version
   gitlab_runner_docker_image = var.gitlab_runner_docker_image
@@ -89,9 +89,8 @@ data azurerm_key_vault core {
   resource_group_name = data.azurerm_resource_group.core.name
 }
 
-data azurerm_key_vault_secret gitlab_token {
-  name         = var.gitlab_token_secret_name
-  key_vault_id = data.azurerm_key_vault.core.id
+data gitlab_project runner_token {
+  id = var.registration_token_project_id
 }
 
 resource azurerm_virtual_machine ci_box {
@@ -114,14 +113,14 @@ resource azurerm_virtual_machine ci_box {
   delete_os_disk_on_termination = true
 
   storage_os_disk {
-    name              = "${var.project_name}-ci"
+    name              = "${var.project_name}-ci-${count.index + 1}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
 
   os_profile {
-    computer_name  = "${var.project_name}-ci"
+    computer_name  = "${var.project_name}-ci-${count.index + 1}"
     admin_username = local.username
   }
 

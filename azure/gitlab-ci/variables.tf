@@ -24,26 +24,24 @@ variable primary_location {
   description = "Main location to store everything (e.g. westeurope)"
 }
 
-variable primary_zones {
-  type        = list(number)
-  description = "Main zone to store everything (e.g. [2])"
-}
-
 variable whitelist {
   type        = list(string)
   description = "CIDR whitelist of entities allowed to access resource"
-  default     = []
+
+  validation {
+    condition     = length(var.whitelist) > 0
+    error_message = "The whitelist must contain at least one CIDR."
+  }
 }
 
 variable key_vault_name {
   type        = string
-  description = "Azure key vault id that stores the gitlab token"
+  description = "Azure key vault id that jobs on the runner will need to access."
 }
 
-variable gitlab_token_secret_name {
+variable registration_token_project_id {
   type        = string
-  description = "Name of the gitlab token secret in azure key vault"
-  default     = "core-gitlab-token"
+  description = "The ID of the gitlab project where the runner's registration token can be found."
 }
 
 variable runner_tags {

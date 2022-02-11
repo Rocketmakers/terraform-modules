@@ -1,7 +1,6 @@
 terraform {
-  backend "gcs" {
-    prefix = "gcp/gitlab-ci"
-  }
+  # Config given in terratest code
+  backend "gcs" {}
 }
 
 provider "google" {

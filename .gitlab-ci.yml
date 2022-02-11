@@ -2,6 +2,9 @@ variables:
   PROJECT_NAME: terraform-modules
   LOG_LEVEL: info
 
+  # Required to validate and test the gitlab modules
+  GITLAB_TOKEN: $GITLAB_ACCESS_TOKEN
+
 stages:
   - analysis
   - notify
