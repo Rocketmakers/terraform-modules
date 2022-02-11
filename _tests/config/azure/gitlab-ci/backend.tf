@@ -4,13 +4,13 @@ terraform {
 
   required_providers {
     azurerm = {
-      source  = "hashicorp/azurerm"
+      source = "hashicorp/azurerm"
     }
     tls = {
-      source  = "hashicorp/tls"
+      source = "hashicorp/tls"
     }
     gitlab = {
-      source  = "gitlabhq/gitlab"
+      source = "gitlabhq/gitlab"
     }
   }
 }
