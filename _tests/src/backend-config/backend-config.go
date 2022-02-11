@@ -26,3 +26,15 @@ func GetAzureBackendBucketConfig(options *AzureBackendConfigOptions) map[string]
 		"key":                  options.Key,
 	}
 }
+
+type AwsBackendConfigOptions struct {
+	Key string
+}
+
+func GetAwsBackendBucketConfig(options *AwsBackendConfigOptions) map[string]interface{} {
+	return map[string]interface{}{
+		"bucket": "rocketmakers-terratest",
+		"region": "eu-west-2",
+		"key":    options.Key,
+	}
+}

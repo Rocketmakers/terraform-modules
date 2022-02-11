@@ -10,11 +10,6 @@ variable cidr_ranges {
   description = "CIDR ranges allowed to access CI"
 }
 
-variable encrypted_gitlab_token {
-  type        = string
-  description = "Base64 encoded KMS encrypted gitlab token"
-}
-
 variable "availability_zones" {
   type        = list(string)
   description = "The availability zones that the instance should be created in"
@@ -23,6 +18,16 @@ variable "availability_zones" {
 variable runner_tags {
   type        = list(string)
   description = "List of tags for gitlab runner (no tags will be added by default)"
+}
+
+variable gitlab_token_secret_id {
+  type        = string
+  description = "The name or AWS ARN of the secret containing the gitlab registration token"
+}
+
+variable gitlab_token_secret_key {
+  type        = string
+  description = "The name of the key within gitlab_token_secret_id containing the gitlab registration token"
 }
 
 # // Optional
