@@ -36,13 +36,12 @@ variable whitelist {
 
 variable key_vault_name {
   type        = string
-  description = "Azure key vault id that stores the gitlab token"
+  description = "Azure key vault id that jobs on the runner will need to access."
 }
 
-variable gitlab_token_secret_name {
+variable registration_token_project_id {
   type        = string
-  description = "Name of the gitlab token secret in azure key vault"
-  default     = "core-gitlab-token"
+  description = "The ID of the gitlab project where the runner's registration token can be found."
 }
 
 variable runner_tags {

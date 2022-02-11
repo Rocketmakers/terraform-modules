@@ -10,5 +10,9 @@ terraform {
       source  = "hashicorp/tls"
       version = ">= 2.2"
     }
+    gitlab = {
+      source  = "gitlabhq/gitlab"
+      version = ">=3.9.1"
+    }
   }
 }
