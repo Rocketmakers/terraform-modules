@@ -7,9 +7,10 @@ Creates a CI runner for use within gitlab
 | name    | description          | type   |
 | ------- | -------------------- | ------ |
 | `container_registry_name` | Container registry name to enable access to | string |
-| `key_vault_name` | Azure key vault id that stores the gitlab token | string |
+| `key_vault_name` | Azure key vault id that jobs on the runner will need to access. | string |
 | `primary_location` | Main location to store everything (e.g. westeurope) | string |
 | `project_name` | Project name | string |
+| `registration_token_project_id` | The ID of the gitlab project where the runner's registration token can be found. | string |
 | `resource_group` | Resource group | string |
 | `whitelist` | CIDR whitelist of entities allowed to access resource | list(string) |
 
@@ -22,7 +23,6 @@ Creates a CI runner for use within gitlab
 | `gitlab_runner_docker_image` | The value passed to --docker-image when registering the runner (see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker) | string | docker:stable |
 | `gitlab_runner_locked` | Setting true will limit the runner to the project that provided the registration token. Setting false will allow other projects to enable the runner. | bool | true |
 | `gitlab_runner_version` | The version of gitlab-runner to install (see https://docs.gitlab.com/runner/install/bleeding-edge.html#download-any-other-tagged-release) | string | latest |
-| `gitlab_token_secret_name` | Name of the gitlab token secret in azure key vault | string | core-gitlab-token |
 | `instance_count` | The number of VM instances to create | number | 1 |
 | `network_address_space` | The address space that is used the virtual network. You can supply more than one address space. | list(string) | ["10.0.0.0/16"] |
 | `network_subnet_address_prefix` | The address prefix of the CI boxes subnet. | string | 10.0.0.0/24 |
@@ -45,6 +45,7 @@ These are required by the module.
 | name | version |
 | ---- | ------- |
 | `azurerm` | >= 2.1 |
+| `gitlab` | >=3.9.1 |
 | `terraform` | >= 0.13 |
 | `tls` | >= 2.2 |
 
@@ -55,6 +56,7 @@ These are the providers used by the module.
 | name | version |
 | ---- | ------- |
 | `azurerm` | >= 2.1 |
+| `gitlab` | >=3.9.1 |
 | `tls` | >= 2.2 |
 
 
