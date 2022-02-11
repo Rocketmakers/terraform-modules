@@ -53,16 +53,6 @@ setup-go:
 .PHONY: test
 test: setup-go
 	$(info $(M) Running tests for $(TERRATEST_DIR)...)
-	(cd _tests/src/$(TERRATEST_DIR) && go test)
-
-.PHONY: setup-go
-setup-go:
-	$(info $(M) Setting up golang...)
-	asdf install golang
-
-.PHONY: test
-test: setup-go
-	$(info $(M) Running tests for $(TERRATEST_DIR)...)
 	(cd _tests/src/$(TERRATEST_DIR) && go test -timeout 60m)
 
 .PHONY: format-all
