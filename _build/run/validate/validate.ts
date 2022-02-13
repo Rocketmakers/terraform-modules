@@ -20,12 +20,13 @@ export async function validateSubdirectories(parentDirectoryName: string, logger
   const failed: string[] = [];
 
   for (const moduleDirectory of moduleDirectories) {
+    let tempProvidersPath = '';
     if (parentDirectoryName === 'aws') {
       logger.debug(`Writing aws provider config to directory: '${moduleDirectory.path}'`);
-      await writeAwsProviderConfig(moduleDirectory.path);
+      tempProvidersPath = await writeAwsProviderConfig(moduleDirectory.path);
     } else if (parentDirectoryName === 'azure') {
       logger.debug(`Writing azurerm provider config to directory: '${moduleDirectory.path}'`);
-      await writeAzureProviderConfig(moduleDirectory.path);
+      tempProvidersPath = await writeAzureProviderConfig(moduleDirectory.path);
     }
 
     const relativePath = join(parentDirectoryName, moduleDirectory.name);
@@ -36,6 +37,11 @@ export async function validateSubdirectories(parentDirectoryName: string, logger
       await Terraform.validate(moduleDirectory.path);
     } catch {
       failed.push(relativePath);
+    } finally {
+      if (tempProvidersPath && FileSystem.exists(tempProvidersPath)) {
+        logger.debug(`Deleting temporary file: '${tempProvidersPath}'`);
+        await FileSystem.unlinkAsync(tempProvidersPath);
+      }
     }
   }
 
