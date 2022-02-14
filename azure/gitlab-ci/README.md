@@ -10,8 +10,8 @@ Creates a CI runner for use within gitlab
 | `key_vault_name` | Azure key vault id that jobs on the runner will need to access. | string |
 | `primary_location` | Main location to store everything (e.g. westeurope) | string |
 | `project_name` | Project name | string |
-| `registration_token_project_id` | The ID of the gitlab project where the runner's registration token can be found. | string |
 | `resource_group` | Resource group | string |
+| `runner_registration_token` | The gitlab registration token that will be used to register the runner. | string |
 | `whitelist` | CIDR whitelist of entities allowed to access resource | list(string) |
 
 ## Optional Inputs
@@ -45,7 +45,6 @@ These are required by the module.
 | name | version |
 | ---- | ------- |
 | `azurerm` | >= 2.1 |
-| `gitlab` | >=3.9.1 |
 | `terraform` | >= 0.13 |
 | `tls` | >= 2.2 |
 
@@ -56,7 +55,6 @@ These are the providers used by the module.
 | name | version |
 | ---- | ------- |
 | `azurerm` | >= 2.1 |
-| `gitlab` | >=3.9.1 |
 | `tls` | >= 2.2 |
 
 
