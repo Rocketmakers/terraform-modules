@@ -11,7 +11,7 @@ module shared_ci {
   names                      = tolist(azurerm_public_ip.ci[*].name)
   username                   = local.username
   runner_tags                = local.runner_tags
-  gitlab_token               = data.gitlab_project.runner_token.runners_token
+  gitlab_token               = var.runner_registration_token
   gitlab_runner_concurrency  = var.gitlab_runner_concurrency
   gitlab_runner_version      = var.gitlab_runner_version
   gitlab_runner_docker_image = var.gitlab_runner_docker_image
@@ -87,10 +87,6 @@ resource tls_private_key ci_ssh {
 data azurerm_key_vault core {
   name                = var.key_vault_name
   resource_group_name = data.azurerm_resource_group.core.name
-}
-
-data gitlab_project runner_token {
-  id = var.registration_token_project_id
 }
 
 resource azurerm_virtual_machine ci_box {

@@ -73,7 +73,7 @@ func TestGcpGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
 
 		assert.True(t, runner.Active, "Runner is active")
 		assert.True(t, runner.Online, "Runner is online")
-		assert.Equal(t, runner.Status, "online", "Runner status is online")
+		assert.Equal(t, "online", runner.Status, "Runner status is online")
 	}
 
 	fmt.Println("Deleting regsitered runners...")

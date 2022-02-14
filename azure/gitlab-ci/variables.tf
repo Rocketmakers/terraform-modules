@@ -39,9 +39,11 @@ variable key_vault_name {
   description = "Azure key vault id that jobs on the runner will need to access."
 }
 
-variable registration_token_project_id {
+variable runner_registration_token {
   type        = string
-  description = "The ID of the gitlab project where the runner's registration token can be found."
+  description = "The gitlab registration token that will be used to register the runner."
+  # when we go to terraform >= 0.14
+  # sensitive   = true
 }
 
 variable runner_tags {

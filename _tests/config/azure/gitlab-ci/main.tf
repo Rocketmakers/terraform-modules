@@ -6,12 +6,12 @@ locals {
 module gitlab_ci {
   source = "../../../../azure/gitlab-ci"
 
-  resource_group                = var.resource_group_name
-  primary_location              = local.location
-  project_name                  = local.project_name
-  container_registry_name       = azurerm_container_registry.acr.name
-  key_vault_name                = "terratest"
-  registration_token_project_id = "33153506"
+  resource_group            = var.resource_group_name
+  primary_location          = local.location
+  project_name              = local.project_name
+  container_registry_name   = azurerm_container_registry.acr.name
+  key_vault_name            = "terratest"
+  runner_registration_token = data.gitlab_project.runner_token.runners_token
   whitelist = [
     # Rocketmakers office
     "212.139.176.173",
@@ -31,4 +31,8 @@ resource azurerm_container_registry acr {
   resource_group_name = var.resource_group_name
   location            = local.location
   sku                 = "Basic"
+}
+
+data gitlab_project runner_token {
+  id = "33153506"
 }
