@@ -6,11 +6,14 @@ module gitlab_ci {
     # Rocketmakers office
     "212.139.176.173/32",
   ]
-  project_prefix          = "terratest"
-  gitlab_token_secret_id  = "arn:aws:secretsmanager:eu-west-2:971573726931:secret:Terratest-X4XqSp"
-  gitlab_token_secret_key = "gitlab-ci-key"
+  project_prefix            = "terratest"
+  runner_registration_token = data.gitlab_project.runner_token.runners_token
 
   # The following are provided via test code
   runner_tags    = [var.runner_tag]
   instance_count = var.instance_count
+}
+
+data gitlab_project runner_token {
+  id = "33153506"
 }

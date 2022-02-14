@@ -1,6 +1,12 @@
 terraform {
   # Config given in terratest code
   backend "s3" {}
+
+  required_providers {
+    gitlab = {
+      source = "gitlabhq/gitlab"
+    }
+  }
 }
 
 provider "aws" {
