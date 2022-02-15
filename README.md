@@ -143,8 +143,7 @@ module "ci_box" {
   gcr_bucket_names           = var.gcr_bucket_names
   project_prefix             = var.project_prefix
   cidr_ranges                = module.trusted_ips.cidrs
-  encrypted_gitlab_token     = var.encrypted_gitlab_token
-  crypto_key_self_link       = var.crypto_key_self_link
+  runner_registration_token  = var.runner_registration_token
   machine_type               = var.machine_type
   runner_tags                = var.runner_tags
   gitlab_runner_concurrency  = var.runner_concurrency

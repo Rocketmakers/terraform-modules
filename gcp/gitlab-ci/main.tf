@@ -3,7 +3,7 @@ module shared_ci {
   names                      = tolist(google_compute_address.ci_static_ip[*].name)
   username                   = var.username
   runner_tags                = var.runner_tags
-  gitlab_token               = data.google_kms_secret.gitlab_token.plaintext
+  gitlab_token               = var.runner_registration_token
   gitlab_runner_concurrency  = var.gitlab_runner_concurrency
   gitlab_runner_version      = var.gitlab_runner_version
   gitlab_runner_docker_image = var.gitlab_runner_docker_image
@@ -85,11 +85,6 @@ resource google_compute_address ci_static_ip {
 data google_compute_image ubuntu_image {
   project = var.image_project
   name    = var.image_name
-}
-
-data google_kms_secret gitlab_token {
-  crypto_key = var.crypto_key_self_link
-  ciphertext = var.encrypted_gitlab_token
 }
 
 resource google_compute_instance ci_box {

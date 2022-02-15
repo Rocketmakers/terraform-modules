@@ -23,12 +23,11 @@ Follow the GCR [Quickstart](https://cloud.google.com/container-registry/docs/qui
 | name    | description          | type   |
 | ------- | -------------------- | ------ |
 | `cidr_ranges` | CIDR ranges allowed to access the runner instance | list(string) |
-| `crypto_key_self_link` | Self link for the KMS crypto key | string |
-| `encrypted_gitlab_token` | Base64 encoded KMS encrypted gitlab token | string |
 | `gcp_region` | The Google Cloud region where resources should be created | string |
 | `gcr_bucket_names` | Names of google container registry buckets that the runner instance has permission to access e.g. ["eu.artifacts.my-cool-project.appspot.com"] | list(string) |
 | `project_id` | Google Cloud project ID where the runner instance and related resources will be created | string |
 | `project_prefix` | A prefix given to resource names related to the runner instance | string |
+| `runner_registration_token` | The gitlab registration token that will be used to register the runner. | string |
 | `runner_tags` | List of tags for gitlab runner (no tags will be added by default) | list(string) |
 | `zones` | List of Google Cloud zones where instances should be placed (the zones will be used in a round-robin strategy when creating instances) | list(string) |
 
@@ -89,7 +88,7 @@ These are the providers used by the module.
 
 ```
 module ci_box {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/ci-box?ref=v3.0.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/ci-box?ref=v1.0.0"
 
   instance_count             = var.instance_count
   zones                      = var.zones
@@ -97,8 +96,7 @@ module ci_box {
   gcr_bucket_names           = var.gcr_bucket_names
   project_prefix             = var.project_prefix
   cidr_ranges                = module.trusted_ips.cidrs
-  encrypted_gitlab_token     = var.encrypted_gitlab_token
-  crypto_key_self_link       = var.crypto_key_self_link
+  runner_registration_token  = var.runner_registration_token
   machine_type               = var.machine_type
   runner_tags                = var.runner_tags
   gitlab_runner_concurrency  = var.runner_concurrency
