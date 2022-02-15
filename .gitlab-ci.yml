@@ -84,6 +84,7 @@ notify:merge-request-reminder:
     GITLAB_PROJECT_IDS: $CI_PROJECT_ID
     INCLUDE_WIP: 'false'
     INCLUDE_DRAFT: 'false'
+    SLACK_TARGET: ':eyes:'
   rules:
     - if: "$MERGE_REQUEST_REMINDER == 'true'"
     - *ignore-mr-duplicate-pipeline
