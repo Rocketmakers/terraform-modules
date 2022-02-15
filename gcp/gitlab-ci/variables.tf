@@ -20,14 +20,11 @@ variable cidr_ranges {
   description = "CIDR ranges allowed to access the runner instance"
 }
 
-variable encrypted_gitlab_token {
+variable runner_registration_token {
   type        = string
-  description = "Base64 encoded KMS encrypted gitlab token"
-}
-
-variable crypto_key_self_link {
-  type        = string
-  description = "Self link for the KMS crypto key"
+  description = "The gitlab registration token that will be used to register the runner."
+  # when we go to terraform >= 0.14
+  # sensitive   = true
 }
 
 variable gcp_region {
