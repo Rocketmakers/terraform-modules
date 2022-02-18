@@ -9,7 +9,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
-func TestGcpGitlabCi(t *testing.T) {
+func TestAzureGitlabCi(t *testing.T) {
 	// Construct the terraform options with default retryable errors to handle the most common
 	// retryable errors in terraform testing.
 	runnerTag := "azure-1f9044b0-231a-4d92-a4b1-7fddbe19bb0d"
@@ -30,7 +30,7 @@ func TestGcpGitlabCi(t *testing.T) {
 		},
 	})
 
-	gitlabapi.TestGcpGitlabCi(t, &gitlabapi.TestGitlabRunnerOptions{
+	gitlabapi.TestGitlabCi(t, &gitlabapi.TestGitlabRunnerOptions{
 		RunnerTag:        runnerTag,
 		InstanceCount:    instanceCount,
 		TerraformOptions: terraformOptions,

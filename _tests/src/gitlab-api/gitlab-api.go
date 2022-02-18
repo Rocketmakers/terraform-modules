@@ -28,7 +28,7 @@ func createGitlabApiClient() (*gitlab.Client, error) {
 	return gitlab.NewClient(gitlabApiToken)
 }
 
-func TestGcpGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
+func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
 	runnerTag := opt.RunnerTag
 	instanceCount := opt.InstanceCount
 	terraformOptions := opt.TerraformOptions
