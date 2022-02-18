@@ -46,9 +46,9 @@ These are required by the module.
 
 | name | version |
 | ---- | ------- |
-| `aws` | >= 3.0 |
-| `terraform` | >= 0.13 |
-| `tls` | >= 2.1 |
+| `aws` | >= 4.1.0 |
+| `terraform` | >= 1.1.6 |
+| `tls` | >= 3.1.0 |
 
 ## Providers
 
@@ -56,8 +56,8 @@ These are the providers used by the module.
 
 | name | version |
 | ---- | ------- |
-| `aws` | >= 3.0 |
-| `tls` | >= 2.1 |
+| `aws` | >= 4.1.0 |
+| `tls` | >= 3.1.0 |
 
 
 ## Example Use Cases
