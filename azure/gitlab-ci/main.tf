@@ -1,12 +1,12 @@
-data azurerm_client_config current {}
+data "azurerm_client_config" "current" {}
 
-data azurerm_subscription current {}
+data "azurerm_subscription" "current" {}
 
-data azurerm_resource_group core {
+data "azurerm_resource_group" "core" {
   name = var.resource_group
 }
 
-module shared_ci {
+module "shared_ci" {
   source                     = "../../shared/ci"
   names                      = tolist(azurerm_public_ip.ci[*].name)
   username                   = local.username
@@ -19,21 +19,21 @@ module shared_ci {
   docker_prune_cron_schedule = var.docker_prune_cron_schedule
 }
 
-resource azurerm_virtual_network ci {
+resource "azurerm_virtual_network" "ci" {
   name                = "${data.azurerm_resource_group.core.name}-network"
   address_space       = var.network_address_space
   resource_group_name = data.azurerm_resource_group.core.name
   location            = var.primary_location
 }
 
-resource azurerm_subnet ci {
+resource "azurerm_subnet" "ci" {
   name                 = "${data.azurerm_resource_group.core.name}-subnet"
   resource_group_name  = data.azurerm_resource_group.core.name
   virtual_network_name = azurerm_virtual_network.ci.name
   address_prefix       = var.network_subnet_address_prefix
 }
 
-resource azurerm_network_security_group ci {
+resource "azurerm_network_security_group" "ci" {
   name                = "${data.azurerm_resource_group.core.name}-nsg"
   location            = azurerm_virtual_network.ci.location
   resource_group_name = data.azurerm_resource_group.core.name
@@ -51,12 +51,12 @@ resource azurerm_network_security_group ci {
   }
 }
 
-resource azurerm_subnet_network_security_group_association ci {
+resource "azurerm_subnet_network_security_group_association" "ci" {
   subnet_id                 = azurerm_subnet.ci.id
   network_security_group_id = azurerm_network_security_group.ci.id
 }
 
-resource azurerm_public_ip ci {
+resource "azurerm_public_ip" "ci" {
   count               = var.instance_count
   name                = "${data.azurerm_resource_group.core.name}-ci-${count.index + 1}"
   resource_group_name = data.azurerm_resource_group.core.name
@@ -65,7 +65,7 @@ resource azurerm_public_ip ci {
   sku                 = var.public_ip_sku
 }
 
-resource azurerm_network_interface ci {
+resource "azurerm_network_interface" "ci" {
   count               = var.instance_count
   name                = "${data.azurerm_resource_group.core.name}-nic-${count.index + 1}"
   resource_group_name = azurerm_subnet.ci.resource_group_name
@@ -79,17 +79,17 @@ resource azurerm_network_interface ci {
   }
 }
 
-resource tls_private_key ci_ssh {
+resource "tls_private_key" "ci_ssh" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
-data azurerm_key_vault core {
+data "azurerm_key_vault" "core" {
   name                = var.key_vault_name
   resource_group_name = data.azurerm_resource_group.core.name
 }
 
-resource azurerm_virtual_machine ci_box {
+resource "azurerm_virtual_machine" "ci_box" {
   count                 = var.instance_count
   name                  = "${var.project_name}-ci-vm-${count.index + 1}"
   resource_group_name   = data.azurerm_resource_group.core.name
@@ -133,7 +133,7 @@ resource azurerm_virtual_machine ci_box {
     type = "SystemAssigned"
   }
 
-  provisioner remote-exec {
+  provisioner "remote-exec" {
     connection {
       type        = "ssh"
       user        = local.username
@@ -149,7 +149,7 @@ resource azurerm_virtual_machine ci_box {
 ###################
 # Key vault access
 ###################
-resource azurerm_key_vault_access_policy ci {
+resource "azurerm_key_vault_access_policy" "ci" {
   count = var.instance_count
 
   key_vault_id = data.azurerm_key_vault.core.id
@@ -169,7 +169,7 @@ resource azurerm_key_vault_access_policy ci {
   ]
 }
 
-resource azurerm_role_assignment ci {
+resource "azurerm_role_assignment" "ci" {
   count                = var.instance_count
   scope                = data.azurerm_subscription.current.id
   role_definition_name = "Reader"
@@ -179,12 +179,12 @@ resource azurerm_role_assignment ci {
 ##################################
 # Azure Container Registry access
 ##################################
-data azurerm_container_registry core {
+data "azurerm_container_registry" "core" {
   name                = var.container_registry_name
   resource_group_name = data.azurerm_resource_group.core.name
 }
 
-resource azurerm_role_assignment acr {
+resource "azurerm_role_assignment" "acr" {
   count                = var.instance_count
   scope                = data.azurerm_container_registry.core.id
   role_definition_name = "AcrPush"

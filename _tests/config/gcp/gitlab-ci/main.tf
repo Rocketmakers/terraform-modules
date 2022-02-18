@@ -1,4 +1,4 @@
-module gitlab_ci {
+module "gitlab_ci" {
   source = "../../../../gcp/gitlab-ci"
 
   project_id                = "terraform-testing-317911"
@@ -14,6 +14,6 @@ module gitlab_ci {
   instance_count = var.instance_count
 }
 
-data gitlab_project runner_token {
+data "gitlab_project" "runner_token" {
   id = "33153506"
 }

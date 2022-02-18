@@ -3,7 +3,7 @@ locals {
   location     = "West Europe"
 }
 
-module gitlab_ci {
+module "gitlab_ci" {
   source = "../../../../azure/gitlab-ci"
 
   resource_group            = var.resource_group_name
@@ -26,13 +26,13 @@ module gitlab_ci {
   ]
 }
 
-resource azurerm_container_registry acr {
+resource "azurerm_container_registry" "acr" {
   name                = "rocketmakers${local.project_name}"
   resource_group_name = var.resource_group_name
   location            = local.location
   sku                 = "Basic"
 }
 
-data gitlab_project runner_token {
+data "gitlab_project" "runner_token" {
   id = "33153506"
 }

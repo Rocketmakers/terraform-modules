@@ -1,4 +1,4 @@
-module gitlab_ci {
+module "gitlab_ci" {
   source = "../../../../aws/gitlab-ci"
 
   availability_zones = ["a", "b"]
