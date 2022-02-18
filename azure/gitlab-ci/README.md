@@ -44,9 +44,9 @@ These are required by the module.
 
 | name | version |
 | ---- | ------- |
-| `azurerm` | >= 2.1 |
-| `terraform` | >= 0.13 |
-| `tls` | >= 2.2 |
+| `azurerm` | >= 2.97.0 |
+| `terraform` | >= 1.1.6 |
+| `tls` | >= 3.1.0 |
 
 ## Providers
 
@@ -54,8 +54,8 @@ These are the providers used by the module.
 
 | name | version |
 | ---- | ------- |
-| `azurerm` | >= 2.1 |
-| `tls` | >= 2.2 |
+| `azurerm` | >= 2.97.0 |
+| `tls` | >= 3.1.0 |
 
 
 ## Example Use Case

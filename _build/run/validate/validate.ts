@@ -20,13 +20,14 @@ export async function validateSubdirectories(parentDirectoryName: string, logger
   const failed: string[] = [];
 
   for (const moduleDirectory of moduleDirectories) {
-    let tempProvidersPath = '';
+    const tempFiles = [join(moduleDirectory.path, '.terraform.lock.hcl')];
+
     if (parentDirectoryName === 'aws') {
       logger.debug(`Writing aws provider config to directory: '${moduleDirectory.path}'`);
-      tempProvidersPath = await writeAwsProviderConfig(moduleDirectory.path);
+      tempFiles.push(await writeAwsProviderConfig(moduleDirectory.path));
     } else if (parentDirectoryName === 'azure') {
       logger.debug(`Writing azurerm provider config to directory: '${moduleDirectory.path}'`);
-      tempProvidersPath = await writeAzureProviderConfig(moduleDirectory.path);
+      tempFiles.push(await writeAzureProviderConfig(moduleDirectory.path));
     }
 
     const relativePath = join(parentDirectoryName, moduleDirectory.name);
@@ -38,10 +39,15 @@ export async function validateSubdirectories(parentDirectoryName: string, logger
     } catch {
       failed.push(relativePath);
     } finally {
-      if (tempProvidersPath && FileSystem.exists(tempProvidersPath)) {
-        logger.debug(`Deleting temporary file: '${tempProvidersPath}'`);
-        await FileSystem.unlinkAsync(tempProvidersPath);
-      }
+      await Promise.all(
+        tempFiles.map((tempFilePath) => {
+          if (!FileSystem.exists(tempFilePath)) {
+            return Promise.resolve();
+          }
+          logger.debug(`Deleting temporary file: '${tempFilePath}'`);
+          return FileSystem.unlinkAsync(tempFilePath);
+        })
+      );
     }
   }
 
