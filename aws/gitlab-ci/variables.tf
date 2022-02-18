@@ -23,8 +23,7 @@ variable "runner_tags" {
 variable "runner_registration_token" {
   type        = string
   description = "The gitlab registration token that will be used to register the runner."
-  # when we go to terraform >= 0.14
-  sensitive   = true
+  sensitive = true
 }
 
 # // Optional
