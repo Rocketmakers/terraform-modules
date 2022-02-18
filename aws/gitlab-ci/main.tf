@@ -9,16 +9,12 @@ module shared_ci {
   names                      = local.names
   username                   = var.username
   runner_tags                = var.runner_tags
-  gitlab_token               = jsondecode(data.aws_secretsmanager_secret_version.gitlab_token.secret_string)[var.gitlab_token_secret_key]
+  gitlab_token               = var.runner_registration_token
   gitlab_runner_concurrency  = var.gitlab_runner_concurrency
   gitlab_runner_version      = var.gitlab_runner_version
   gitlab_runner_docker_image = var.gitlab_runner_docker_image
   gitlab_runner_locked       = var.gitlab_runner_locked
   docker_prune_cron_schedule = var.docker_prune_cron_schedule
-}
-
-data aws_secretsmanager_secret_version gitlab_token {
-  secret_id = var.gitlab_token_secret_id
 }
 
 resource tls_private_key ci_ssh {
