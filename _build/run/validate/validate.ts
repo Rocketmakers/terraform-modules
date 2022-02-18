@@ -4,6 +4,28 @@ import { FileSystem } from '@rocketmakers/shell-commands/lib/fs';
 import { Terraform } from '@rocketmakers/shell-commands/lib/terraform';
 import { writeAwsProviderConfig, writeAzureProviderConfig } from './providers';
 import { RepositoryPaths } from '../paths/repositoryPaths';
+import { Shell } from '@rocketmakers/shell-commands/lib/shell';
+
+/**
+ * A partial representation of the terraform validation JSON response.
+ * Only defining properties for the bits we're interested in.
+ */
+interface ITerraformValidateResult {
+  /**
+   * Is the configuration valid?
+   */
+  valid: boolean;
+
+  /**
+   * The number of errors
+   */
+  error_count: number;
+
+  /**
+   * The number of warnings
+   */
+  warning_count: number;
+}
 
 /**
  * Validates all modules within a subdirectory
@@ -35,7 +57,18 @@ export async function validateSubdirectories(parentDirectoryName: string, logger
 
     try {
       await Terraform.init(moduleDirectory.path);
-      await Terraform.validate(moduleDirectory.path);
+
+      // Validate and parse the JSON result
+      const rawResult = await Shell.execOutput('terraform', ['validate', '-json'], { cwd: moduleDirectory.path });
+      const { valid, error_count, warning_count } = JSON.parse(rawResult) as ITerraformValidateResult;
+      const failed = !valid || error_count > 0 || warning_count > 0;
+
+      // If the validation failed then re-run without -json to get a nicer message
+      if (failed) {
+        logger.error(`Validation failed for ${relativePath}:`, { valid, error_count, warning_count });
+        await Terraform.validate(moduleDirectory.path);
+        throw new Error(rawResult);
+      }
     } catch {
       failed.push(relativePath);
     } finally {
