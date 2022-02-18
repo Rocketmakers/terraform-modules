@@ -6,9 +6,8 @@ terraform {
     gitlab = {
       source = "gitlabhq/gitlab"
     }
+    google = {
+      source = "hashicorp/google"
+    }
   }
-}
-
-provider "google" {
-  version = "2.20.0"
 }
