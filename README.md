@@ -76,6 +76,30 @@ rm -rf .terraform
 terraform init
 ```
 
+## Running tests
+
+**Authentication to be reviewed and improved...**
+
+Get AWS keys from [internal-gitlab-runners/secrets/secrets.yaml](https://gitlab.com/rocketmakers/internal-gitlab-runners/-/blob/master/secrets/secrets.yaml)
+
+```bash
+# For all tests
+export GITLAB_TOKEN=_token_with_api_access_
+
+# aws
+export AWS_SECRET_ACCESS_KEY=_key_
+export AWS_ACCESS_KEY_ID=_access_key_
+make test TERRATEST_DIR=aws/gitlab-ci
+
+# azure (you'll need to be added to a group first)
+az login
+make test TERRATEST_DIR=azure/gitlab-ci
+
+# gcp
+gcloud auth application-default login
+make test TERRATEST_DIR=gcp/gitlab-ci
+```
+
 ## Documentation
 
 We use [terraform-docs](https://github.com/terraform-docs/terraform-docs) along with custom scripts to help generate our module documentation. This will need to be installed using the following
