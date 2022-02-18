@@ -20,14 +20,11 @@ variable "runner_tags" {
   description = "List of tags for gitlab runner (no tags will be added by default)"
 }
 
-variable "gitlab_token_secret_id" {
+variable "runner_registration_token" {
   type        = string
-  description = "The name or AWS ARN of the secret containing the gitlab registration token"
-}
-
-variable "gitlab_token_secret_key" {
-  type        = string
-  description = "The name of the key within gitlab_token_secret_id containing the gitlab registration token"
+  description = "The gitlab registration token that will be used to register the runner."
+  # when we go to terraform >= 0.14
+  sensitive   = true
 }
 
 # // Optional
