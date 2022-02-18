@@ -3,8 +3,14 @@ terraform {
   backend "s3" {}
 
   required_providers {
+    aws = {
+      source = "hashicorp/aws"
+    }
     gitlab = {
       source = "gitlabhq/gitlab"
+    }
+    tls = {
+      source = "hashicorp/tls"
     }
   }
 }

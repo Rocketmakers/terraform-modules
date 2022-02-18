@@ -47,7 +47,7 @@ func TestAwsGitlabCi(t *testing.T) {
 		},
 	})
 
-	gitlabapi.TestGcpGitlabCi(t, &gitlabapi.TestGitlabRunnerOptions{
+	gitlabapi.TestGitlabCi(t, &gitlabapi.TestGitlabRunnerOptions{
 		RunnerTag:        runnerTag,
 		InstanceCount:    instanceCount,
 		TerraformOptions: terraformOptions,

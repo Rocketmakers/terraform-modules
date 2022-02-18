@@ -1,4 +1,4 @@
-module shared_ci {
+module "shared_ci" {
   source                     = "../../shared/ci"
   names                      = tolist(google_compute_address.ci_static_ip[*].name)
   username                   = var.username
@@ -19,7 +19,7 @@ locals {
   ]
 }
 
-resource google_project_service compute {
+resource "google_project_service" "compute" {
   project = var.project_id
   service = "compute.googleapis.com"
 
@@ -27,13 +27,13 @@ resource google_project_service compute {
   disable_on_destroy         = var.disable_compute_on_destroy.disable_service
 }
 
-resource google_service_account ci_account {
+resource "google_service_account" "ci_account" {
   project      = var.project_id
   account_id   = "${var.project_prefix}-ci-runner"
   display_name = "Gitlab CI runner service account"
 }
 
-resource google_project_iam_member ci_roles {
+resource "google_project_iam_member" "ci_roles" {
   count = length(var.service_account_roles)
 
   project = var.project_id
@@ -41,7 +41,7 @@ resource google_project_iam_member ci_roles {
   member  = "serviceAccount:${google_service_account.ci_account.email}"
 }
 
-resource google_storage_bucket_iam_member member {
+resource "google_storage_bucket_iam_member" "member" {
   count = length(var.gcr_bucket_names)
 
   bucket = var.gcr_bucket_names[count.index]
@@ -49,18 +49,18 @@ resource google_storage_bucket_iam_member member {
   member = "serviceAccount:${google_service_account.ci_account.email}"
 }
 
-resource tls_private_key ci_ssh {
+resource "tls_private_key" "ci_ssh" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
-resource google_compute_network ci_network {
+resource "google_compute_network" "ci_network" {
   name                    = "${var.project_prefix}-${var.name}"
   auto_create_subnetworks = true
   project                 = google_project_service.compute.project
 }
 
-resource google_compute_firewall ci_firewall {
+resource "google_compute_firewall" "ci_firewall" {
   project = google_compute_network.ci_network.project
 
   name    = google_compute_network.ci_network.name
@@ -75,19 +75,19 @@ resource google_compute_firewall ci_firewall {
   target_tags   = var.tags
 }
 
-resource google_compute_address ci_static_ip {
+resource "google_compute_address" "ci_static_ip" {
   count   = var.instance_count
   project = google_compute_firewall.ci_firewall.project
   region  = var.gcp_region
   name    = "${google_compute_firewall.ci_firewall.name}-${count.index + 1}"
 }
 
-data google_compute_image ubuntu_image {
+data "google_compute_image" "ubuntu_image" {
   project = var.image_project
   name    = var.image_name
 }
 
-resource google_compute_instance ci_box {
+resource "google_compute_instance" "ci_box" {
   project                   = var.project_id
   count                     = var.instance_count
   name                      = google_compute_address.ci_static_ip[count.index].name
@@ -119,7 +119,7 @@ resource google_compute_instance ci_box {
     }
   }
 
-  provisioner remote-exec {
+  provisioner "remote-exec" {
     connection {
       type        = "ssh"
       user        = var.username

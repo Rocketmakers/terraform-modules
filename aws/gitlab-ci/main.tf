@@ -1,10 +1,10 @@
-data aws_region current {}
+data "aws_region" "current" {}
 
 locals {
   names = [for i in range(var.instance_count) : "${var.project_prefix}-${var.name}-${i + 1}"]
 }
 
-module shared_ci {
+module "shared_ci" {
   source                     = "../../shared/ci"
   names                      = local.names
   username                   = var.username
@@ -17,18 +17,18 @@ module shared_ci {
   docker_prune_cron_schedule = var.docker_prune_cron_schedule
 }
 
-resource tls_private_key ci_ssh {
+resource "tls_private_key" "ci_ssh" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
-resource aws_key_pair ci_ssh {
+resource "aws_key_pair" "ci_ssh" {
   key_name   = "${var.project_prefix}-ci-ssh"
   public_key = tls_private_key.ci_ssh.public_key_openssh
   tags       = var.tags
 }
 
-data aws_ami image {
+data "aws_ami" "image" {
   most_recent = true
 
   filter {
@@ -49,7 +49,7 @@ data aws_ami image {
   owners = var.image_owners
 }
 
-resource aws_instance ci {
+resource "aws_instance" "ci" {
   count         = var.instance_count
   ami           = data.aws_ami.image.id
   instance_type = var.instance_type
@@ -66,7 +66,7 @@ resource aws_instance ci {
     volume_type = "gp3"
   }
 
-  provisioner remote-exec {
+  provisioner "remote-exec" {
     connection {
       type        = "ssh"
       user        = var.username
@@ -79,17 +79,17 @@ resource aws_instance ci {
   }
 }
 
-resource aws_vpc ci {
+resource "aws_vpc" "ci" {
   cidr_block = "10.0.0.0/16"
   tags       = var.tags
 }
 
-resource aws_internet_gateway ci {
+resource "aws_internet_gateway" "ci" {
   vpc_id = aws_vpc.ci.id
   tags   = var.tags
 }
 
-resource aws_subnet ci {
+resource "aws_subnet" "ci" {
   count             = var.instance_count > length(var.availability_zones) ? length(var.availability_zones) : var.instance_count
   vpc_id            = aws_vpc.ci.id
   cidr_block        = "10.0.${count.index + 1}.0/24"
@@ -97,7 +97,7 @@ resource aws_subnet ci {
   tags              = var.tags
 }
 
-resource aws_security_group ci {
+resource "aws_security_group" "ci" {
   description = "CI server security group"
   vpc_id      = aws_vpc.ci.id
   tags        = var.tags
@@ -119,14 +119,14 @@ resource aws_security_group ci {
   }
 }
 
-resource aws_network_interface ci {
+resource "aws_network_interface" "ci" {
   count           = var.instance_count
   subnet_id       = aws_subnet.ci[count.index % length(aws_subnet.ci)].id
   tags            = var.tags
   security_groups = [aws_security_group.ci.id]
 }
 
-resource aws_eip ci {
+resource "aws_eip" "ci" {
   count             = var.instance_count
   vpc               = true
   network_interface = aws_network_interface.ci[count.index].id
@@ -134,18 +134,18 @@ resource aws_eip ci {
   depends_on        = [aws_internet_gateway.ci]
 }
 
-resource aws_route_table main {
+resource "aws_route_table" "main" {
   vpc_id = aws_vpc.ci.id
   tags   = var.tags
 }
 
-resource aws_route internet {
+resource "aws_route" "internet" {
   route_table_id         = aws_route_table.main.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.ci.id
 }
 
-resource aws_main_route_table_association main {
+resource "aws_main_route_table_association" "main" {
   vpc_id         = aws_vpc.ci.id
   route_table_id = aws_route_table.main.id
 }

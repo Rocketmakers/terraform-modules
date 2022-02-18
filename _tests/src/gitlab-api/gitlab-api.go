@@ -3,6 +3,7 @@ package gitlabapi
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -27,7 +28,7 @@ func createGitlabApiClient() (*gitlab.Client, error) {
 	return gitlab.NewClient(gitlabApiToken)
 }
 
-func TestGcpGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
+func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
 	runnerTag := opt.RunnerTag
 	instanceCount := opt.InstanceCount
 	terraformOptions := opt.TerraformOptions
@@ -38,6 +39,10 @@ func TestGcpGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
 
 	// Clean up resources at the end of the test.
 	defer terraform.Destroy(t, terraformOptions)
+
+	// Remove the lock file so we get the latest providers each time
+	lockFilePath := filepath.Join(terraformOptions.TerraformDir, ".terraform.lock.hcl")
+	os.Remove(lockFilePath)
 
 	// Create resources
 	// Run "terraform init" and "terraform apply". Fail the test if there are any errors.
@@ -78,6 +83,12 @@ func TestGcpGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
 
 	fmt.Println("Deleting regsitered runners...")
 	for _, runnerId := range runnerIds {
-		client.Runners.DeleteRegisteredRunnerByID(runnerId, nil)
+		fmt.Printf("Deleting runner: %v\n", runnerId)
+		_, err := client.Runners.DeleteRegisteredRunnerByID(runnerId, nil)
+
+		if err != nil {
+			fmt.Printf("Failed to delete runner: %v\n", runnerId)
+			fmt.Println(err)
+		}
 	}
 }
