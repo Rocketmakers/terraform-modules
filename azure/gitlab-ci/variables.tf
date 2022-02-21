@@ -86,7 +86,7 @@ variable "network_subnet_address_prefixes" {
 variable "gitlab_runner_concurrency" {
   type        = number
   description = "The maximum number of jobs that the runner will run concurrently"
-  default     = 2
+  default     = 3
 }
 
 variable "gitlab_runner_version" {
