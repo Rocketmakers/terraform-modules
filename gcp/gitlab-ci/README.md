@@ -27,7 +27,7 @@ Follow the GCR [Quickstart](https://cloud.google.com/container-registry/docs/qui
 | `project_id` | Google Cloud project ID where the runner instance and related resources will be created | string |
 | `project_prefix` | A prefix given to resource names related to the runner instance | string |
 | `runner_registration_token` | The gitlab registration token that will be used to register the runner. | string |
-| `runner_tags` | List of tags for gitlab runner (no tags will be added by default) | list(string) |
+| `runner_tags` | List of tags for gitlab runner, used to allow the runner to be selected for jobs. | list(string) |
 | `ssh_cidr_ranges` | CIDR ranges allowed to access CI instances via ssh | list(string) |
 | `zones` | List of Google Cloud zones where instances should be placed (the zones will be used in a round-robin strategy when creating instances) | list(string) |
 

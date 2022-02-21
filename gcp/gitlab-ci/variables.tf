@@ -38,7 +38,7 @@ variable "zones" {
 
 variable "runner_tags" {
   type        = list(string)
-  description = "List of tags for gitlab runner (no tags will be added by default)"
+  description = "List of tags for gitlab runner, used to allow the runner to be selected for jobs."
 }
 
 // Optional
