@@ -94,6 +94,23 @@ variable "primary_location" {
   description = "Main location to store everything (e.g. westeurope)"
 }
 
+variable "image_config" {
+  type        = object({
+    publisher = string
+    offer     = string
+    sku       = string
+    version   = string
+  })
+  description = "The details of the OS image used on the instance"
+
+  default = {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+}
+
 variable "vm_size" {
   type        = string
   description = "Size of VM to deploy"

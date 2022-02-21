@@ -98,10 +98,10 @@ resource "azurerm_virtual_machine" "ci_box" {
   vm_size               = var.vm_size
 
   storage_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
+    publisher = var.image_config.publisher
+    offer     = var.image_config.offer
+    sku       = var.image_config.sku
+    version   = var.image_config.version
   }
 
   # If we don't do this and we destroy our CI box, then we'll be unable to recreate it as the disk will
