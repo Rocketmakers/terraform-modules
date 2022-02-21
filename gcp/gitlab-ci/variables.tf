@@ -23,6 +23,12 @@ variable "runner_registration_token" {
   sensitive   = true
 }
 
+variable "name" {
+  type        = string
+  description = "Main name of resources created"
+  default     = "ci"
+}
+
 #####################################################
 # Registration details (passed to shared/ci module) #
 #####################################################
@@ -98,12 +104,6 @@ variable "gcp_region" {
 variable "zones" {
   type        = list(string)
   description = "List of Google Cloud zones where instances should be placed (the zones will be used in a round-robin strategy when creating instances)"
-}
-
-variable "name" {
-  type        = string
-  description = "Main name of resources created"
-  default     = "ci"
 }
 
 variable "machine_type" {

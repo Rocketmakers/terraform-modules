@@ -29,7 +29,7 @@ resource "google_project_service" "compute" {
 
 resource "google_service_account" "ci_account" {
   project      = var.project_id
-  account_id   = "${var.project_prefix}-ci-runner"
+  account_id   = "${var.project_prefix}-${var.name}-runner"
   display_name = "Gitlab CI runner service account"
 }
 
