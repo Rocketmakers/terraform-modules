@@ -28,7 +28,7 @@ Creates an EC2 instance in a VPC and configures the instance as a gitlab runner.
 | `instance_type` | Instance type of the vm | string | t2.micro |
 | `name` | Main name of resources created | string | ci |
 | `tags` | Tags for aws resources | map(any) | {} |
-| `username` | Username for CI box | string | ubuntu |
+| `username` | Username for CI box | string | ci |
 
 ## Outputs
 

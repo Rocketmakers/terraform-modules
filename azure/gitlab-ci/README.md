@@ -30,6 +30,7 @@ Creates a CI runner for use within gitlab
 | `network_subnet_address_prefixes` | The address prefixes of the CI boxes subnet. | list(string) | ["10.0.0.0/24"] |
 | `public_ip_allocation_method` | The allocation method for the public ip associated with the cluster | string | Static |
 | `public_ip_sku` | The sku for the public ip associated with the cluster | string | Standard |
+| `username` | Username for CI box | string | ci |
 | `vm_size` | Size of VM to deploy | string | Standard_B2s |
 
 ## Outputs
