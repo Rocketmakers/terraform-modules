@@ -91,7 +91,7 @@ data "azurerm_key_vault" "core" {
 
 resource "azurerm_virtual_machine" "ci_box" {
   count                 = var.instance_count
-  name                  = "${var.project_name}-ci-vm-${count.index + 1}"
+  name                  = "${var.project_prefix}-ci-vm-${count.index + 1}"
   resource_group_name   = data.azurerm_resource_group.core.name
   location              = azurerm_network_interface.ci[count.index].location
   network_interface_ids = [azurerm_network_interface.ci[count.index].id]
@@ -109,14 +109,14 @@ resource "azurerm_virtual_machine" "ci_box" {
   delete_os_disk_on_termination = true
 
   storage_os_disk {
-    name              = "${var.project_name}-ci-${count.index + 1}"
+    name              = "${var.project_prefix}-ci-${count.index + 1}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
 
   os_profile {
-    computer_name  = "${var.project_name}-ci-${count.index + 1}"
+    computer_name  = "${var.project_prefix}-ci-${count.index + 1}"
     admin_username = local.username
   }
 
@@ -192,8 +192,7 @@ resource "azurerm_role_assignment" "acr" {
 }
 
 locals {
-  sanitised_project_name = replace(var.project_name, "/-/", "")
   whitelist              = var.whitelist
-  runner_tags            = concat([var.project_name], var.runner_tags)
+  runner_tags            = concat([var.project_prefix], var.runner_tags)
   username               = "app"
 }
