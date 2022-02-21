@@ -125,7 +125,7 @@ resource "azurerm_virtual_machine" "ci_box" {
     disable_password_authentication = true
 
     ssh_keys {
-      path     = "/home/app/.ssh/authorized_keys"
+      path     = "/home/${var.username}/.ssh/authorized_keys"
       key_data = tls_private_key.ci_ssh.public_key_openssh
     }
   }
