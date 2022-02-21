@@ -38,6 +38,12 @@ variable "name" {
 # Registration details (passed to shared/ci module) #
 #####################################################
 
+variable "username" {
+  type        = string
+  description = "Username for CI box"
+  default     = "ci"
+}
+
 variable "gitlab_runner_concurrency" {
   type        = number
   description = "The maximum number of jobs that the runner will run concurrently"

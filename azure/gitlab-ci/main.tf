@@ -9,7 +9,7 @@ data "azurerm_resource_group" "core" {
 module "shared_ci" {
   source                     = "../../shared/ci"
   names                      = tolist(azurerm_public_ip.ci[*].name)
-  username                   = local.username
+  username                   = var.username
   runner_tags                = var.runner_tags
   gitlab_token               = var.runner_registration_token
   gitlab_runner_concurrency  = var.gitlab_runner_concurrency
@@ -117,7 +117,7 @@ resource "azurerm_virtual_machine" "ci_box" {
 
   os_profile {
     computer_name  = "${var.project_prefix}-${var.name}-${count.index + 1}"
-    admin_username = local.username
+    admin_username = var.username
   }
 
   os_profile_linux_config {
@@ -136,7 +136,7 @@ resource "azurerm_virtual_machine" "ci_box" {
   provisioner "remote-exec" {
     connection {
       type        = "ssh"
-      user        = local.username
+      user        = var.username
       timeout     = "500s"
       private_key = tls_private_key.ci_ssh.private_key_pem
       host        = azurerm_public_ip.ci[count.index].ip_address
@@ -189,8 +189,4 @@ resource "azurerm_role_assignment" "acr" {
   scope                = data.azurerm_container_registry.core.id
   role_definition_name = "AcrPush"
   principal_id         = azurerm_virtual_machine.ci_box[count.index].identity[0].principal_id
-}
-
-locals {
-  username               = "app"
 }
