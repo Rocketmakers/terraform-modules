@@ -118,6 +118,12 @@ variable "vm_size" {
   default     = "Standard_B2s"
 }
 
+variable "disk_size" {
+  type        = number
+  description = "Size of disk in GB"
+  default     = 50
+}
+
 ###################
 # Other resources #
 ###################

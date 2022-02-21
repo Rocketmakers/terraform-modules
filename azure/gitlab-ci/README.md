@@ -19,6 +19,7 @@ Creates a CI runner for use within gitlab
 
 | name    | description          | type   | default value   |
 | ------- | -------------------- | ------ | --------------- |
+| `disk_size` | Size of disk in GB | number | 50 |
 | `docker_prune_cron_schedule` | The schedule to use for pruning docker images to prevent disk space filling up. Default value is weekly on Sundays at 0400 UTC. | string | 0 4 * * 0 |
 | `gitlab_runner_concurrency` | The maximum number of jobs that the runner will run concurrently | number | 3 |
 | `gitlab_runner_docker_image` | The value passed to --docker-image when registering the runner (see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker) | string | docker:stable |
