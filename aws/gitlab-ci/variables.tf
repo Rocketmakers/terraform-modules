@@ -5,9 +5,9 @@ variable "project_prefix" {
   description = "Project prefix"
 }
 
-variable "cidr_ranges" {
+variable "ssh_cidr_ranges" {
   type        = list(string)
-  description = "CIDR ranges allowed to access CI"
+  description = "CIDR ranges allowed to access CI instances via ssh"
 }
 
 variable "availability_zones" {

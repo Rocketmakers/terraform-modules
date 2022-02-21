@@ -107,7 +107,7 @@ resource "aws_security_group" "ci" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = var.cidr_ranges
+    cidr_blocks = var.ssh_cidr_ranges
   }
 
   egress {
