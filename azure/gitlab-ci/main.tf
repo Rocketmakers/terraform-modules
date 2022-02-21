@@ -58,7 +58,7 @@ resource "azurerm_subnet_network_security_group_association" "ci" {
 
 resource "azurerm_public_ip" "ci" {
   count               = var.instance_count
-  name                = "${data.azurerm_resource_group.core.name}-ci-${count.index + 1}"
+  name                = "${data.azurerm_resource_group.core.name}-${var.name}-${count.index + 1}"
   resource_group_name = data.azurerm_resource_group.core.name
   location            = azurerm_network_security_group.ci.location
   allocation_method   = var.public_ip_allocation_method
@@ -67,7 +67,7 @@ resource "azurerm_public_ip" "ci" {
 
 resource "azurerm_network_interface" "ci" {
   count               = var.instance_count
-  name                = "${data.azurerm_resource_group.core.name}-nic-${count.index + 1}"
+  name                = "${data.azurerm_resource_group.core.name}-${var.name}-nic-${count.index + 1}"
   resource_group_name = azurerm_subnet.ci.resource_group_name
   location            = azurerm_public_ip.ci[count.index].location
 
@@ -91,7 +91,7 @@ data "azurerm_key_vault" "core" {
 
 resource "azurerm_virtual_machine" "ci_box" {
   count                 = var.instance_count
-  name                  = "${var.project_prefix}-ci-vm-${count.index + 1}"
+  name                  = "${var.project_prefix}-${var.name}-vm-${count.index + 1}"
   resource_group_name   = data.azurerm_resource_group.core.name
   location              = azurerm_network_interface.ci[count.index].location
   network_interface_ids = [azurerm_network_interface.ci[count.index].id]
@@ -109,14 +109,14 @@ resource "azurerm_virtual_machine" "ci_box" {
   delete_os_disk_on_termination = true
 
   storage_os_disk {
-    name              = "${var.project_prefix}-ci-${count.index + 1}"
+    name              = "${var.project_prefix}-${var.name}-${count.index + 1}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
 
   os_profile {
-    computer_name  = "${var.project_prefix}-ci-${count.index + 1}"
+    computer_name  = "${var.project_prefix}-${var.name}-${count.index + 1}"
     admin_username = local.username
   }
 

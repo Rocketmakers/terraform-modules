@@ -28,6 +28,12 @@ variable "runner_registration_token" {
   sensitive   = true
 }
 
+variable "name" {
+  type        = string
+  description = "Main name of resources created"
+  default     = "ci"
+}
+
 #####################################################
 # Registration details (passed to shared/ci module) #
 #####################################################
