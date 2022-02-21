@@ -8,11 +8,11 @@ module "gitlab_ci" {
 
   resource_group            = var.resource_group_name
   primary_location          = local.location
-  project_name              = local.project_name
+  project_prefix            = local.project_name
   container_registry_name   = azurerm_container_registry.acr.name
   key_vault_name            = "terratest"
   runner_registration_token = data.gitlab_project.runner_token.runners_token
-  whitelist = [
+  ssh_cidr_ranges = [
     # Rocketmakers office
     "212.139.176.173",
   ]
