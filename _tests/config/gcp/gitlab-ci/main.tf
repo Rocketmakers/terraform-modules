@@ -3,7 +3,10 @@ module "gitlab_ci" {
 
   project_id                = "terraform-testing-317911"
   project_prefix            = "gitlab-ci-terratest"
-  cidr_ranges               = []
+  ssh_cidr_ranges = [
+    # Rocketmakers office
+    "212.139.176.173/32",
+  ]
   gcr_bucket_names          = []
   gcp_region                = "europe-west1"
   zones                     = ["europe-west1-c"]
