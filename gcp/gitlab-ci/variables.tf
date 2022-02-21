@@ -108,14 +108,14 @@ variable "zones" {
 variable "image_config" {
   type = object({
     project_name = string
-    image_name = string
+    image_name   = string
   })
 
   description = "The details of the OS image used in the instance"
 
   default = {
     project_name = "ubuntu-os-cloud"
-    image_name = "ubuntu-1804-bionic-v20190628"
+    image_name   = "ubuntu-1804-bionic-v20190628"
   }
 }
 
