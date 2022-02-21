@@ -22,7 +22,7 @@ locals {
 resource "google_service_account" "ci_account" {
   project      = var.project_id
   account_id   = "${var.project_prefix}-${var.name}-runner"
-  display_name = "Gitlab CI runner service account"
+  display_name = var.service_account_display_name
 }
 
 resource "google_project_iam_member" "ci_roles" {

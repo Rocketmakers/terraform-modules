@@ -153,3 +153,9 @@ variable "tags" {
   description = "List of tags to enable ssh access"
   default     = ["ci", "externalssh"]
 }
+
+variable "service_account_display_name" {
+  type        = string
+  description = "The display name of the service account"
+  default     = "Gitlab CI runner service account"
+}

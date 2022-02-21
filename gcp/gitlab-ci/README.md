@@ -46,6 +46,7 @@ Follow the GCR [Quickstart](https://cloud.google.com/container-registry/docs/qui
 | `instance_count` | The number of VM instances to create | number | 1 |
 | `machine_type` | Machine type of the vm | string | f1-micro |
 | `name` | Main name of resources created | string | ci |
+| `service_account_display_name` | The display name of the service account | string | Gitlab CI runner service account |
 | `service_account_roles` | The roles that should be assigned to the service account running the CI box | list(string) | ["roles/monitoring.metricWriter"] |
 | `service_account_scopes` | The scopes that should be supported by the CI service account | list(string) | ["storage-rw","monitoring-write"] |
 | `tags` | List of tags to enable ssh access | list(string) | ["ci","externalssh"] |
