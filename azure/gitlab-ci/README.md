@@ -12,6 +12,7 @@ Creates a CI runner for use within gitlab
 | `project_prefix` | Project name | string |
 | `resource_group` | Resource group | string |
 | `runner_registration_token` | The gitlab registration token that will be used to register the runner. | string |
+| `runner_tags` | List of tags for gitlab runner, used to allow the runner to be selected for jobs. | list(string) |
 | `ssh_cidr_ranges` | CIDR ranges allowed to access CI instances via ssh | list(string) |
 
 ## Optional Inputs
@@ -28,7 +29,6 @@ Creates a CI runner for use within gitlab
 | `network_subnet_address_prefixes` | The address prefixes of the CI boxes subnet. | list(string) | ["10.0.0.0/24"] |
 | `public_ip_allocation_method` | The allocation method for the public ip associated with the cluster | string | Static |
 | `public_ip_sku` | The sku for the public ip associated with the cluster | string | Standard |
-| `runner_tags` | List of tags for gitlab runner | list(string) | ["rocketmakers","docker"] |
 | `vm_size` | Size of VM to deploy | string | Standard_B2s |
 
 ## Outputs

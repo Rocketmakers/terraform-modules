@@ -10,7 +10,7 @@ module "shared_ci" {
   source                     = "../../shared/ci"
   names                      = tolist(azurerm_public_ip.ci[*].name)
   username                   = local.username
-  runner_tags                = local.runner_tags
+  runner_tags                = var.runner_tags
   gitlab_token               = var.runner_registration_token
   gitlab_runner_concurrency  = var.gitlab_runner_concurrency
   gitlab_runner_version      = var.gitlab_runner_version
@@ -192,6 +192,5 @@ resource "azurerm_role_assignment" "acr" {
 }
 
 locals {
-  runner_tags            = concat([var.project_prefix], var.runner_tags)
   username               = "app"
 }

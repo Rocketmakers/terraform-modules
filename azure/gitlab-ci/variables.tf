@@ -47,8 +47,7 @@ variable "runner_registration_token" {
 
 variable "runner_tags" {
   type        = list(string)
-  description = "List of tags for gitlab runner"
-  default     = ["rocketmakers", "docker"]
+  description = "List of tags for gitlab runner, used to allow the runner to be selected for jobs."
 }
 
 variable "vm_size" {
