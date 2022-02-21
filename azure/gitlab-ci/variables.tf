@@ -95,12 +95,13 @@ variable "primary_location" {
 }
 
 variable "image_config" {
-  type        = object({
+  type = object({
     publisher = string
     offer     = string
     sku       = string
     version   = string
   })
+
   description = "The details of the OS image used on the instance"
 
   default = {

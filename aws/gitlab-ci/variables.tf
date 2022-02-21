@@ -91,19 +91,19 @@ variable "availability_zones" {
 
 variable "image_config" {
   type = object({
-    owners = list(string)
-    filter_names = list(string)
+    owners                      = list(string)
+    filter_names                = list(string)
     filter_virtualization_types = list(string)
-    filter_root_device_types = list(string)
+    filter_root_device_types    = list(string)
   })
 
   description = "A set of filters used to determine the OS image used on the instance. The latest matching image will be used."
 
   default = {
-    owners = ["099720109477"] # Canonical - owner of Ubuntu image
-    filter_names = ["*ubuntu-bionic-18.04-amd64-server-*"]
+    owners                      = ["099720109477"] # Canonical - owner of Ubuntu image
+    filter_names                = ["*ubuntu-bionic-18.04-amd64-server-*"]
     filter_virtualization_types = ["hvm"]
-    filter_root_device_types = ["ebs"]
+    filter_root_device_types    = ["ebs"]
   }
 }
 
