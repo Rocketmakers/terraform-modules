@@ -16,6 +16,7 @@ variable "runner_tags" {
 variable "gitlab_token" {
   type        = string
   description = "Token used to register gitlab runner"
+  sensitive   = true
 }
 
 variable "gitlab_runner_concurrency" {
