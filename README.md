@@ -78,6 +78,8 @@ terraform init
 
 ## Running tests
 
+You will need to be on the VPN or in the Rocketmakers office.
+
 **Authentication to be reviewed and improved...**
 
 Get AWS keys from [internal-gitlab-runners/secrets/secrets.yaml](https://gitlab.com/rocketmakers/internal-gitlab-runners/-/blob/master/secrets/secrets.yaml)
