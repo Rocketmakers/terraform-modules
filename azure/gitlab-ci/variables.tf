@@ -77,10 +77,10 @@ variable "network_address_space" {
   ]
 }
 
-variable "network_subnet_address_prefix" {
-  type        = string
-  description = "The address prefix of the CI boxes subnet."
-  default     = "10.0.0.0/24"
+variable "network_subnet_address_prefixes" {
+  type        = list(string)
+  description = "The address prefixes of the CI boxes subnet."
+  default     = ["10.0.0.0/24"]
 }
 
 variable "gitlab_runner_concurrency" {
