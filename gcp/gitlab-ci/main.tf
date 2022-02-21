@@ -83,8 +83,8 @@ resource "google_compute_address" "ci_static_ip" {
 }
 
 data "google_compute_image" "ubuntu_image" {
-  project = var.image_project
-  name    = var.image_name
+  project = var.image_config.project_name
+  name    = var.image_config.image_name
 }
 
 resource "google_compute_instance" "ci_box" {

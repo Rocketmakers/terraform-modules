@@ -105,22 +105,24 @@ variable "zones" {
   description = "List of Google Cloud zones where instances should be placed (the zones will be used in a round-robin strategy when creating instances)"
 }
 
+variable "image_config" {
+  type = object({
+    project_name = string
+    image_name = string
+  })
+
+  description = "The details of the OS image used in the instance"
+
+  default = {
+    project_name = "ubuntu-os-cloud"
+    image_name = "ubuntu-1804-bionic-v20190628"
+  }
+}
+
 variable "machine_type" {
   type        = string
   description = "Machine type of the vm"
   default     = "f1-micro"
-}
-
-variable "image_project" {
-  type        = string
-  description = "Google image project to base CI on"
-  default     = "ubuntu-os-cloud"
-}
-
-variable "image_name" {
-  type        = string
-  description = "Google image name to base CI on"
-  default     = "ubuntu-1804-bionic-v20190628"
 }
 
 variable "disk_size" {
