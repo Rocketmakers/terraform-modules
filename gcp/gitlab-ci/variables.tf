@@ -50,12 +50,6 @@ variable "allow_stopping_for_update" {
   default     = true
 }
 
-variable "crontab_file" {
-  type        = string
-  description = "Name of crontab file"
-  default     = "/var/spool/cron/crontabs/ci"
-}
-
 variable "gitlab_runner_concurrency" {
   type        = number
   description = "The maximum number of jobs that the runner will run concurrently"
