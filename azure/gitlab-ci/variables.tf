@@ -1,27 +1,10 @@
+##############################################
+# Common between different gitlab-ci modules #
+##############################################
+
 variable "project_prefix" {
   type        = string
   description = "Project name"
-}
-
-variable "instance_count" {
-  type        = number
-  description = "The number of VM instances to create"
-  default     = 1
-}
-
-variable "resource_group" {
-  type        = string
-  description = "Resource group"
-}
-
-variable "container_registry_name" {
-  type        = string
-  description = "Container registry name to enable access to"
-}
-
-variable "primary_location" {
-  type        = string
-  description = "Main location to store everything (e.g. westeurope)"
 }
 
 variable "ssh_cidr_ranges" {
@@ -34,9 +17,9 @@ variable "ssh_cidr_ranges" {
   }
 }
 
-variable "key_vault_name" {
-  type        = string
-  description = "Azure key vault id that jobs on the runner will need to access."
+variable "runner_tags" {
+  type        = list(string)
+  description = "List of tags for gitlab runner, used to allow the runner to be selected for jobs."
 }
 
 variable "runner_registration_token" {
@@ -45,42 +28,9 @@ variable "runner_registration_token" {
   sensitive   = true
 }
 
-variable "runner_tags" {
-  type        = list(string)
-  description = "List of tags for gitlab runner, used to allow the runner to be selected for jobs."
-}
-
-variable "vm_size" {
-  type        = string
-  description = "Size of VM to deploy"
-  default     = "Standard_B2s"
-}
-
-variable "public_ip_allocation_method" {
-  type        = string
-  description = "The allocation method for the public ip associated with the cluster"
-  default     = "Static"
-}
-
-variable "public_ip_sku" {
-  type        = string
-  description = "The sku for the public ip associated with the cluster"
-  default     = "Standard"
-}
-
-variable "network_address_space" {
-  type        = list(string)
-  description = "The address space that is used the virtual network. You can supply more than one address space."
-  default = [
-    "10.0.0.0/16"
-  ]
-}
-
-variable "network_subnet_address_prefixes" {
-  type        = list(string)
-  description = "The address prefixes of the CI boxes subnet."
-  default     = ["10.0.0.0/24"]
-}
+#####################################################
+# Registration details (passed to shared/ci module) #
+#####################################################
 
 variable "gitlab_runner_concurrency" {
   type        = number
@@ -110,4 +60,70 @@ variable "docker_prune_cron_schedule" {
   type        = string
   description = "The schedule to use for pruning docker images to prevent disk space filling up. Default value is weekly on Sundays at 0400 UTC."
   default     = "0 4 * * 0"
+}
+
+####################
+# Instance details #
+####################
+
+variable "instance_count" {
+  type        = number
+  description = "The number of VM instances to create"
+  default     = 1
+}
+
+variable "resource_group" {
+  type        = string
+  description = "Resource group"
+}
+
+variable "primary_location" {
+  type        = string
+  description = "Main location to store everything (e.g. westeurope)"
+}
+
+variable "vm_size" {
+  type        = string
+  description = "Size of VM to deploy"
+  default     = "Standard_B2s"
+}
+
+###################
+# Other resources #
+###################
+
+variable "container_registry_name" {
+  type        = string
+  description = "Container registry name to enable access to"
+}
+
+variable "key_vault_name" {
+  type        = string
+  description = "Azure key vault id that jobs on the runner will need to access."
+}
+
+variable "public_ip_allocation_method" {
+  type        = string
+  description = "The allocation method for the public ip associated with the cluster"
+  default     = "Static"
+}
+
+variable "public_ip_sku" {
+  type        = string
+  description = "The sku for the public ip associated with the cluster"
+  default     = "Standard"
+}
+
+variable "network_address_space" {
+  type        = list(string)
+  description = "The address space that is used the virtual network. You can supply more than one address space."
+  default = [
+    "10.0.0.0/16"
+  ]
+}
+
+variable "network_subnet_address_prefixes" {
+  type        = list(string)
+  description = "The address prefixes of the CI boxes subnet."
+  default     = ["10.0.0.0/24"]
 }

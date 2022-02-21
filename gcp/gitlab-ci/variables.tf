@@ -1,14 +1,6 @@
-// Required
-
-variable "project_id" {
-  type        = string
-  description = "Google Cloud project ID where the runner instance and related resources will be created"
-}
-
-variable "gcr_bucket_names" {
-  type        = list(string)
-  description = "Names of google container registry buckets that the runner instance has permission to access e.g. [\"eu.artifacts.my-cool-project.appspot.com\"]"
-}
+##############################################
+# Common between different gitlab-ci modules #
+##############################################
 
 variable "project_prefix" {
   type        = string
@@ -20,70 +12,20 @@ variable "ssh_cidr_ranges" {
   description = "CIDR ranges allowed to access CI instances via ssh"
 }
 
+variable "runner_tags" {
+  type        = list(string)
+  description = "List of tags for gitlab runner, used to allow the runner to be selected for jobs."
+}
+
 variable "runner_registration_token" {
   type        = string
   description = "The gitlab registration token that will be used to register the runner."
   sensitive   = true
 }
 
-variable "gcp_region" {
-  type        = string
-  description = "The Google Cloud region where resources should be created"
-}
-
-variable "zones" {
-  type        = list(string)
-  description = "List of Google Cloud zones where instances should be placed (the zones will be used in a round-robin strategy when creating instances)"
-}
-
-variable "runner_tags" {
-  type        = list(string)
-  description = "List of tags for gitlab runner, used to allow the runner to be selected for jobs."
-}
-
-// Optional
-
-variable "instance_count" {
-  type        = number
-  description = "The number of VM instances to create"
-  default     = 1
-}
-
-variable "disable_compute_on_destroy" {
-  type = object({
-    disable_service            = bool
-    disable_dependent_services = bool
-  })
-  description = "Whether to disable GCP Compute engine and/or dependent services when the module is destroyed"
-  default = {
-    disable_service            = false
-    disable_dependent_services = false
-  }
-}
-
-variable "name" {
-  type        = string
-  description = "Main name of resources created"
-  default     = "ci"
-}
-
-variable "machine_type" {
-  type        = string
-  description = "Machine type of the vm"
-  default     = "f1-micro"
-}
-
-variable "image_project" {
-  type        = string
-  description = "Google image project to base CI on"
-  default     = "ubuntu-os-cloud"
-}
-
-variable "image_name" {
-  type        = string
-  description = "Google image name to base CI on"
-  default     = "ubuntu-1804-bionic-v20190628"
-}
+#####################################################
+# Registration details (passed to shared/ci module) #
+#####################################################
 
 variable "username" {
   type        = string
@@ -91,22 +33,10 @@ variable "username" {
   default     = "ci"
 }
 
-variable "tags" {
-  type        = list(string)
-  description = "List of tags to enable ssh access"
-  default     = ["ci", "externalssh"]
-}
-
 variable "allow_stopping_for_update" {
   type        = bool
   description = "Allow the instance to stop when being updated"
   default     = true
-}
-
-variable "disk_size" {
-  type        = number
-  description = "Size of disk in GB"
-  default     = 50
 }
 
 variable "crontab_file" {
@@ -145,6 +75,61 @@ variable "docker_prune_cron_schedule" {
   default     = "0 4 * * 0"
 }
 
+####################
+# Instance details #
+####################
+
+variable "instance_count" {
+  type        = number
+  description = "The number of VM instances to create"
+  default     = 1
+}
+
+variable "project_id" {
+  type        = string
+  description = "Google Cloud project ID where the runner instance and related resources will be created"
+}
+
+variable "gcp_region" {
+  type        = string
+  description = "The Google Cloud region where resources should be created"
+}
+
+variable "zones" {
+  type        = list(string)
+  description = "List of Google Cloud zones where instances should be placed (the zones will be used in a round-robin strategy when creating instances)"
+}
+
+variable "name" {
+  type        = string
+  description = "Main name of resources created"
+  default     = "ci"
+}
+
+variable "machine_type" {
+  type        = string
+  description = "Machine type of the vm"
+  default     = "f1-micro"
+}
+
+variable "image_project" {
+  type        = string
+  description = "Google image project to base CI on"
+  default     = "ubuntu-os-cloud"
+}
+
+variable "image_name" {
+  type        = string
+  description = "Google image name to base CI on"
+  default     = "ubuntu-1804-bionic-v20190628"
+}
+
+variable "disk_size" {
+  type        = number
+  description = "Size of disk in GB"
+  default     = 50
+}
+
 variable "service_account_roles" {
   type        = list(string)
   description = "The roles that should be assigned to the service account running the CI box"
@@ -155,4 +140,31 @@ variable "service_account_scopes" {
   type        = list(string)
   description = "The scopes that should be supported by the CI service account"
   default     = ["storage-rw", "monitoring-write"]
+}
+
+variable "gcr_bucket_names" {
+  type        = list(string)
+  description = "Names of google container registry buckets that the runner instance has permission to access e.g. [\"eu.artifacts.my-cool-project.appspot.com\"]"
+}
+
+variable "tags" {
+  type        = list(string)
+  description = "List of tags to enable ssh access"
+  default     = ["ci", "externalssh"]
+}
+
+###################
+# Other resources #
+###################
+
+variable "disable_compute_on_destroy" {
+  type = object({
+    disable_service            = bool
+    disable_dependent_services = bool
+  })
+  description = "Whether to disable GCP Compute engine and/or dependent services when the module is destroyed"
+  default = {
+    disable_service            = false
+    disable_dependent_services = false
+  }
 }
