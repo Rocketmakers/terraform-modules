@@ -38,7 +38,7 @@ data "aws_ami" "image" {
 
   filter {
     name   = "virtualization-type"
-    values = var.image_config.filter_root_device_types
+    values = var.image_config.filter_virtualization_types
   }
 
   filter {
