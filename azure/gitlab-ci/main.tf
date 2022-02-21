@@ -46,7 +46,7 @@ resource "azurerm_network_security_group" "ci" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefixes    = local.whitelist
+    source_address_prefixes    = var.ssh_cidr_ranges
     destination_address_prefix = "*"
   }
 }
@@ -192,7 +192,6 @@ resource "azurerm_role_assignment" "acr" {
 }
 
 locals {
-  whitelist              = var.whitelist
   runner_tags            = concat([var.project_prefix], var.runner_tags)
   username               = "app"
 }

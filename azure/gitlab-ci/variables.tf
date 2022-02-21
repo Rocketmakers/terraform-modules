@@ -24,13 +24,13 @@ variable "primary_location" {
   description = "Main location to store everything (e.g. westeurope)"
 }
 
-variable "whitelist" {
+variable "ssh_cidr_ranges" {
   type        = list(string)
-  description = "CIDR whitelist of entities allowed to access resource"
+  description = "CIDR ranges allowed to access CI instances via ssh"
 
   validation {
-    condition     = length(var.whitelist) > 0
-    error_message = "The whitelist must contain at least one CIDR."
+    condition     = length(var.ssh_cidr_ranges) > 0
+    error_message = "The ssh_cidr_ranges value must contain at least one CIDR."
   }
 }
 

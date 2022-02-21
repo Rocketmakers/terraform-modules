@@ -12,7 +12,7 @@ Creates a CI runner for use within gitlab
 | `project_prefix` | Project name | string |
 | `resource_group` | Resource group | string |
 | `runner_registration_token` | The gitlab registration token that will be used to register the runner. | string |
-| `whitelist` | CIDR whitelist of entities allowed to access resource | list(string) |
+| `ssh_cidr_ranges` | CIDR ranges allowed to access CI instances via ssh | list(string) |
 
 ## Optional Inputs
 
