@@ -59,7 +59,10 @@ export async function validateSubdirectories(parentDirectoryName: string, logger
       await Terraform.init(moduleDirectory.path);
 
       // Validate and parse the JSON result
-      const rawResult = await Shell.execOutput('terraform', ['validate', '-json'], { cwd: moduleDirectory.path });
+      const rawResult = await Shell.execOutput('terraform', ['validate', '-json'], {
+        cwd: moduleDirectory.path,
+        allowFail: true,
+      });
       const { valid, error_count, warning_count } = JSON.parse(rawResult) as ITerraformValidateResult;
       const failed = !valid || error_count > 0 || warning_count > 0;
 
