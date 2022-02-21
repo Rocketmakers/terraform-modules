@@ -1,8 +1,8 @@
 module "gitlab_ci" {
   source = "../../../../gcp/gitlab-ci"
 
-  project_id                = "terraform-testing-317911"
-  project_prefix            = "gitlab-ci-terratest"
+  project_id     = "terraform-testing-317911"
+  project_prefix = "gitlab-ci-terratest"
   ssh_cidr_ranges = [
     # Rocketmakers office
     "212.139.176.173/32",
