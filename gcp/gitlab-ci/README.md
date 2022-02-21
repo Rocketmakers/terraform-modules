@@ -36,7 +36,6 @@ Follow the GCR [Quickstart](https://cloud.google.com/container-registry/docs/qui
 | name    | description          | type   | default value   |
 | ------- | -------------------- | ------ | --------------- |
 | `allow_stopping_for_update` | Allow the instance to stop when being updated | bool | true |
-| `disable_compute_on_destroy` | Whether to disable GCP Compute engine and/or dependent services when the module is destroyed | object({<br />    disable_service            = bool<br />    disable_dependent_services = bool<br />  }) | {"disable_dependent_services":false,"disable_service":false} |
 | `disk_size` | Size of disk in GB | number | 50 |
 | `docker_prune_cron_schedule` | The schedule to use for pruning docker images to prevent disk space filling up. Default value is weekly on Sundays at 0400 UTC. | string | 0 4 * * 0 |
 | `gitlab_runner_concurrency` | The maximum number of jobs that the runner will run concurrently | number | 3 |

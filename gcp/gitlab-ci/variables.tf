@@ -153,19 +153,3 @@ variable "tags" {
   description = "List of tags to enable ssh access"
   default     = ["ci", "externalssh"]
 }
-
-###################
-# Other resources #
-###################
-
-variable "disable_compute_on_destroy" {
-  type = object({
-    disable_service            = bool
-    disable_dependent_services = bool
-  })
-  description = "Whether to disable GCP Compute engine and/or dependent services when the module is destroyed"
-  default = {
-    disable_service            = false
-    disable_dependent_services = false
-  }
-}

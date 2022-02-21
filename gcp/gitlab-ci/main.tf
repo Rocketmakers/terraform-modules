@@ -19,14 +19,6 @@ locals {
   ]
 }
 
-resource "google_project_service" "compute" {
-  project = var.project_id
-  service = "compute.googleapis.com"
-
-  disable_dependent_services = var.disable_compute_on_destroy.disable_dependent_services
-  disable_on_destroy         = var.disable_compute_on_destroy.disable_service
-}
-
 resource "google_service_account" "ci_account" {
   project      = var.project_id
   account_id   = "${var.project_prefix}-${var.name}-runner"
@@ -57,7 +49,7 @@ resource "tls_private_key" "ci_ssh" {
 resource "google_compute_network" "ci_network" {
   name                    = "${var.project_prefix}-${var.name}"
   auto_create_subnetworks = true
-  project                 = google_project_service.compute.project
+  project                 = var.project_id
 }
 
 resource "google_compute_firewall" "ci_firewall" {
