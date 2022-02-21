@@ -10,6 +10,11 @@ variable "project_prefix" {
 variable "ssh_cidr_ranges" {
   type        = list(string)
   description = "CIDR ranges allowed to access CI instances via ssh"
+
+  validation {
+    condition     = length(var.ssh_cidr_ranges) > 0
+    error_message = "The ssh_cidr_ranges value must contain at least one CIDR."
+  }
 }
 
 variable "runner_tags" {
