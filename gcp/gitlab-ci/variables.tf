@@ -15,9 +15,9 @@ variable "project_prefix" {
   description = "A prefix given to resource names related to the runner instance"
 }
 
-variable "cidr_ranges" {
+variable "ssh_cidr_ranges" {
   type        = list(string)
-  description = "CIDR ranges allowed to access the runner instance"
+  description = "CIDR ranges allowed to access CI instances via ssh"
 }
 
 variable "runner_registration_token" {

@@ -71,7 +71,7 @@ resource "google_compute_firewall" "ci_firewall" {
     ports    = ["22"]
   }
 
-  source_ranges = var.cidr_ranges
+  source_ranges = var.ssh_cidr_ranges
   target_tags   = var.tags
 }
 
