@@ -41,7 +41,7 @@ variable "name" {
 variable "username" {
   type        = string
   description = "Username for CI box"
-  default     = "ubuntu"
+  default     = "ci"
 }
 
 variable "gitlab_runner_concurrency" {
