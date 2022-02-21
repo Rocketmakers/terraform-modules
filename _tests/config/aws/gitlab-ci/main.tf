@@ -2,7 +2,7 @@ module "gitlab_ci" {
   source = "../../../../aws/gitlab-ci"
 
   availability_zones = ["a", "b"]
-  cidr_ranges = [
+  ssh_cidr_ranges = [
     # Rocketmakers office
     "212.139.176.173/32",
   ]
