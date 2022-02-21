@@ -4,7 +4,7 @@
 
 variable "project_prefix" {
   type        = string
-  description = "Project prefix"
+  description = "A prefix given to resource names related to the runner instance"
 }
 
 variable "ssh_cidr_ranges" {

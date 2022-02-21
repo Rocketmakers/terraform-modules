@@ -7,7 +7,7 @@ Creates an EC2 instance in a VPC and configures the instance as a gitlab runner.
 | name    | description          | type   |
 | ------- | -------------------- | ------ |
 | `availability_zones` | The availability zones that the instance should be created in | list(string) |
-| `project_prefix` | Project prefix | string |
+| `project_prefix` | A prefix given to resource names related to the runner instance | string |
 | `runner_registration_token` | The gitlab registration token that will be used to register the runner. | string |
 | `runner_tags` | List of tags for gitlab runner, used to allow the runner to be selected for jobs. | list(string) |
 | `ssh_cidr_ranges` | CIDR ranges allowed to access CI instances via ssh | list(string) |
