@@ -25,7 +25,7 @@ Creates a CI runner for use within gitlab
 | `gitlab_runner_version` | The version of gitlab-runner to install (see https://docs.gitlab.com/runner/install/bleeding-edge.html#download-any-other-tagged-release) | string | latest |
 | `instance_count` | The number of VM instances to create | number | 1 |
 | `network_address_space` | The address space that is used the virtual network. You can supply more than one address space. | list(string) | ["10.0.0.0/16"] |
-| `network_subnet_address_prefix` | The address prefix of the CI boxes subnet. | string | 10.0.0.0/24 |
+| `network_subnet_address_prefixes` | The address prefixes of the CI boxes subnet. | list(string) | ["10.0.0.0/24"] |
 | `public_ip_allocation_method` | The allocation method for the public ip associated with the cluster | string | Static |
 | `public_ip_sku` | The sku for the public ip associated with the cluster | string | Standard |
 | `runner_tags` | List of tags for gitlab runner | list(string) | ["rocketmakers","docker"] |

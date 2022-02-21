@@ -30,7 +30,7 @@ resource "azurerm_subnet" "ci" {
   name                 = "${data.azurerm_resource_group.core.name}-subnet"
   resource_group_name  = data.azurerm_resource_group.core.name
   virtual_network_name = azurerm_virtual_network.ci.name
-  address_prefix       = var.network_subnet_address_prefix
+  address_prefixes     = var.network_subnet_address_prefixes
 }
 
 resource "azurerm_network_security_group" "ci" {
