@@ -89,16 +89,22 @@ variable "availability_zones" {
   description = "The availability zones that the instance should be created in"
 }
 
-variable "image_owners" {
-  type        = list(string)
-  description = "List of image owners to filter on"
-  default     = ["099720109477"] # Canonical - owner of Ubuntu image
-}
+variable "image_config" {
+  type = object({
+    owners = list(string)
+    filter_names = list(string)
+    filter_virtualization_types = list(string)
+    filter_root_device_types = list(string)
+  })
 
-variable "image_names" {
-  type        = list(string)
-  description = "List of image names to filter on"
-  default     = ["*ubuntu-bionic-18.04-amd64-server-*"]
+  description = "A set of filters used to determine the OS image used on the instance. The latest matching image will be used."
+
+  default = {
+    owners = ["099720109477"] # Canonical - owner of Ubuntu image
+    filter_names = ["*ubuntu-bionic-18.04-amd64-server-*"]
+    filter_virtualization_types = ["hvm"]
+    filter_root_device_types = ["ebs"]
+  }
 }
 
 variable "tags" {

@@ -33,20 +33,20 @@ data "aws_ami" "image" {
 
   filter {
     name   = "name"
-    values = var.image_names
+    values = var.image_config.filter_names
   }
 
   filter {
     name   = "virtualization-type"
-    values = ["hvm"]
+    values = var.image_config.filter_root_device_types
   }
 
   filter {
     name   = "root-device-type"
-    values = ["ebs"]
+    values = var.image_config.filter_root_device_types
   }
 
-  owners = var.image_owners
+  owners = var.image_config.owners
 }
 
 resource "aws_instance" "ci" {
