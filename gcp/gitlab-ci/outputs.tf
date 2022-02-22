@@ -6,6 +6,7 @@ output "username" {
 output "private_key" {
   description = "Private SSH key"
   value       = tls_private_key.ci_ssh.private_key_pem
+  sensitive   = true
 }
 
 output "public_key" {
@@ -13,12 +14,12 @@ output "public_key" {
   value       = tls_private_key.ci_ssh.public_key_openssh
 }
 
-output "addresses" {
+output "ip_addresses" {
   description = "Static IP address of each instance"
   value       = google_compute_address.ci_static_ip.*.address
 }
 
-output "internal_addresses" {
+output "internal_ip_addresses" {
   description = "Internal network IP address of each instance"
   value = [
     for instance in google_compute_instance.ci_box :

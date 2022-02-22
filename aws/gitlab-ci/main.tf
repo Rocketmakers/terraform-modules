@@ -7,7 +7,7 @@ locals {
 module "shared_ci" {
   source                     = "../../shared/ci"
   names                      = local.names
-  username                   = var.username
+  username                   = var.image_config.default_username
   runner_tags                = var.runner_tags
   gitlab_token               = var.runner_registration_token
   gitlab_runner_concurrency  = var.gitlab_runner_concurrency
@@ -33,20 +33,20 @@ data "aws_ami" "image" {
 
   filter {
     name   = "name"
-    values = var.image_names
+    values = var.image_config.filter_names
   }
 
   filter {
     name   = "virtualization-type"
-    values = ["hvm"]
+    values = var.image_config.filter_virtualization_types
   }
 
   filter {
     name   = "root-device-type"
-    values = ["ebs"]
+    values = var.image_config.filter_root_device_types
   }
 
-  owners = var.image_owners
+  owners = var.image_config.owners
 }
 
 resource "aws_instance" "ci" {
@@ -69,7 +69,7 @@ resource "aws_instance" "ci" {
   provisioner "remote-exec" {
     connection {
       type        = "ssh"
-      user        = var.username
+      user        = var.image_config.default_username
       timeout     = "500s"
       private_key = tls_private_key.ci_ssh.private_key_pem
       host        = aws_eip.ci[count.index].public_ip
@@ -107,7 +107,7 @@ resource "aws_security_group" "ci" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = var.cidr_ranges
+    cidr_blocks = var.ssh_cidr_ranges
   }
 
   egress {

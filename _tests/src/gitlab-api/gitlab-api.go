@@ -91,4 +91,20 @@ func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
 			fmt.Println(err)
 		}
 	}
+
+	fmt.Println("Verifying outputs...")
+	username := terraform.Output(t, terraformOptions, "username")
+	assert.NotNil(t, username)
+
+	private_key := terraform.Output(t, terraformOptions, "private_key")
+	assert.NotNil(t, private_key)
+
+	public_key := terraform.Output(t, terraformOptions, "public_key")
+	assert.NotNil(t, public_key)
+
+	ip_addresses := terraform.Output(t, terraformOptions, "ip_addresses")
+	assert.NotNil(t, ip_addresses)
+
+	internal_ip_addresses := terraform.Output(t, terraformOptions, "internal_ip_addresses")
+	assert.NotNil(t, internal_ip_addresses)
 }

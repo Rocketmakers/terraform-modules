@@ -9,8 +9,8 @@ data "azurerm_resource_group" "core" {
 module "shared_ci" {
   source                     = "../../shared/ci"
   names                      = tolist(azurerm_public_ip.ci[*].name)
-  username                   = local.username
-  runner_tags                = local.runner_tags
+  username                   = var.username
+  runner_tags                = var.runner_tags
   gitlab_token               = var.runner_registration_token
   gitlab_runner_concurrency  = var.gitlab_runner_concurrency
   gitlab_runner_version      = var.gitlab_runner_version
@@ -46,7 +46,7 @@ resource "azurerm_network_security_group" "ci" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefixes    = local.whitelist
+    source_address_prefixes    = var.ssh_cidr_ranges
     destination_address_prefix = "*"
   }
 }
@@ -58,7 +58,7 @@ resource "azurerm_subnet_network_security_group_association" "ci" {
 
 resource "azurerm_public_ip" "ci" {
   count               = var.instance_count
-  name                = "${data.azurerm_resource_group.core.name}-ci-${count.index + 1}"
+  name                = "${data.azurerm_resource_group.core.name}-${var.name}-${count.index + 1}"
   resource_group_name = data.azurerm_resource_group.core.name
   location            = azurerm_network_security_group.ci.location
   allocation_method   = var.public_ip_allocation_method
@@ -67,7 +67,7 @@ resource "azurerm_public_ip" "ci" {
 
 resource "azurerm_network_interface" "ci" {
   count               = var.instance_count
-  name                = "${data.azurerm_resource_group.core.name}-nic-${count.index + 1}"
+  name                = "${data.azurerm_resource_group.core.name}-${var.name}-nic-${count.index + 1}"
   resource_group_name = azurerm_subnet.ci.resource_group_name
   location            = azurerm_public_ip.ci[count.index].location
 
@@ -91,17 +91,17 @@ data "azurerm_key_vault" "core" {
 
 resource "azurerm_virtual_machine" "ci_box" {
   count                 = var.instance_count
-  name                  = "${var.project_name}-ci-vm-${count.index + 1}"
+  name                  = "${var.project_prefix}-${var.name}-vm-${count.index + 1}"
   resource_group_name   = data.azurerm_resource_group.core.name
   location              = azurerm_network_interface.ci[count.index].location
   network_interface_ids = [azurerm_network_interface.ci[count.index].id]
   vm_size               = var.vm_size
 
   storage_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
+    publisher = var.image_config.publisher
+    offer     = var.image_config.offer
+    sku       = var.image_config.sku
+    version   = var.image_config.version
   }
 
   # If we don't do this and we destroy our CI box, then we'll be unable to recreate it as the disk will
@@ -109,22 +109,23 @@ resource "azurerm_virtual_machine" "ci_box" {
   delete_os_disk_on_termination = true
 
   storage_os_disk {
-    name              = "${var.project_name}-ci-${count.index + 1}"
+    name              = "${var.project_prefix}-${var.name}-${count.index + 1}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
+    disk_size_gb      = var.disk_size
   }
 
   os_profile {
-    computer_name  = "${var.project_name}-ci-${count.index + 1}"
-    admin_username = local.username
+    computer_name  = "${var.project_prefix}-${var.name}-${count.index + 1}"
+    admin_username = var.username
   }
 
   os_profile_linux_config {
     disable_password_authentication = true
 
     ssh_keys {
-      path     = "/home/app/.ssh/authorized_keys"
+      path     = "/home/${var.username}/.ssh/authorized_keys"
       key_data = tls_private_key.ci_ssh.public_key_openssh
     }
   }
@@ -136,7 +137,7 @@ resource "azurerm_virtual_machine" "ci_box" {
   provisioner "remote-exec" {
     connection {
       type        = "ssh"
-      user        = local.username
+      user        = var.username
       timeout     = "500s"
       private_key = tls_private_key.ci_ssh.private_key_pem
       host        = azurerm_public_ip.ci[count.index].ip_address
@@ -189,11 +190,4 @@ resource "azurerm_role_assignment" "acr" {
   scope                = data.azurerm_container_registry.core.id
   role_definition_name = "AcrPush"
   principal_id         = azurerm_virtual_machine.ci_box[count.index].identity[0].principal_id
-}
-
-locals {
-  sanitised_project_name = replace(var.project_name, "/-/", "")
-  whitelist              = var.whitelist
-  runner_tags            = concat([var.project_name], var.runner_tags)
-  username               = "app"
 }

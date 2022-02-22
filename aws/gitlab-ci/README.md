@@ -7,10 +7,10 @@ Creates an EC2 instance in a VPC and configures the instance as a gitlab runner.
 | name    | description          | type   |
 | ------- | -------------------- | ------ |
 | `availability_zones` | The availability zones that the instance should be created in | list(string) |
-| `cidr_ranges` | CIDR ranges allowed to access CI | list(string) |
-| `project_prefix` | Project prefix | string |
+| `project_prefix` | A prefix given to resource names related to the runner instance | string |
 | `runner_registration_token` | The gitlab registration token that will be used to register the runner. | string |
-| `runner_tags` | List of tags for gitlab runner (no tags will be added by default) | list(string) |
+| `runner_tags` | List of tags for gitlab runner, used to allow the runner to be selected for jobs. | list(string) |
+| `ssh_cidr_ranges` | CIDR ranges allowed to access CI instances via ssh | list(string) |
 
 ## Optional Inputs
 
@@ -22,20 +22,18 @@ Creates an EC2 instance in a VPC and configures the instance as a gitlab runner.
 | `gitlab_runner_docker_image` | The value passed to --docker-image when registering the runner (see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker) | string | docker:stable |
 | `gitlab_runner_locked` | Setting true will limit the runner to the project that provided the registration token. Setting false will allow other projects to enable the runner. | bool | true |
 | `gitlab_runner_version` | The version of gitlab-runner to install (see https://docs.gitlab.com/runner/install/bleeding-edge.html#download-any-other-tagged-release) | string | latest |
-| `image_names` | List of image names to filter on | list(string) | ["*ubuntu-bionic-18.04-amd64-server-*"] |
-| `image_owners` | List of image owners to filter on | list(string) | ["099720109477"] |
+| `image_config` | A set of filters used to determine the OS image used on the instance. The latest matching image will be used. The default_username needs to be correct for the image that is resolved by the given filters. | object({<br />    owners                      = list(string)<br />    filter_names                = list(string)<br />    filter_virtualization_types = list(string)<br />    filter_root_device_types    = list(string)<br />    default_username            = string<br />  }) | {"default_username":"ubuntu","filter_names":["*ubuntu-bionic-18.04-amd64-server-*"],"filter_root_device_types":["ebs"],"filter_virtualization_types":["hvm"],"owners":["099720109477"]} |
 | `instance_count` | The number of VM instances to create | number | 1 |
 | `instance_type` | Instance type of the vm | string | t2.micro |
 | `name` | Main name of resources created | string | ci |
 | `tags` | Tags for aws resources | map(any) | {} |
-| `username` | Username for CI box | string | ubuntu |
 
 ## Outputs
 
 | name      | description                 |
 | --------- | --------------------------- |
-| `addresses` | CI static IP addresses |
-| `internal_addresses` | CI box network IP addresses |
+| `internal_ip_addresses` | CI box network IP addresses |
+| `ip_addresses` | CI static IP addresses |
 | `private_key` | Private SSH key |
 | `public_key` | Public SSH key |
 | `username` | Username for CI box |
