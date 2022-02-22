@@ -13,12 +13,12 @@ output "public_key" {
   value       = tls_private_key.ci_ssh.public_key_openssh
 }
 
-output "addresses" {
+output "ip_addresses" {
   description = "CI static IP addresses"
   value       = aws_eip.ci[*].public_ip
 }
 
-output "internal_addresses" {
+output "internal_ip_addresses" {
   description = "CI box network IP addresses"
   value       = aws_eip.ci[*].private_ip
 }
