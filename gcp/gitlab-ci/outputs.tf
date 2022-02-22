@@ -6,6 +6,7 @@ output "username" {
 output "private_key" {
   description = "Private SSH key"
   value       = tls_private_key.ci_ssh.private_key_pem
+  sensitive   = true
 }
 
 output "public_key" {
