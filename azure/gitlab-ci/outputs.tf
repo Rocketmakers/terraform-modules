@@ -6,6 +6,7 @@ output "username" {
 output "private_key" {
   description = "CI Box private key - used for SSH"
   value       = tls_private_key.ci_ssh.private_key_pem
+  sensitive   = true
 }
 
 output "public_key" {
@@ -16,4 +17,11 @@ output "public_key" {
 output "ip_addresses" {
   description = "CI Box public IP address"
   value       = azurerm_public_ip.ci[*].ip_address
+}
+
+output "internal_ip_addresses" {
+  description = "Internal network IP address of each instance"
+  value = [
+    for instance in azurerm_network_interface.ci : instance.private_ip_address
+  ]
 }

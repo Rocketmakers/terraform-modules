@@ -40,6 +40,7 @@ Creates a CI runner for use within gitlab
 | name      | description                 |
 | --------- | --------------------------- |
 | `ip_addresses` | CI Box public IP address |
+| `private_ip_addresses` | Internal network IP address of each instance |
 | `private_key` | CI Box private key - used for SSH |
 | `public_key` | Public SSH key |
 | `username` | Username for CI box |
