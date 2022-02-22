@@ -1,25 +1,25 @@
 output "username" {
   description = "Username for CI box"
-  value       = var.image_config.default_username
+  value       = module.gitlab_ci.username
 }
 
 output "private_key" {
   description = "Private SSH key"
-  value       = tls_private_key.ci_ssh.private_key_pem
+  value       = module.gitlab_ci.private_key
   sensitive   = true
 }
 
 output "public_key" {
   description = "Public SSH key"
-  value       = tls_private_key.ci_ssh.public_key_openssh
+  value       = module.gitlab_ci.public_key
 }
 
 output "ip_addresses" {
   description = "CI static IP addresses"
-  value       = aws_eip.ci[*].public_ip
+  value       = module.gitlab_ci.ip_addresses
 }
 
 output "internal_ip_addresses" {
   description = "CI box network IP addresses"
-  value       = aws_eip.ci[*].private_ip
+  value       = module.gitlab_ci.internal_ip_addresses
 }
