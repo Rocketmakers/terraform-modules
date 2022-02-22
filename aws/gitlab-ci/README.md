@@ -33,8 +33,8 @@ Creates an EC2 instance in a VPC and configures the instance as a gitlab runner.
 
 | name      | description                 |
 | --------- | --------------------------- |
-| `addresses` | CI static IP addresses |
-| `internal_addresses` | CI box network IP addresses |
+| `internal_ip_addresses` | CI box network IP addresses |
+| `ip_addresses` | CI static IP addresses |
 | `private_key` | Private SSH key |
 | `public_key` | Public SSH key |
 | `username` | Username for CI box |

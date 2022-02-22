@@ -56,8 +56,8 @@ Follow the GCR [Quickstart](https://cloud.google.com/container-registry/docs/qui
 
 | name      | description                 |
 | --------- | --------------------------- |
-| `addresses` | Static IP address of each instance |
-| `internal_addresses` | Internal network IP address of each instance |
+| `internal_ip_addresses` | Internal network IP address of each instance |
+| `ip_addresses` | Static IP address of each instance |
 | `private_key` | Private SSH key |
 | `public_key` | Public SSH key |
 | `username` | Username for CI box |
