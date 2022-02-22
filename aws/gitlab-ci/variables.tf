@@ -38,12 +38,6 @@ variable "name" {
 # Registration details (passed to shared/ci module) #
 #####################################################
 
-variable "username" {
-  type        = string
-  description = "Username for CI box"
-  default     = "ci"
-}
-
 variable "gitlab_runner_concurrency" {
   type        = number
   description = "The maximum number of jobs that the runner will run concurrently"
@@ -95,15 +89,17 @@ variable "image_config" {
     filter_names                = list(string)
     filter_virtualization_types = list(string)
     filter_root_device_types    = list(string)
+    default_username            = string
   })
 
-  description = "A set of filters used to determine the OS image used on the instance. The latest matching image will be used."
+  description = "A set of filters used to determine the OS image used on the instance. The latest matching image will be used. The default_username needs to be correct for the image that is resolved by the given filters."
 
   default = {
     owners                      = ["099720109477"] # Canonical - owner of Ubuntu image
     filter_names                = ["*ubuntu-bionic-18.04-amd64-server-*"]
     filter_virtualization_types = ["hvm"]
     filter_root_device_types    = ["ebs"]
+    default_username            = "ubuntu"
   }
 }
 

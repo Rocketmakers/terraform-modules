@@ -1,6 +1,6 @@
 output "username" {
   description = "Username for CI box"
-  value       = var.username
+  value       = var.image_config.default_username
 }
 
 output "private_key" {

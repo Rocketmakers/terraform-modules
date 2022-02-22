@@ -7,7 +7,7 @@ locals {
 module "shared_ci" {
   source                     = "../../shared/ci"
   names                      = local.names
-  username                   = var.username
+  username                   = var.image_config.default_username
   runner_tags                = var.runner_tags
   gitlab_token               = var.runner_registration_token
   gitlab_runner_concurrency  = var.gitlab_runner_concurrency
@@ -69,7 +69,7 @@ resource "aws_instance" "ci" {
   provisioner "remote-exec" {
     connection {
       type        = "ssh"
-      user        = var.username
+      user        = var.image_config.default_username
       timeout     = "500s"
       private_key = tls_private_key.ci_ssh.private_key_pem
       host        = aws_eip.ci[count.index].public_ip
