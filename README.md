@@ -1,5 +1,9 @@
 # Terraform rocketmakers modules
 
+This is a set of terraform modules that can be used in other projects to help speed up management of infrastructure via terraform.
+
+- [Contributing Guide](./CONTRIBUTING.md)
+
 ## What makes a good shared module?
 
 ### A good shared module should
@@ -37,123 +41,6 @@
     - ingress
     - monitoring
   - Cloud functions (or similar) are another fuzzy exception where we may want to use terraform to configure the cloud function but then use other tools to subsequently update the code associated with a function
-
-## Available modules
-
-### AWS
-
-- gitlab-ci
-
-### Azure
-
-- gitlab-ci
-
-### GCP
-
-- gitlab-ci
-
-## Local development of modules
-
-### Getting started
-
-We use `asdf` to manage the terraform version. See [Notion](https://www.notion.so/Managing-CLI-tool-versions-asdf-386a27d8e9e54c44ab3624bf0de6ff09) for a guide on how to install it.
-
-You can test any of these modules by using a **relative path** to the module directory (absolute path will not work) as the `source` in your terraform project, like this:
-
-```terraform
-module ci_box {
-  # Remember not to commit this relative path to your project - it's just for local development 🤓
-  source = "../../../../../terraform-modules/gcp/ci-box"
-  ...
-}
-```
-
-If you have any issues then try removing the `.terraform` directory and re-initializing in both your project and in this repo:
-
-```bash
-# In your project and in the module of this repository that you're referencing
-rm -rf .terraform
-terraform init
-```
-
-## Running tests
-
-You will need to be on the VPN or in the Rocketmakers office.
-
-**Authentication to be reviewed and improved...**
-
-Get AWS keys from [internal-gitlab-runners/secrets/secrets.yaml](https://gitlab.com/rocketmakers/internal-gitlab-runners/-/blob/master/secrets/secrets.yaml)
-
-```bash
-# For all tests
-export GITLAB_TOKEN=_token_with_api_access_
-
-# aws
-export AWS_SECRET_ACCESS_KEY=_key_
-export AWS_ACCESS_KEY_ID=_access_key_
-make test TERRATEST_DIR=aws/gitlab-ci
-
-# azure (you'll need to be added to a group first)
-az login
-make test TERRATEST_DIR=azure/gitlab-ci
-
-# gcp
-gcloud auth application-default login
-make test TERRATEST_DIR=gcp/gitlab-ci
-```
-
-## Documentation
-
-We use [terraform-docs](https://github.com/terraform-docs/terraform-docs) along with custom scripts to help generate our module documentation. This will need to be installed using the following
-
-```
-brew install terraform-docs
-```
-
-You can then generate documentation using `make generate-docs` at the root.
-
-## Release process
-
-This relies on the following tools:
-
-- `commitizen`: Enforcing commit message conventions
-- `cz-conventional-changelog`: Maintaining a changelog based on commit message conventions
-
-### Install commitizen dependencies
-
-```bash
-npm i
-```
-
-### Pull the latest master
-
-```bash
-git checkout master
-git pull
-```
-
-### Decide on the NEW_VERSION_CODE
-
-```
-# Format
-export NEW_VERSION_CODE=<major>.<minor>.<patch>
-```
-
-### Create a release
-
-```bash
-# Bump the version number - this will also update the changelog thanks to a "postversion" npm script
-npm version $NEW_VERSION_CODE
-
-# Commit the version bump and changelog (commitizen will step in again here)
-git add -A
-git commit -m ""
-git push origin master
-
-# Tag and push the release
-git tag v$NEW_VERSION_CODE
-git push --tags
-```
 
 ## Consuming the modules
 

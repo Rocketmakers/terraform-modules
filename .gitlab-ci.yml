@@ -1,12 +1,13 @@
 variables:
-  PROJECT_NAME: terraform-modules
   LOG_LEVEL: info
+  NO_SCRIPTS: 'true'
 
   # Required to validate and test the gitlab modules
   GITLAB_TOKEN: $GITLAB_ACCESS_TOKEN
 
 stages:
   - analysis
+  - release
   - notify
 
 .base-rules:
@@ -38,7 +39,7 @@ stages:
     when: runner_system_failure
   image: rocketmakers/ci-terraform-gcp:3.2.0
   before_script:
-    - make install-node-modules
+    - make install
   rules:
     - *ignore-mr-duplicate-pipeline
     - *ignore-mr-reminder
@@ -69,6 +70,34 @@ docs:
   script:
     - make generate-docs
     - git diff HEAD --exit-code
+
+#############
+## Release ##
+#############
+
+release:create-tag:
+  extends:
+    - .defaults
+  stage: release
+  script:
+    - npx rocketmakers-tag --log=trace --pkgJsonPath=./package.json
+  rules:
+    - *ignore-mr-reminder
+    - if: "$CI_COMMIT_BRANCH && $CI_COMMIT_TITLE =~ /Merge branch 'release\\/[0-9\\.a-zA-Z]+' into 'master'/"
+
+notify:release:
+  stage: notify
+  image: rocketmakers/rm-slack:v0.1.3
+  extends:
+    - .internal-runner
+  variables:
+    ENV: production
+    SLACK_WEBHOOK_URL: $SLACK_WEBHOOK_URL_PLATFORM
+  script:
+    - 'cd /slack && npm run success -- -e=$ENV -v=$CI_COMMIT_TAG -m="A new version of rocketmakers terraform modules has been released. See the changelog for details: https://gitlab.com/rocketmakers/infrastructure/terraform-modules/-/blob/$CI_COMMIT_TAG/CHANGELOG.md'
+  rules:
+    - *only-on-tags
+    - *ignore-mr-reminder
 
 ############################
 ## Merge Request Reminder ##

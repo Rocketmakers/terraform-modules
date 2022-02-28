@@ -101,6 +101,8 @@ const czCustomizable = {
     { name: 'gcp-gitlab-ci' },
     { name: 'shared-ci' },
     { name: 'terratest' },
+    { name: 'config' },
+    { name: 'scripts' },
   ],
 };
 
