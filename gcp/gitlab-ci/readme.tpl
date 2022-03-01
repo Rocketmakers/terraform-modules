@@ -1,16 +1,16 @@
 # gitlab-ci
 
-This module creates one or more VMs acting as gitlab-runners. Each runner will use the `--executor docker` and uses [Docker socket binding](https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-socket-binding) to enable docker-in-docker (dind).
+This module creates one or more VMs within GCP acting as gitlab-runners. Each runner will use the `--executor docker` and uses [Docker socket binding](https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-socket-binding) to enable docker-in-docker (dind).
 
 ## Accessing a private Google Container Registry (GCR)
 
-If your CI needs to push images to a private GCR then you need to provide the name of the bucket in the `gcr-bucket-names` variable:
+If your CI needs to push images to a private GCR then you need to provide the name of the bucket in the `gcr_bucket_names` variable:
 
 ```terraform
-gcr-bucket-names = ["eu.artifacts.my-cool-project.appspot.com"]
+gcr_bucket_names = ["eu.artifacts.my-cool-project.appspot.com"]
 ```
 
-If you don't need to push to a private GCR then you can leave `gcr-bucket-names` empty (this is the default).
+If you don't need to push to a private GCR then you can leave `gcr_bucket_names` empty.
 
 ### ⚠️ Use on a fresh project ⚠️
 
@@ -23,15 +23,16 @@ Follow the GCR [Quickstart](https://cloud.google.com/container-registry/docs/qui
 ## Example Use Cases
 
 ```
-module ci_box {
+module "ci_box" {
   source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/ci-box?ref=v1.0.0"
 
   instance_count             = var.instance_count
+  gcp_region                 = var.gcp_region
   zones                      = var.zones
   project_id                 = var.project_id
   gcr_bucket_names           = var.gcr_bucket_names
   project_prefix             = var.project_prefix
-  cidr_ranges                = module.trusted_ips.cidrs
+  ssh_cidr_ranges            = var.trusted_ips
   runner_registration_token  = var.runner_registration_token
   machine_type               = var.machine_type
   runner_tags                = var.runner_tags
