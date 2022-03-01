@@ -1,6 +1,6 @@
 # aws gitlab-ci
 
-Creates an EC2 instance in a VPC and configures the instance as a gitlab runner.
+This module creates one or more VMs within AWS acting as gitlab-runners. Each runner will use the `--executor docker` and uses [Docker socket binding](https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-socket-binding) to enable docker-in-docker (dind).
 
 ## Required Inputs
 
@@ -64,17 +64,12 @@ These are the providers used by the module.
 module ci-box {
   source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//aws/gitlab-ci"
 
-  availability_zone          = var.availability_zone
-  encrypted_gitlab_token     = var.encrypted_gitlab_token
-  instance_type              = var.instance_type
+  availability_zones         = var.availability_zone
   project_prefix             = local.project_prefix
-  cidr_ranges                = local.cidr_ranges
+  runner_registration_token  = var.runner_registration_token
   runner_tags                = var.runner_tags
-  gitlab_runner_version      = var.gitlab_runner_version
-  gitlab_runner_concurrency  = var.runner_concurrency
-  gitlab_runner_docker_image = var.runner_docker_image
-  gitlab_runner_locked       = var.runner_locked
-  docker_prune_cron_schedule = var.docker_prune_cron_schedule
+  ssh_cidr_ranges            = var.ssh_cidr_ranges
+  instance_type              = var.instance_type
 }
 ```
 
@@ -93,14 +88,3 @@ terraform taint <resource_in_state>
 ```
 
 Then, reapply the terraform and the resource (and any dependencies) will be rebuilt.
-
-### Encrypting the gitlab token using AWS KMS
-
-To use the aws kms, you will need to [configure the credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
-
-Run the below commands replacing ${TOKEN} and ${key-id} to generate the encrypted token to use with this module.
-```bash
-echo -n '${TOKEN}' > plaintext-token
-aws kms encrypt --key-id ${key-id} --plaintext fileb://plaintext-token --encryption-context usage=gitlab-token --output text --query CiphertextBlob
-rm plaintext-token
-```
