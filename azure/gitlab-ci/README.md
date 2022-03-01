@@ -81,3 +81,19 @@ module ci {
   ssh_cidr_ranges           = var.ssh_cidr_ranges
 }
 ```
+
+### Rebuilding CI box
+
+Terraform has a concept of tainting resources to force a rebuild. If there is a problem with our CI box, we can `taint` it to force a rebuild. To do this, firstly identify the resource to taint by running the following command in the folder that contains your terraform state:
+
+```bash
+terraform state list
+```
+
+Pick the resource you want to taint (most likely `module.ci_box.aws_instance.ci`):
+
+```bash
+terraform taint <resource_in_state>
+```
+
+Then, reapply the terraform and the resource (and any dependencies) will be rebuilt.
