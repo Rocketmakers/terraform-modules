@@ -1,6 +1,6 @@
 # shared ci
 
-Returns the string list for provisioning a ci-box
+Returns the string list for provisioning a gitlab runner. This module is intended for use within one of the cloud specific `gitlab-ci` modules although it could be used to provision any linux machine as a gitlab runner.
 
 ## Required Inputs
 
@@ -30,13 +30,16 @@ Returns the string list for provisioning a ci-box
 
 ```
 module shared-ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//shared/ci"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//shared/ci?ref=v0.0.1"
 
-  username                  = var.username
-  gitlab-token              = data.aws_kms_secrets.ci.plaintext["gitlab_token"]
-  gitlab-runner-concurrency = var.gitlab-runner-concurrency
-  project-prefix            = var.project-prefix
-  name                      = var.name
-  runner-tags               = var.runner-tags
+  names                      = var.names
+  username                   = var.username
+  runner_tags                = var.runner_tags
+  gitlab_token               = var.gitlab_token
+  gitlab_runner_concurrency  = var.gitlab_runner_concurrency
+  gitlab_runner_version      = var.gitlab_runner_version
+  gitlab_runner_docker_image = var.gitlab_runner_docker_image
+  gitlab_runner_locked       = var.gitlab_runner_locked
+  docker_prune_cron_schedule = var.docker_prune_cron_schedule
 }
 ```

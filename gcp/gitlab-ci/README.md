@@ -86,7 +86,7 @@ These are the providers used by the module.
 
 ```
 module "ci_box" {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/ci-box?ref=v1.0.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/ci-box?ref=v0.0.1"
 
   instance_count             = var.instance_count
   gcp_region                 = var.gcp_region

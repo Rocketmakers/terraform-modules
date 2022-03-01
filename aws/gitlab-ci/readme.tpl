@@ -8,7 +8,7 @@ This module creates one or more VMs within AWS acting as gitlab-runners. Each ru
 
 ```
 module ci-box {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//aws/gitlab-ci"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//aws/gitlab-ci?ref=v{{{ this.version }}}"
 
   availability_zones         = var.availability_zone
   project_prefix             = local.project_prefix

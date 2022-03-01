@@ -24,7 +24,7 @@ Follow the GCR [Quickstart](https://cloud.google.com/container-registry/docs/qui
 
 ```
 module "ci_box" {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/ci-box?ref=v1.0.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/ci-box?ref=v{{{ this.version }}}"
 
   instance_count             = var.instance_count
   gcp_region                 = var.gcp_region

@@ -1,6 +1,7 @@
 import { LoggerLevel } from '@rocketmakers/log';
 import { Args } from '@rocketmakers/shell-commands/lib/args';
 import { createLogger, setDefaultLoggerLevel } from '@rocketmakers/shell-commands/lib/logger';
+import { Npm } from '@rocketmakers/shell-commands/lib/npm';
 import { Prerequisites } from '@rocketmakers/shell-commands/lib/prerequisites';
 import { generateReadmes } from './readme/readme';
 import { RepositoryPaths } from './paths/repositoryPaths';
@@ -37,7 +38,12 @@ async function run() {
 
   await Prerequisites.check();
 
-  await generateReadmes(RepositoryPaths.resolve());
+  const { version } = await Npm.loadPackageJson(RepositoryPaths.resolve('package.json'));
+
+  await generateReadmes({
+    rootDir: RepositoryPaths.resolve(),
+    version,
+  });
 }
 
 run()

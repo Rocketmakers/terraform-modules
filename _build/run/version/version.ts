@@ -1,6 +1,7 @@
 import { Logger } from '@rocketmakers/log';
 import { Git } from '@rocketmakers/shell-commands/lib/git';
 import { Shell } from '@rocketmakers/shell-commands/lib/shell';
+import { generateReadmes } from '~/readme/readme';
 
 import { RepositoryPaths } from '../paths/repositoryPaths';
 
@@ -37,8 +38,13 @@ export async function bumpVersion({ newVersion, force }: IBumpVersion, logger: L
   }
 
   await Shell.exec('npm', ['version', '--no-git-tag-version', newVersion], cwd);
+  await generateReadmes({
+    rootDir: RepositoryPaths.resolve(),
+    version: newVersion,
+  });
 
   Git.preventHuskyHooks();
   await Shell.exec('git', ['add', 'package.json', 'package-lock.json'], cwd);
+  await Shell.exec('git', ['add', '**/README.md'], cwd);
   await Shell.exec('git', ['commit', '-m', `release(version): bump to v${newVersion}`], cwd);
 }
