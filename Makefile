@@ -24,15 +24,22 @@ ifeq ($(detected_OS),Darwin)
 	sed = $(shell printf "gsed")
 endif
 
+.PHONY: clean
+clean:
+	$(call header,CLEANING...)
+	echo 'Creating a temporary commit... use [git reflog] to get your work back!'
+	git add -A && ((HUSKY_SKIP_HOOKS=1 git commit -m 'WIPE CLEAN' && git reset HEAD^ --hard) || true)
+	git clean -dfx
+
 .PHONY: node-setup
 node-setup:
 	$(info $(M) NODE SETUP...)
 	$(SHELL) $(SHELL_SCRIPTS)/node-setup.sh
 
-.PHONY: install-node-modules
-install-node-modules: node-setup
+.PHONY: install
+install: node-setup
 	$(info $(M) INSTALLING NODE MODULES...)
-	npm i
+	$(SHELL) $(SHELL_SCRIPTS)/install.sh
 
 .PHONY: setup-terraform
 setup-terraform:
@@ -61,10 +68,17 @@ format-all:
 	terraform fmt -recursive
 
 .PHONY: generate-docs
-generate-docs:
+generate-docs: setup-terraform
 	$(info $(M) Generating docs...)
 	$(TSNODE) $(TSNODE_SCRIPTS)/readmes.ts -l=$(LOG_LEVEL)
 
+.PHONY: bump-version
+bump-version: install 
+	$(info $(M) Bumping version...)
+	$(TSNODE) $(TSNODE_SCRIPTS)/version.ts --log=${LOG_LEVEL} --version=${NEW_VERSION_CODE} --force=${FORCE_BUMP_VERSION}
+	make changelog
+
+.PHONY: changelog
 changelog:
 	$(info $(M) Generating changelog...)
 	npx standard-version
