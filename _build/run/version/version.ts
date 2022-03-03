@@ -1,9 +1,9 @@
 import { Logger } from '@rocketmakers/log';
 import { Git } from '@rocketmakers/shell-commands/lib/git';
 import { Shell } from '@rocketmakers/shell-commands/lib/shell';
-import { generateReadmes } from '~/readme/readme';
 
 import { RepositoryPaths } from '../paths/repositoryPaths';
+import { generateReadmes } from '../readme/readme';
 
 /**
  * Parameters for the bumpVersion function
