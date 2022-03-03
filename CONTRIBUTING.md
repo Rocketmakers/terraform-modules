@@ -5,11 +5,11 @@
   - [Documentation](#documentation)
   - [Branching strategy](#branching-strategy)
   - [Release process](#release-process)
-    - [Step 1 - decide on the NEW_VERSION_CODE](#step-1---decide-on-the-new_version_code)
-    - [Step 2 - branching](#step-2---branching)
-    - [Step 3 - versioning and changelog generation](#step-3---versioning-and-changelog-generation)
-    - [Step 3 - changelog review](#step-3---changelog-review)
-    - [Step 4 - update local branches](#step-4---update-local-branches)
+    - [Decide on the new version code](#decide-on-the-new-version-code)
+    - [Branching](#branching)
+    - [Versioning and changelog generation](#versioning-and-changelog-generation)
+    - [Changelog review](#changelog-review)
+    - [Update local branches](#update-local-branches)
 
 ## Getting started
 
@@ -82,14 +82,14 @@ This relies on the following tools:
 
 To release a new version, make sure your local git repo is clean and run the following:
 
-### Step 1 - decide on the NEW_VERSION_CODE
+### Decide on the new version code
 
 ```
 # Format
 export NEW_VERSION_CODE=<major>.<minor>.<patch>
 ```
 
-### Step 2 - branching
+### Branching
 
 If the intended release branch doesn't exist, create one with the following commands:
 
@@ -106,7 +106,7 @@ git checkout release/$NEW_VERSION_CODE
 git pull
 ```
 
-### Step 3 - versioning and changelog generation
+### Versioning and changelog generation
 
 Clean the codebase, increase the version number and generate updates to the changelog with the following commands:
 
@@ -117,7 +117,7 @@ make bump-version
 
 **NB**: If you add any more commits to the changelog after the initial `make bump-version` then you can run `make changelog` to update the changelog based on the new commits. You will want to check the updated changelog for duplicate entries before committing the update.
 
-### Step 3 - changelog review
+### Changelog review
 
 The changelog generated in step 2 needs to be reviewed. When finished, commit the updated changelog:
 
@@ -136,7 +136,7 @@ Go to https://gitlab.com/rocketmakers/infrastructure/terraform-modules/-/merge_r
 
 CI is set up to automatically create and push a tag whenever a release branch is merged into master. Once the tag has been created then the new version is officially released and should be referenced via git tag.
 
-### Step 4 - update local branches
+### Update local branches
 
 Once the CI has completed the tagged release, you will need to create a merge request from `master` back into `develop`, which will include the new version number and changelog.
 

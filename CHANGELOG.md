@@ -1,11 +1,7 @@
-## Breaking changes since restarting this repository
+# Changelog
 
-This changelog will be generated for the first release but here are the breaking changes since moving from the original [terraform-rocketmakers-modules](https://gitlab.com/rocketmakers/infrastructure/terraform-rocketmakers-modules) repository.
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### azure/gitlab-ci
+## 1.0.0 (2022-03-03)
 
-- The Rocketmakers HQ IP address is no longer automatically included in the IP whitelist so if you need SSH access to the runner then you'll need to include it via the `whitelist` variable.
-
-### gcp/gitlab-ci
-
-- The service account created for use by the runner instances does not have a key generated because it should not be needed.
+Working versions of `gitlab-ci` in `aws`, `azure` and `gcp`.

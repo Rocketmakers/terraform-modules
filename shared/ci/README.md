@@ -30,7 +30,7 @@ Returns the string list for provisioning a gitlab runner. This module is intende
 
 ```
 module shared-ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//shared/ci?ref=v0.0.1"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//shared/ci?ref=v1.0.0"
 
   names                      = var.names
   username                   = var.username
