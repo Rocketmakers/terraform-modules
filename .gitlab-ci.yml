@@ -95,8 +95,6 @@ notify:release:
     SLACK_WEBHOOK_URL: $SLACK_WEBHOOK_URL_PLATFORM
   script:
     - 'cd /slack && npm run success -- -e=$ENV -v=v1.0.0 -m="A new version of rocketmakers terraform modules has been released. See the changelog for details: https://gitlab.com/rocketmakers/infrastructure/terraform-modules/-/blob/v1.0.0/CHANGELOG.md"'
-  rules:
-    - *ignore-mr-reminder
 
 ############################
 ## Merge Request Reminder ##
