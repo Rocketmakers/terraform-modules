@@ -1,2 +1,4 @@
-terraform 0.13.7
-nodejs 12.13.0
+terraform 1.1.6
+nodejs 16.13.2
+terraform-docs 0.16.0
+golang 1.17.6

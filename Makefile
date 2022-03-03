@@ -1,13 +1,16 @@
 #############################
 # VARIABLES
 #############################
-M 							= $(shell printf "\033[34;1m▶\033[0m")
-sed 						= $(shell printf "sed")
-SHELL 					:= /bin/bash
-SHELL_SCRIPTS 	:= _build/scripts
-TSNODE 					:= node_modules/.bin/ts-node
-TSNODE_SCRIPTS 	:= _build/run
-LOG_LEVEL				?= info
+M 									= $(shell printf "\033[34;1m▶\033[0m")
+sed 								= $(shell printf "sed")
+SHELL 							:= /bin/bash
+SHELL_SCRIPTS 			:= _build/scripts
+TSNODE 							:= node_modules/.bin/ts-node
+TSNODE_SCRIPTS			:= _build/run
+LOG_LEVEL						?= info
+
+# To allow terraform init to work without having to hardcode an AWS region into a provider block
+AWS_DEFAULT_REGION	?= eu-west-1
 
 # Detect OS
 ifeq ($(OS),Windows_NT) 
@@ -21,50 +24,46 @@ ifeq ($(detected_OS),Darwin)
 	sed = $(shell printf "gsed")
 endif
 
-define Validate
-	for d in $(1)/* ; do \
-    (cd $${d} && echo "Validating" $${d} && terraform init && terraform validate) || exit; \
-	done
-endef
+.PHONY: clean
+clean:
+	$(call header,CLEANING...)
+	echo 'Creating a temporary commit... use [git reflog] to get your work back!'
+	git add -A && ((HUSKY_SKIP_HOOKS=1 git commit -m 'WIPE CLEAN' && git reset HEAD^ --hard) || true)
+	git clean -dfx
 
 .PHONY: node-setup
 node-setup:
 	$(info $(M) NODE SETUP...)
 	$(SHELL) $(SHELL_SCRIPTS)/node-setup.sh
 
-.PHONY: install-node-modules
-install-node-modules: node-setup
+.PHONY: install
+install: node-setup
 	$(info $(M) INSTALLING NODE MODULES...)
-	npm i
+	$(SHELL) $(SHELL_SCRIPTS)/install.sh
 
 .PHONY: setup-terraform
 setup-terraform:
 	$(info $(M) Setting up terraform)
+	asdf plugin add terraform https://github.com/Banno/asdf-hashicorp.git || true
+	asdf plugin add terraform-docs https://github.com/looztra/asdf-terraform-docs || true
 	asdf install terraform
+	asdf install terraform-docs
 
 .PHONY: validate
-validate: validate-aws validate-azure validate-gcp validate-shared
-	$(info $(M) Finished)
+validate: setup-terraform
+	$(info $(M) Validating modules)
+	${TSNODE} $(TSNODE_SCRIPTS)/validate.ts --directory=$(VALIDATE_DIR)
 
-.PHONY: validate-aws
-validate-aws:
-	$(info $(M) Validating aws...)
-	$(call Validate,aws)
+.PHONY: setup-go
+setup-go:
+	$(info $(M) Setting up golang...)
+	asdf plugin add golang https://github.com/kennyp/asdf-golang.git || true
+	asdf install golang
 
-.PHONY: validate-azure
-validate-azure:
-	$(info $(M) Validating azure...)
-	$(call Validate,azure)
-
-.PHONY: validate-gcp
-validate-gcp:
-	$(info $(M) Validating gcp...)
-	$(call Validate,gcp)
-
-.PHONY: validate-shared
-validate-shared:
-	$(info $(M) Validating shared...)
-	$(call Validate,shared)
+.PHONY: test
+test: setup-go
+	$(info $(M) Running tests for $(TERRATEST_DIR)...)
+	(cd _tests/src/$(TERRATEST_DIR) && go test -timeout 60m)
 
 .PHONY: format-all
 format-all:
@@ -72,10 +71,17 @@ format-all:
 	terraform fmt -recursive
 
 .PHONY: generate-docs
-generate-docs:
+generate-docs: setup-terraform
 	$(info $(M) Generating docs...)
 	$(TSNODE) $(TSNODE_SCRIPTS)/readmes.ts -l=$(LOG_LEVEL)
 
+.PHONY: bump-version
+bump-version: install 
+	$(info $(M) Bumping version...)
+	$(TSNODE) $(TSNODE_SCRIPTS)/version.ts --log=${LOG_LEVEL} --version=${NEW_VERSION_CODE} --force=${FORCE_BUMP_VERSION}
+	make changelog
+
+.PHONY: changelog
 changelog:
 	$(info $(M) Generating changelog...)
 	npx standard-version

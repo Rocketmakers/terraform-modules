@@ -1,5 +1,9 @@
 # Terraform rocketmakers modules
 
+This is a set of terraform modules that can be used in other projects to help speed up management of infrastructure via terraform.
+
+- [Contributing Guide](./CONTRIBUTING.md)
+
 ## What makes a good shared module?
 
 ### A good shared module should
@@ -38,97 +42,6 @@
     - monitoring
   - Cloud functions (or similar) are another fuzzy exception where we may want to use terraform to configure the cloud function but then use other tools to subsequently update the code associated with a function
 
-## Available modules
-
-### AWS
-
-- gitlab-ci
-
-### Azure
-
-- gitlab-ci
-
-### GCP
-
-- gitlab-ci
-
-## Local development of modules
-
-### Getting started
-
-We use `asdf` to manage the terraform version. See [Notion](https://www.notion.so/Managing-CLI-tool-versions-asdf-386a27d8e9e54c44ab3624bf0de6ff09) for a guide on how to install it.
-
-You can test any of these modules by using a **relative path** to the module directory (absolute path will not work) as the `source` in your terraform project, like this:
-
-```terraform
-module ci_box {
-  # Remember not to commit this relative path to your project - it's just for local development 🤓
-  source = "../../../../../terraform-modules/gcp/ci-box"
-  ...
-}
-```
-
-If you have any issues then try removing the `.terraform` directory and re-initializing in both your project and in this repo:
-
-```bash
-# In your project and in the module of this repository that you're referencing
-rm -rf .terraform
-terraform init
-```
-
-## Documentation
-
-We use [terraform-docs](https://github.com/terraform-docs/terraform-docs) along with custom scripts to help generate our module documentation. This will need to be installed using the following
-
-```
-brew install terraform-docs
-```
-
-You can then generate documentation using `make generate-docs` at the root.
-
-## Release process
-
-This relies on the following tools:
-
-- `commitizen`: Enforcing commit message conventions
-- `cz-conventional-changelog`: Maintaining a changelog based on commit message conventions
-
-### Install commitizen dependencies
-
-```bash
-npm i
-```
-
-### Pull the latest master
-
-```bash
-git checkout master
-git pull
-```
-
-### Decide on the NEW_VERSION_CODE
-
-```
-# Format
-export NEW_VERSION_CODE=<major>.<minor>.<patch>
-```
-
-### Create a release
-
-```bash
-# Bump the version number - this will also update the changelog thanks to a "postversion" npm script
-npm version $NEW_VERSION_CODE
-
-# Commit the version bump and changelog (commitizen will step in again here)
-git add -A
-git commit -m ""
-git push origin master
-
-# Tag and push the release
-git tag v$NEW_VERSION_CODE
-git push --tags
-```
-
 ## Consuming the modules
 
 You can consume the module by specifying a source in the following format: `git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//<PATH_TO_MODULE>?ref=<TAG_VERSION>`
@@ -143,8 +56,7 @@ module "ci_box" {
   gcr_bucket_names           = var.gcr_bucket_names
   project_prefix             = var.project_prefix
   cidr_ranges                = module.trusted_ips.cidrs
-  encrypted_gitlab_token     = var.encrypted_gitlab_token
-  crypto_key_self_link       = var.crypto_key_self_link
+  runner_registration_token  = var.runner_registration_token
   machine_type               = var.machine_type
   runner_tags                = var.runner_tags
   gitlab_runner_concurrency  = var.runner_concurrency

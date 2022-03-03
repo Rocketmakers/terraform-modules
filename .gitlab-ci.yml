@@ -1,14 +1,50 @@
 variables:
-  PROJECT_NAME: terraform-modules
   LOG_LEVEL: info
+  NO_SCRIPTS: 'true'
+
+  # Required to validate and test the gitlab modules
+  GITLAB_TOKEN: $GITLAB_ACCESS_TOKEN
 
 stages:
   - analysis
+  - release
   - notify
+
+.base-rules:
+  rules:
+    # Current bug in gitlab rules will duplicate pipelines for open MRs
+    - &ignore-mr-duplicate-pipeline
+      if: $CI_MERGE_REQUEST_EVENT_TYPE == "detached"
+      when: never
+    - &ignore-mr-reminder
+      if: $MERGE_REQUEST_REMINDER == "true"
+      when: never
+    - &not-on-schedules
+      if: $CI_PIPELINE_SOURCE != "schedule"
+    - &not-on-tags
+      if: $CI_COMMIT_TAG == null
+    - &only-on-tags
+      if: $CI_COMMIT_TAG != null
+      when: on_success
 
 .internal-runner:
   tags:
     - rocketmakers-internal-dind
+
+.defaults:
+  extends:
+    - .internal-runner
+  retry:
+    max: 2
+    when: runner_system_failure
+  image: rocketmakers/ci-terraform-gcp:3.2.0
+  before_script:
+    - make install
+  rules:
+    - *ignore-mr-duplicate-pipeline
+    - *ignore-mr-reminder
+    - *not-on-schedules
+    - *not-on-tags
 
 ##############
 ## Validate ##
@@ -16,14 +52,8 @@ stages:
 
 validate:
   extends:
-    - .internal-runner
+    - .defaults
   stage: analysis
-  retry:
-    max: 2
-    when: runner_system_failure
-  image: rocketmakers/ci-terraform-gcp:3.1.0
-  before_script:
-    - make install-node-modules
   script:
     - make validate
     - make format-all
@@ -35,35 +65,59 @@ validate:
 
 docs:
   extends:
-    - .internal-runner
+    - .defaults
   stage: analysis
-  retry:
-    max: 2
-    when: runner_system_failure
-  image: rocketmakers/ci-build-node-gcp:3.1.0
-  before_script:
-    - make install-node-modules
-    - curl -Lo ./terraform-docs https://github.com/terraform-docs/terraform-docs/releases/download/v0.10.1/terraform-docs-v0.10.1-$(uname | tr '[:upper:]' '[:lower:]')-amd64
-    - chmod +x ./terraform-docs
-    - sudo mv ./terraform-docs /usr/local/bin/terraform-docs
   script:
     - make generate-docs
     - git diff HEAD --exit-code
+
+#############
+## Release ##
+#############
+
+release:create-tag:
+  extends:
+    - .defaults
+  stage: release
+  script:
+    - npx rocketmakers-tag --log=trace --pkgJsonPath=./package.json
+  rules:
+    - *ignore-mr-reminder
+    - if: "$CI_COMMIT_BRANCH && $CI_COMMIT_TITLE =~ /Merge branch 'release\\/[0-9\\.a-zA-Z]+' into 'master'/"
+
+notify:release:
+  stage: notify
+  image: rocketmakers/rm-slack:v0.1.3
+  extends:
+    - .internal-runner
+  variables:
+    ENV: production
+    SLACK_WEBHOOK_URL: $SLACK_WEBHOOK_URL_PLATFORM
+  script:
+    - 'cd /slack && npm run success -- -e=$ENV -v=$CI_COMMIT_TAG -m="A new version of rocketmakers terraform modules has been released. See the changelog for details: https://gitlab.com/rocketmakers/infrastructure/terraform-modules/-/blob/$CI_COMMIT_TAG/CHANGELOG.md'
+  rules:
+    - *only-on-tags
+    - *ignore-mr-reminder
 
 ############################
 ## Merge Request Reminder ##
 ############################
 
-notify:merge-requests:
+notify:merge-request-reminder:
   extends:
-    - .internal-runner
+    - .defaults
   stage: notify
-  image: bottlecapdave/gitlab-merge-request-reminder:v1.3.0
-  only:
-    variables:
-      - $MERGE_REQUEST_REMINDER == "true"
-  retry:
-    max: 2
-    when: runner_system_failure
+  image: bottlecapdave/gitlab-merge-request-reminder:1.3.0
+  variables:
+    SLACK_WEBHOOK_URL: $SLACK_WEBHOOK_URL_PLATFORM
+    GITLAB_PROJECT_IDS: $CI_PROJECT_ID
+    INCLUDE_WIP: 'false'
+    INCLUDE_DRAFT: 'false'
+    SLACK_TARGET: ':eyes:'
+  rules:
+    - if: "$MERGE_REQUEST_REMINDER == 'true'"
+    - *ignore-mr-duplicate-pipeline
+  needs: []
+  before_script: []
   script:
     - node /app/lib/index.js

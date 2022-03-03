@@ -1,14 +1,18 @@
+import { LoggerLevel } from '@rocketmakers/log';
 import { Args } from '@rocketmakers/shell-commands/lib/args';
 import { createLogger, setDefaultLoggerLevel } from '@rocketmakers/shell-commands/lib/logger';
+import { Npm } from '@rocketmakers/shell-commands/lib/npm';
 import { Prerequisites } from '@rocketmakers/shell-commands/lib/prerequisites';
 import { generateReadmes } from './readme/readme';
-import * as path from 'path';
+import { RepositoryPaths } from './paths/repositoryPaths';
+
+const logger = createLogger('readmes');
 
 Prerequisites.register({
   command: 'terraform-docs',
   description: 'Generates docs for terraform',
-  installInstructions: 'brew install terraform-docs'
-})
+  installInstructions: 'asdf plugin add terraform-docs https://github.com/looztra/asdf-terraform-docs',
+});
 
 async function run() {
   const args = await Args.match({
@@ -17,27 +21,34 @@ async function run() {
       shortName: 'l',
       defaultValue: process.env.LOG_LEVEL || 'info',
       validValues: ['trace', 'debug', 'info', 'warn', 'error', 'fatal'],
-    })
+    }),
   });
 
+  if (args?.log) {
+    setDefaultLoggerLevel(args.log as LoggerLevel);
+  }
+
   if (!args) {
-    return;
+    if (process.argv.includes('--help')) {
+      return;
+    }
+
+    throw new Error('There was a problem parsing the arguments');
   }
 
-  const { log } = args;
+  await Prerequisites.check();
 
-  setDefaultLoggerLevel(log as any);
-  const logger = createLogger('readme');
+  const { version } = await Npm.loadPackageJson(RepositoryPaths.resolve('package.json'));
 
-  try {
-    await Prerequisites.check();
-
-    await generateReadmes(path.join(__dirname, '../../'));
-  } catch (e) {
-    logger.error(e.message);
-    process.exit(-1);
-  }
+  await generateReadmes({
+    rootDir: RepositoryPaths.resolve(),
+    version,
+  });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-run();
+run()
+  .then(() => logger.info('🚀 Done 🚀'))
+  .catch((err) => {
+    logger.fatal(err);
+    process.exit(-1);
+  });
