@@ -69,7 +69,7 @@ These are the providers used by the module.
 
 ```
 module ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/ci?ref=v1.0.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/gitlab-ci?ref=v1.0.0"
 
   container_registry_name   = var.container_registry_name
   key_vault_name            = var.key_vault_name
