@@ -61,7 +61,7 @@ func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
 	require.NoError(t, err)
 
 	// There should be the same number as specified via the instance_count terraform variable
-	assert.Equal(t, len(runners), instanceCount)
+	assert.Equal(t, len(runners), instanceCount, "Checking expected number of registered runners")
 
 	fmt.Printf("Verifying status of %v runners with tag: %v\n\n", len(runners), tags)
 	var runnerIds []int
@@ -76,9 +76,9 @@ func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
 
 		fmt.Println("---")
 
-		assert.True(t, runner.Active, "Runner is active")
-		assert.True(t, runner.Online, "Runner is online")
-		assert.Equal(t, "online", runner.Status, "Runner status is online")
+		assert.True(t, runner.Active, "Expecting runner to be active")
+		assert.True(t, runner.Online, "Expecting runner to be online")
+		assert.Equal(t, "online", runner.Status, "Expecting runner status to be online")
 	}
 
 	fmt.Println("Deleting regsitered runners...")
