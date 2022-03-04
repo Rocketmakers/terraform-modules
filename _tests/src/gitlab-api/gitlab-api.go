@@ -107,4 +107,9 @@ func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
 
 	internal_ip_addresses := terraform.Output(t, terraformOptions, "internal_ip_addresses")
 	assert.NotNil(t, internal_ip_addresses)
+
+	// Exit code 2 means there are changes in the plan
+	// Exit code 1 means there was an error in the plan
+	exit_code := terraform.PlanExitCode(t, terraformOptions)
+	assert.Equal(t, 0, exit_code, "Expecting plan with no changes")
 }
