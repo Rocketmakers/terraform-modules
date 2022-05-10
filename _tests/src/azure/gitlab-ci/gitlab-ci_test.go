@@ -34,7 +34,10 @@ func TestAzureGitlabCi(t *testing.T) {
 		RunnerTag:        runnerTag,
 		InstanceCount:    instanceCount,
 		TerraformOptions: terraformOptions,
-	})
+	}, assertions)
 
 	fmt.Println("🚀 Done 🚀")
+}
+
+func assertions(t *testing.T, terraformOptions *terraform.Options) {
 }

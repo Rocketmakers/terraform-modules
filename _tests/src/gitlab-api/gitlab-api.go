@@ -28,17 +28,20 @@ func createGitlabApiClient() (*gitlab.Client, error) {
 	return gitlab.NewClient(gitlabApiToken)
 }
 
-func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
+func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions, assertions func (t *testing.T, terraformOptions *terraform.Options)) {
 	runnerTag := opt.RunnerTag
 	instanceCount := opt.InstanceCount
 	terraformOptions := opt.TerraformOptions
+	cleanUp := os.Getenv("CLEANUP") != "false"
 
 	// Create the gitlab AP client early to catch errors
 	client, err := createGitlabApiClient()
 	require.NoError(t, err)
 
-	// Clean up resources at the end of the test.
-	defer terraform.Destroy(t, terraformOptions)
+	if (cleanUp) {
+		// Clean up resources at the end of the test.
+		defer terraform.Destroy(t, terraformOptions)
+	}
 
 	// Remove the lock file so we get the latest providers each time
 	lockFilePath := filepath.Join(terraformOptions.TerraformDir, ".terraform.lock.hcl")
@@ -81,14 +84,16 @@ func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
 		assert.Equal(t, "online", runner.Status, "Expecting runner status to be online")
 	}
 
-	fmt.Println("Deleting regsitered runners...")
-	for _, runnerId := range runnerIds {
-		fmt.Printf("Deleting runner: %v\n", runnerId)
-		_, err := client.Runners.DeleteRegisteredRunnerByID(runnerId, nil)
-
-		if err != nil {
-			fmt.Printf("Failed to delete runner: %v\n", runnerId)
-			fmt.Println(err)
+	if (cleanUp) {
+		fmt.Println("Deleting regsitered runners...")
+		for _, runnerId := range runnerIds {
+			fmt.Printf("Deleting runner: %v\n", runnerId)
+			_, err := client.Runners.DeleteRegisteredRunnerByID(runnerId, nil)
+	
+			if err != nil {
+				fmt.Printf("Failed to delete runner: %v\n", runnerId)
+				fmt.Println(err)
+			}
 		}
 	}
 
@@ -112,4 +117,7 @@ func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
 	// Exit code 1 means there was an error in the plan
 	exit_code := terraform.PlanExitCode(t, terraformOptions)
 	assert.Equal(t, 0, exit_code, "Expecting plan with no changes")
+
+	// Run assertions before the terraform resources are destroyed
+	assertions(t, terraformOptions)
 }

@@ -23,3 +23,13 @@ output "internal_ip_addresses" {
   description = "CI box network IP addresses"
   value       = module.gitlab_ci.internal_ip_addresses
 }
+
+output "service_account_id" {
+  description = "The ID of the service account associated with the runners"
+  value       = module.gitlab_ci.service_account_id
+}
+
+output "service_account_email" {
+  description = "The email address of the service account associated with the runners"
+  value       = module.gitlab_ci.service_account_email
+}

@@ -60,6 +60,8 @@ Follow the GCR [Quickstart](https://cloud.google.com/container-registry/docs/qui
 | `ip_addresses` | Static IP address of each instance |
 | `private_key` | Private SSH key |
 | `public_key` | Public SSH key |
+| `service_account_email` | The email address of the service account associated with the runners |
+| `service_account_id` | The ID of the service account associated with the runners |
 | `username` | Username for CI box |
 
 ## Requirements
