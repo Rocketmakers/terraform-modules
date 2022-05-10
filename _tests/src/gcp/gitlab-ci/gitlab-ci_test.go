@@ -1,6 +1,7 @@
 package gcpgitlabci
 
 import (
+	"github.com/stretchr/testify/assert"
 	"backendconfig"
 	"fmt"
 	"gitlabapi"
@@ -33,7 +34,15 @@ func TestGcpGitlabCi(t *testing.T) {
 		RunnerTag:        runnerTag,
 		InstanceCount:    instanceCount,
 		TerraformOptions: terraformOptions,
-	})
+	}, assertions)
 
 	fmt.Println("🚀 Done 🚀")
+}
+
+func assertions(t *testing.T, terraformOptions *terraform.Options) {
+	service_account_id := terraform.Output(t, terraformOptions, "service_account_id")
+	assert.NotNil(t, service_account_id)
+
+	service_account_email := terraform.Output(t, terraformOptions, "service_account_email")
+	assert.NotNil(t, service_account_email)
 }
