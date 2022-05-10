@@ -74,7 +74,7 @@ resource "azurerm_network_interface" "ci" {
   ip_configuration {
     name                          = "testconfiguration1"
     subnet_id                     = azurerm_subnet.ci.id
-    private_ip_address_allocation = "dynamic"
+    private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.ci[count.index].id
   }
 }
@@ -159,14 +159,14 @@ resource "azurerm_key_vault_access_policy" "ci" {
   object_id = azurerm_virtual_machine.ci_box[count.index].identity[0].principal_id
 
   key_permissions = [
-    "get",
-    "decrypt",
-    "list",
+    "Get",
+    "Decrypt",
+    "List",
   ]
 
   secret_permissions = [
-    "get",
-    "list",
+    "Get",
+    "List",
   ]
 }
 

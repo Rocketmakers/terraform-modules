@@ -60,6 +60,8 @@ Follow the GCR [Quickstart](https://cloud.google.com/container-registry/docs/qui
 | `ip_addresses` | Static IP address of each instance |
 | `private_key` | Private SSH key |
 | `public_key` | Public SSH key |
+| `service_account_email` | The email address of the service account associated with the runners |
+| `service_account_id` | The ID of the service account associated with the runners |
 | `username` | Username for CI box |
 
 ## Requirements
@@ -86,7 +88,7 @@ These are the providers used by the module.
 
 ```
 module "ci_box" {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/ci-box?ref=v1.0.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/gitlab-ci?ref=v1.0.1"
 
   instance_count             = var.instance_count
   gcp_region                 = var.gcp_region

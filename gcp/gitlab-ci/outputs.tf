@@ -27,3 +27,12 @@ output "internal_ip_addresses" {
   ]
 }
 
+output "service_account_id" {
+  description = "The ID of the service account associated with the runners"
+  value       = google_service_account.ci_account.id
+}
+
+output "service_account_email" {
+  description = "The email address of the service account associated with the runners"
+  value       = google_service_account.ci_account.email
+}

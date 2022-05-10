@@ -8,7 +8,7 @@ This module creates one or more VMs within Azure acting as gitlab-runners. Each 
 
 ```
 module ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/ci?ref=v{{{ this.version }}}"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/gitlab-ci?ref=v{{{ this.version }}}"
 
   container_registry_name   = var.container_registry_name
   key_vault_name            = var.key_vault_name

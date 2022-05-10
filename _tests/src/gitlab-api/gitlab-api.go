@@ -28,17 +28,20 @@ func createGitlabApiClient() (*gitlab.Client, error) {
 	return gitlab.NewClient(gitlabApiToken)
 }
 
-func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
+func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions, assertions func (t *testing.T, terraformOptions *terraform.Options)) {
 	runnerTag := opt.RunnerTag
 	instanceCount := opt.InstanceCount
 	terraformOptions := opt.TerraformOptions
+	cleanUp := os.Getenv("CLEANUP") != "false"
 
 	// Create the gitlab AP client early to catch errors
 	client, err := createGitlabApiClient()
 	require.NoError(t, err)
 
-	// Clean up resources at the end of the test.
-	defer terraform.Destroy(t, terraformOptions)
+	if (cleanUp) {
+		// Clean up resources at the end of the test.
+		defer terraform.Destroy(t, terraformOptions)
+	}
 
 	// Remove the lock file so we get the latest providers each time
 	lockFilePath := filepath.Join(terraformOptions.TerraformDir, ".terraform.lock.hcl")
@@ -61,7 +64,7 @@ func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
 	require.NoError(t, err)
 
 	// There should be the same number as specified via the instance_count terraform variable
-	assert.Equal(t, len(runners), instanceCount)
+	assert.Equal(t, len(runners), instanceCount, "Checking expected number of registered runners")
 
 	fmt.Printf("Verifying status of %v runners with tag: %v\n\n", len(runners), tags)
 	var runnerIds []int
@@ -76,19 +79,21 @@ func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
 
 		fmt.Println("---")
 
-		assert.True(t, runner.Active, "Runner is active")
-		assert.True(t, runner.Online, "Runner is online")
-		assert.Equal(t, "online", runner.Status, "Runner status is online")
+		assert.True(t, runner.Active, "Expecting runner to be active")
+		assert.True(t, runner.Online, "Expecting runner to be online")
+		assert.Equal(t, "online", runner.Status, "Expecting runner status to be online")
 	}
 
-	fmt.Println("Deleting regsitered runners...")
-	for _, runnerId := range runnerIds {
-		fmt.Printf("Deleting runner: %v\n", runnerId)
-		_, err := client.Runners.DeleteRegisteredRunnerByID(runnerId, nil)
-
-		if err != nil {
-			fmt.Printf("Failed to delete runner: %v\n", runnerId)
-			fmt.Println(err)
+	if (cleanUp) {
+		fmt.Println("Deleting regsitered runners...")
+		for _, runnerId := range runnerIds {
+			fmt.Printf("Deleting runner: %v\n", runnerId)
+			_, err := client.Runners.DeleteRegisteredRunnerByID(runnerId, nil)
+	
+			if err != nil {
+				fmt.Printf("Failed to delete runner: %v\n", runnerId)
+				fmt.Println(err)
+			}
 		}
 	}
 
@@ -107,4 +112,12 @@ func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions) {
 
 	internal_ip_addresses := terraform.Output(t, terraformOptions, "internal_ip_addresses")
 	assert.NotNil(t, internal_ip_addresses)
+
+	// Exit code 2 means there are changes in the plan
+	// Exit code 1 means there was an error in the plan
+	exit_code := terraform.PlanExitCode(t, terraformOptions)
+	assert.Equal(t, 0, exit_code, "Expecting plan with no changes")
+
+	// Run assertions before the terraform resources are destroyed
+	assertions(t, terraformOptions)
 }

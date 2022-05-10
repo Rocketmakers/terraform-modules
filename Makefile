@@ -9,6 +9,9 @@ TSNODE 							:= node_modules/.bin/ts-node
 TSNODE_SCRIPTS			:= _build/run
 LOG_LEVEL						?= info
 
+# Set false to leave resources in place after testing (speed up feedback loops)
+CLEANUP ?= true
+
 # To allow terraform init to work without having to hardcode an AWS region into a provider block
 AWS_DEFAULT_REGION	?= eu-west-1
 
