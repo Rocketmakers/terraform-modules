@@ -27,12 +27,13 @@ resource "google_project_service" "compute" {
 }
 
 module "runner_account" {
-  source = "../service-account"
-
-  project-id = google_project_service.compute.project
-  id         = "${var.project_prefix}-ci-runner"
-  name       = "Gitlab CI runner service account"
-  roles      = var.service_account_roles
+  source  = "terraform-google-modules/service-accounts/google"
+  version = "4.1.1"
+  project_id = google_project_service.compute.project
+  project_roles      = var.service_account_roles
+  generate_keys = true
+  names = ["${var.project_prefix}-ci-runner"]
+  descriptions = ["Gitlab CI runner service account"]
 }
 
 resource "google_storage_bucket" "ci_cache" {
@@ -43,16 +44,17 @@ resource "google_storage_bucket" "ci_cache" {
 }
 
 module "orchestrator_account" {
-  source = "../service-account"
-
-  project-id = google_project_service.compute.project
-  id         = "${var.project_prefix}-ci-orchestrator"
-  name       = "Gitlab CI orchestrator service account"
-  roles = [
-    "roles/compute.admin",
-    "roles/iam.serviceAccountUser",
-    "roles/monitoring.metricWriter"
+  source  = "terraform-google-modules/service-accounts/google"
+  version = "4.1.1"
+  project_id = google_project_service.compute.project
+  project_roles      = [
+    "${var.project_id}=>roles/compute.admin",
+    "${var.project_id}=>roles/iam.serviceAccountUser",
+    "${var.project_id}=>roles/monitoring.metricWriter"
   ]
+  generate_keys = true
+  names = ["${var.project_prefix}-ci-orchestrator"]
+  descriptions = ["Gitlab CI orchestrator service account"]
 }
 
 resource "google_storage_bucket_iam_member" "gcr" {
@@ -189,7 +191,7 @@ resource "null_resource" "orchestrator_provisioner" {
       IdleCount = ${var.orchestrator_idle_count}
       IdleTime = ${var.orchestrator_idle_time}
       MaxBuilds = ${var.orchestrator_max_builds}
-      MachineName = ${var.runner_machine_name}
+      MachineName = "${var.runner_machine_name}"
       MachineDriver = "google"
       MachineOptions = [
         "google-project=${var.project_id}",
