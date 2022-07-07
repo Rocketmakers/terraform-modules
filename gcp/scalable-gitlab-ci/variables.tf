@@ -25,9 +25,9 @@ variable "gitlab_token" {
   description = "Token used to register gitlab runner"
 }
 
-variable "zones" {
-  type        = list(string)
-  description = "List of Google Cloud zones where instances should be placed (the zones will be used in a round-robin strategy when creating instances)"
+variable "zone" {
+  type        = string
+  description = "Google Cloud zone where instance should be placed"
 }
 
 variable "region" {
@@ -41,12 +41,6 @@ variable "runner_tags" {
 }
 
 // Optional
-
-variable "instance_count" {
-  type        = number
-  description = "The number of VM instances to create"
-  default     = 1
-}
 
 variable "name" {
   type        = string
@@ -63,7 +57,6 @@ variable "orchestrator_machine_type" {
 variable "runner_machine_type" {
   type        = string
   description = "Machine type of the runner vm"
-  default     = "f1-micro"
 }
 
 variable "image_project" {
@@ -75,7 +68,7 @@ variable "image_project" {
 variable "image_name" {
   type        = string
   description = "Google image name to base CI on"
-  default     = "ubuntu-1804-bionic-v20190628"
+  default     = "ubuntu-1804-bionic-v20220616"
 }
 
 variable "username" {
@@ -104,25 +97,25 @@ variable "orchestrator_disk_size" {
 
 variable "orchestrator_idle_count" {
   type        = number
-  description = "Minimum number of VM's running at idle"
+  description = "Minimum number or VM's that will be left running when there is no demand for jobs"
   default     = 0
 }
 
 variable "orchestrator_idle_time" {
   type        = number
-  description = "Time elapsed for orchestrator to become idle"
+  description = "Number of seconds for the machine to be in Idle State before it is destroyed"
   default     = 300
 }
 
 variable "orchestrator_max_builds" {
   type        = number
-  description = "Max number of builds"
+  description = "Maximum job count before machine is removed."
   default     = 100
 }
 
 variable "runner_machine_name" {
   type        = string
-  description = "Name of the Gitlab Runner machine"
+  description = "Name of the machine. It must contain %s, which is replaced with a unique machine identifier."
   default     = "auto-scale-%s"
 }
 
@@ -134,7 +127,7 @@ variable "runner_disk_size" {
 
 variable "gitlab_runner_concurrency" {
   type        = number
-  description = "The maximum number of jobs that the runner will run concurrently"
+  description = "The maximum number of jobs that the runner will run concurrently on a singe VM"
   default     = 3
 }
 
@@ -164,7 +157,7 @@ variable "service_account_roles" {
 
 variable "cache_location" {
   type        = string
-  description = "The location of the cache bucket"
+  description = "The location of the cache bucket (see https://cloud.google.com/storage/docs/locations)"
 }
 
 variable "engine_install_url" {

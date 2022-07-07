@@ -24,15 +24,16 @@ Follow the GCR [Quickstart](https: //cloud.google.com/container-registry/docs/qu
 
 | name    | description          | type   |
 | ------- | -------------------- | ------ |
-| `cache_location` | The location of the cache bucket | string |
+| `cache_location` | The location of the cache bucket (see https://cloud.google.com/storage/docs/locations) | string |
 | `cidr_ranges` | CIDR ranges allowed to access the runner instance | list(string) |
 | `gcr_bucket_names` | Names of google container registry buckets that the runner instance has permission to access e.g. ["eu.artifacts.my-cool-project.appspot.com"] | list(string) |
 | `gitlab_token` | Token used to register gitlab runner | string |
 | `project_id` | Google Cloud project ID where the runner instance and related resources will be created | string |
 | `project_prefix` | A prefix given to resource names related to the runner instance | string |
 | `region` | The Region in which the created address should reside. | string |
+| `runner_machine_type` | Machine type of the runner vm | string |
 | `runner_tags` | List of tags for gitlab runner (no tags will be added by default) | list(string) |
-| `zones` | List of Google Cloud zones where instances should be placed (the zones will be used in a round-robin strategy when creating instances) | list(string) |
+| `zone` | Google Cloud zone where instance should be placed | string |
 
 ## Optional Inputs
 
@@ -40,22 +41,20 @@ Follow the GCR [Quickstart](https: //cloud.google.com/container-registry/docs/qu
 | ------- | -------------------- | ------ | --------------- |
 | `allow_stopping_for_update` | Allow the instance to stop when being updated | bool | true |
 | `engine_install_url` | URL to use for engine installation through docker-machine | string | https://releases.rancher.com/install-docker/19.03.9.sh |
-| `gitlab_runner_concurrency` | The maximum number of jobs that the runner will run concurrently | number | 3 |
+| `gitlab_runner_concurrency` | The maximum number of jobs that the runner will run concurrently on a singe VM | number | 3 |
 | `gitlab_runner_docker_image` | The value passed to --docker-image when registering the runner (see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker) | string | docker:stable |
 | `gitlab_runner_locked` | Setting true will limit the runner to the project that provided the registration token. Setting false will allow other projects to enable the runner. | bool | true |
 | `gitlab_runner_version` | The version of gitlab-runner to install (see https://docs.gitlab.com/runner/install/bleeding-edge.html#download-any-other-tagged-release) | string | latest |
-| `image_name` | Google image name to base CI on | string | ubuntu-1804-bionic-v20190628 |
+| `image_name` | Google image name to base CI on | string | ubuntu-1804-bionic-v20220616 |
 | `image_project` | Google image project to base CI on | string | ubuntu-os-cloud |
-| `instance_count` | The number of VM instances to create | number | 1 |
 | `name` | Main name of resources created | string | ci |
 | `orchestrator_disk_size` | Size of orchestrator disk in GB | number | 50 |
-| `orchestrator_idle_count` | Minimum number of VM's running at idle | number | 0 |
-| `orchestrator_idle_time` | Time elapsed for orchestrator to become idle | number | 300 |
+| `orchestrator_idle_count` | Minimum number or VM's that will be left running when there is no demand for jobs | number | 0 |
+| `orchestrator_idle_time` | Number of seconds for the machine to be in Idle State before it is destroyed | number | 300 |
 | `orchestrator_machine_type` | Machine type of the orchestrator vm | string | f1-micro |
-| `orchestrator_max_builds` | Max number of builds | number | 100 |
+| `orchestrator_max_builds` | Maximum job count before machine is removed. | number | 100 |
 | `runner_disk_size` | Size of runner disk in GB | number | 50 |
-| `runner_machine_name` | Name of the Gitlab Runner machine | string | auto-scale-%s |
-| `runner_machine_type` | Machine type of the runner vm | string | f1-micro |
+| `runner_machine_name` | Name of the machine. It must contain %s, which is replaced with a unique machine identifier. | string | auto-scale-%s |
 | `service_account_roles` | The roles that should be assigned to the service account running the CI box | list(string) | ["roles/monitoring.metricWriter"] |
 | `tags` | List of tags to enable ssh access | list(string) | ["ci","externalssh"] |
 | `username` | Username for CI box | string | ci |
@@ -95,7 +94,7 @@ These are the providers used by the module.
 
 ## Example Use Cases
 
-```
+```terraform
 provider "gitlab" {
   token = "secret-gitlab-token"
 }
@@ -149,6 +148,8 @@ module "project-factory_project_services" {
     "vpcaccess.googleapis.com",
     "secretmanager.googleapis.com"
   ]
+  disable_services_on_destroy = false
+  disable_dependent_services = false
 }
 
 data "gitlab_project" "this" {
@@ -164,7 +165,7 @@ module "ci" {
   source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-gitlab-ci?ref=v1.0.1"
 
   project_id                = var.project_id
-  zones                     = ["europe-west1-b"]
+  zone                     = "europe-west1-b"
   region                    = "europe-west1"
   runner_tags               = [var.project_id]
   project_prefix            = var.project_id
@@ -183,7 +184,7 @@ module "ci" {
   gitlab_token              = data.gitlab_project.this.runners_token
   gcr_bucket_names          = [google_container_registry.registry.id]
   gitlab_runner_concurrency = 3
-  cache_location            = "EU"
+  cache_location            = "EUROPE-WEST1"
 }
 ```
 

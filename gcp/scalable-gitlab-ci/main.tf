@@ -1,6 +1,7 @@
 locals {
   application_default_credentials_string = "/etc/gitlab-runner/application_default_credentials.json"
   ci_cache_bucket_name                   = "${var.project_prefix}-ci-cache"
+  service_account_module_version         = "4.1.1"
 }
 module "shared_ci" {
   source                     = "../../shared/ci-provisioner-commands"
@@ -23,8 +24,9 @@ locals {
 }
 
 module "runner_account" {
-  source        = "terraform-google-modules/service-accounts/google"
-  version       = "4.1.1"
+  source  = "terraform-google-modules/service-accounts/google"
+  version = "4.1.1"
+
   project_id    = var.project_id
   project_roles = var.service_account_roles
   generate_keys = true
@@ -33,8 +35,9 @@ module "runner_account" {
 }
 
 module "orchestrator_account" {
-  source     = "terraform-google-modules/service-accounts/google"
-  version    = "4.1.1"
+  source  = "terraform-google-modules/service-accounts/google"
+  version = "4.1.1"
+
   project_id = var.project_id
   project_roles = [
     "${var.project_id}=>roles/compute.admin",
@@ -48,7 +51,7 @@ module "orchestrator_account" {
 
 module "ci_cache" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 3.2.0"
+  version = "3.2.0"
 
   name          = local.ci_cache_bucket_name
   project_id    = var.project_id
@@ -110,14 +113,13 @@ resource "google_compute_firewall" "all_on_network" {
   allow {
     protocol = "all"
   }
-  source_ranges = ["${google_compute_instance.orchestrator[0].network_interface[0].network_ip}/32"]
+  source_ranges = ["${google_compute_instance.orchestrator.network_interface[0].network_ip}/32"]
 }
 
 
 resource "google_compute_address" "orchestrator_static_ip" {
-  count   = var.instance_count
   project = google_compute_firewall.ci_firewall.project
-  name    = "${google_compute_firewall.ci_firewall.name}-${count.index + 1}"
+  name    = google_compute_firewall.ci_firewall.name
   region  = var.region
 }
 
@@ -128,12 +130,11 @@ data "google_compute_image" "ubuntu_image" {
 
 resource "google_compute_instance" "orchestrator" {
   project                   = var.project_id
-  count                     = var.instance_count
-  name                      = google_compute_address.orchestrator_static_ip[count.index].name
+  name                      = google_compute_address.orchestrator_static_ip.name
   machine_type              = var.orchestrator_machine_type
   tags                      = var.tags
   allow_stopping_for_update = var.allow_stopping_for_update
-  zone                      = var.zones[count.index % length(var.zones)]
+  zone                      = var.zones
 
   service_account {
     email  = module.orchestrator_account.email
@@ -154,7 +155,7 @@ resource "google_compute_instance" "orchestrator" {
   network_interface {
     subnetwork = google_compute_subnetwork.ci_subnet.self_link
     access_config {
-      nat_ip = google_compute_address.orchestrator_static_ip[count.index].address
+      nat_ip = google_compute_address.orchestrator_static_ip.address
     }
   }
 }
@@ -162,10 +163,8 @@ resource "google_compute_instance" "orchestrator" {
 # We want to run this separately so that the instance is created and the internal ip is attached to google_compute_firewall.all_on_network
 # This allows us to run docker-machine create within our provisioning so that the ssh keys are created before multiple jobs try to start up instances
 resource "null_resource" "orchestrator_provisioner" {
-  count = var.instance_count
-
   triggers = {
-    instance_id = google_compute_instance.orchestrator[count.index].id
+    instance_id = google_compute_instance.orchestrator.id
   }
 
   provisioner "file" {
@@ -174,7 +173,7 @@ resource "null_resource" "orchestrator_provisioner" {
       user        = var.username
       timeout     = "500s"
       private_key = tls_private_key.orchestrator_ssh.private_key_pem
-      host        = google_compute_address.orchestrator_static_ip[count.index].address
+      host        = google_compute_address.orchestrator_static_ip.address
     }
 
     content     = <<-EOF
@@ -192,7 +191,7 @@ resource "null_resource" "orchestrator_provisioner" {
       MachineDriver = "google"
       MachineOptions = [
         "google-project=${var.project_id}",
-        "google-zone=${var.zones[count.index % length(var.zones)]}",
+        "google-zone=${var.zone}",
         "google-machine-type=${var.runner_machine_type}",
         "google-machine-image=${data.google_compute_image.ubuntu_image.self_link}",
         "google-network=${google_compute_network.ci_network.name}",
@@ -224,7 +223,7 @@ EOF
       user        = var.username
       timeout     = "500s"
       private_key = tls_private_key.orchestrator_ssh.private_key_pem
-      host        = google_compute_address.orchestrator_static_ip[count.index].address
+      host        = google_compute_address.orchestrator_static_ip.address
     }
 
     content     = base64decode(module.runner_account.key)
@@ -237,19 +236,19 @@ EOF
       user        = var.username
       timeout     = "500s"
       private_key = tls_private_key.orchestrator_ssh.private_key_pem
-      host        = google_compute_address.orchestrator_static_ip[count.index].address
+      host        = google_compute_address.orchestrator_static_ip.address
     }
 
     inline = concat(
       module.shared_ci.init_docker,
       module.shared_ci.init_docker_machine,
       [
-        "sudo -i docker-machine create --driver google --google-project ${var.project_id} --google-machine-type ${var.runner_machine_type} --google-network ${google_compute_network.ci_network.name} --google-zone ${var.zones[count.index % length(var.zones)]} --google-username root --engine-install-url ${var.engine_install_url} --google-machine-image ${data.google_compute_image.ubuntu_image.self_link} --google-skip-firewall-create --google-use-internal-ip test-runner",
+        "sudo -i docker-machine create --driver google --google-project ${var.project_id} --google-machine-type ${var.runner_machine_type} --google-network ${google_compute_network.ci_network.name} --google-zone ${var.zone} --google-username root --engine-install-url ${var.engine_install_url} --google-machine-image ${data.google_compute_image.ubuntu_image.self_link} --google-skip-firewall-create --google-use-internal-ip test-runner",
         "sudo -i docker-machine rm -y test-runner"
       ],
       module.shared_ci.init_gitlab_runner,
       ["sudo mv /tmp/application_default_credentials.json ${local.application_default_credentials_string}"],
-      module.shared_ci.register_gitlab_runner[count.index],
+      module.shared_ci.register_gitlab_runner,
       local.install_monitoring_agent
     )
   }

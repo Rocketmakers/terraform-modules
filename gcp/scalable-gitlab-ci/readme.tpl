@@ -24,8 +24,7 @@ Follow the GCR [Quickstart](https: //cloud.google.com/container-registry/docs/qu
 
 ## Example Use Cases
 
-```
-
+```terraform
 provider "gitlab" {
   token = "secret-gitlab-token"
 }
@@ -96,7 +95,7 @@ module "ci" {
   source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-gitlab-ci?ref=v{{{ this.version }}}"
 
   project_id                = var.project_id
-  zones                     = ["europe-west1-b"]
+  zone                     = "europe-west1-b"
   region                    = "europe-west1"
   runner_tags               = [var.project_id]
   project_prefix            = var.project_id
@@ -115,7 +114,7 @@ module "ci" {
   gitlab_token              = data.gitlab_project.this.runners_token
   gcr_bucket_names          = [google_container_registry.registry.id]
   gitlab_runner_concurrency = 3
-  cache_location            = "EU"
+  cache_location            = "EUROPE-WEST1"
 }
 ```
 
