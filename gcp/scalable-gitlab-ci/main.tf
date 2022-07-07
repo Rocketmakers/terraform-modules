@@ -1,5 +1,6 @@
 locals {
   application_default_credentials_string = "/etc/gitlab-runner/application_default_credentials.json"
+  ci_cache_bucket_name = "${var.project_prefix}-ci-cache"
 }
 module "shared_ci" {
   source                     = "../../shared/ci-provisioner-commands"
@@ -49,7 +50,7 @@ module "ci_cache" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
   version = "~> 3.2.0"
 
-  name          = "${var.project_prefix}-ci-cache"
+  name          = local.ci_cache_bucket_name
   project_id    = var.project_id
   location      = var.cache_location
   force_destroy = true
@@ -211,7 +212,7 @@ resource "null_resource" "orchestrator_provisioner" {
       Path = "gitlab-runner"
       Shared = true
       [runners.cache.gcs]
-        BucketName = "${google_storage_bucket.ci_cache.name}"
+        BucketName = "${local.ci_cache_bucket_name}"
         CredentialsFile = "${local.application_default_credentials_string}"
 EOF
     destination = module.shared_ci.config_template_path
