@@ -21,7 +21,7 @@ locals {
     for name in var.names :
     "sudo gitlab-runner register --name ${name} ${local.register_args}"
   ]
-  download_docker_machine       = "sudo curl -O \"https://gitlab-docker-machine-downloads.s3.amazonaws.com/v0.16.2-gitlab.13/docker-machine-Linux-x86_64\""
+  download_docker_machine       = "sudo curl -O \"https://gitlab-docker-machine-downloads.s3.amazonaws.com/${var.docker_machine_version}/docker-machine-Linux-x86_64\""
   install_docker_machine        = "sudo cp docker-machine-Linux-x86_64 /usr/local/bin/docker-machine && sudo chmod +x /usr/local/bin/docker-machine"
   set_gitlab_runner_concurrency = "sudo sed -i '/concurrent = 1/c\\concurrent = ${var.gitlab_runner_concurrency}' /etc/gitlab-runner/config.toml" // Set concurrency manually because gitlab is silly
 

@@ -1,7 +1,6 @@
 # scalable-gitlab-ci
 
-This module creates one or more VMs within GCP acting as gitlab-runners. Each runner will use the `--executor docker` and uses [Docker socket binding
-](https: //docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-socket-binding) to enable docker-in-docker (dind).
+This module creates an orchestrator VM inside GCP which is used to receive the jobs which uses docker+machine to create new instances. When there are no jobs, the orchestrator is the only vm running and can be on a minimal instance size.
 
 ## Accessing a private Google Container Registry (GCR)
 
@@ -19,34 +18,102 @@ If you don't need to push to a private GCR then you can leave `gcr_bucket_names`
 
 If your project has not yet pushed any container images to Google Container Registry then you will need to manually enable and push an image to the project before the `ci-box` module will work. This is because the CI box needs the GCR bucket to exist before terraform can grant permissions for the VM to access the bucket.
 
-Follow the GCR [Quickstart
-](https: //cloud.google.com/container-registry/docs/quickstart) guide for how to do this.
-{
-  {
-    { this.coreContent
-    }
-  }
-}
+Follow the GCR [Quickstart](https: //cloud.google.com/container-registry/docs/quickstart) guide for how to do this.
+
+{{{ this.coreContent }}}
 
 ## Example Use Cases
 
 ```
-module "ci_box" {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/gitlab-ci?ref=v{{{ this.version }}}"
 
-  instance_count             = var.instance_count
-  gcp_region                 = var.gcp_region
-  zones                      = var.zones
-  project_id                 = var.project_id
-  gcr_bucket_names           = var.gcr_bucket_names
-  project_prefix             = var.project_prefix
-  ssh_cidr_ranges            = var.trusted_ips
-  runner_registration_token  = var.runner_registration_token
-  machine_type               = var.machine_type
-  runner_tags                = var.runner_tags
-  gitlab_runner_concurrency  = var.runner_concurrency
-  gitlab_runner_docker_image = var.runner_docker_image
-  gitlab_runner_locked       = var.runner_locked
+provider "gitlab" {
+  token = "secret-gitlab-token"
+}
+
+terraform {
+  required_version = "1.1.6"
+
+  backend "gcs" {
+    bucket = "bucket"
+    prefix = "infrastructure/project-ci/terraform/state"
+  }
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "4.22.0"
+    }
+    gitlab = {
+      source  = "gitlabhq/gitlab"
+      version = "3.14.0"
+    }
+    null = {
+      source  = "hashicorp/null"
+      version = "3.1.1"
+    }
+  }
+}
+
+variable "project_id" {
+  type        = string
+  description = "Google Cloud project ID"
+  default     = "project-id"
+}
+
+variable "gitlab_project_id" {
+  type        = string
+  description = "Gitlab project id"
+  default     = "gitlab-project-id"
+}
+
+module "project-factory_project_services" {
+  source  = "terraform-google-modules/project-factory/google//modules/project_services"
+  version = "13.0.0"
+
+  project_id = var.project_id
+  activate_apis = [
+    "cloudkms.googleapis.com",
+    "containerregistry.googleapis.com",
+    "compute.googleapis.com",
+    "run.googleapis.com",
+    "servicenetworking.googleapis.com",
+    "vpcaccess.googleapis.com",
+    "secretmanager.googleapis.com"
+  ]
+}
+
+data "gitlab_project" "this" {
+  id = var.gitlab_project_id
+}
+
+resource "google_container_registry" "registry" {
+  project  = var.project_id
+  location = "EU"
+}
+
+module "ci" {
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-gitlab-ci?ref=v{{{ this.version }}}"
+
+  project_id                = var.project_id
+  zones                     = ["europe-west1-b"]
+  region                    = "europe-west1"
+  runner_tags               = [var.project_id]
+  project_prefix            = var.project_id
+  cidr_ranges               = ["212.139.176.173/32"]
+  orchestrator_machine_type = "f1-micro"
+  runner_machine_type       = "n2d-standard-2"
+  service_account_roles = [
+    "${var.project_id}=>roles/cloudkms.cryptoKeyDecrypter",
+    "${var.project_id}=>roles/storage.admin",
+    "${var.project_id}=>roles/viewer",
+    "${var.project_id}=>roles/secretmanager.admin",
+    "${var.project_id}=>roles/run.admin",
+    "${var.project_id}=>roles/iam.serviceAccountUser",
+    "${var.project_id}=>roles/monitoring.metricWriter",
+  ]
+  gitlab_token              = data.gitlab_project.this.runners_token
+  gcr_bucket_names          = [google_container_registry.registry.id]
+  gitlab_runner_concurrency = 3
+  cache_location            = "EU"
 }
 ```
 

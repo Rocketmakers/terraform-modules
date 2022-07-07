@@ -1,3 +1,6 @@
+locals {
+  application_default_credentials_string = "/etc/gitlab-runner/application_default_credentials.json"
+}
 module "shared_ci" {
   source                     = "../../shared/ci-provisioner-commands"
   names                      = tolist(google_compute_address.orchestrator_static_ip[*].name)
@@ -18,54 +21,47 @@ locals {
   ]
 }
 
-resource "google_project_service" "compute" {
-  project = var.project_id
-  service = "compute.googleapis.com"
-
-  disable_dependent_services = var.disable_compute_on_destroy.disable_dependent_services
-  disable_on_destroy         = var.disable_compute_on_destroy.disable_service
-}
-
 module "runner_account" {
-  source  = "terraform-google-modules/service-accounts/google"
-  version = "4.1.1"
-  project_id = google_project_service.compute.project
-  project_roles      = var.service_account_roles
+  source        = "terraform-google-modules/service-accounts/google"
+  version       = "4.1.1"
+  project_id    = google_project_service.compute.project
+  project_roles = var.service_account_roles
   generate_keys = true
-  names = ["${var.project_prefix}-ci-runner"]
-  descriptions = ["Gitlab CI runner service account"]
-}
-
-resource "google_storage_bucket" "ci_cache" {
-  project       = var.project_id
-  name          = "${var.project_prefix}-ci-cache"
-  location      = var.cache_location
-  force_destroy = true
+  names         = ["${var.project_prefix}-ci-runner"]
+  descriptions  = ["Gitlab CI runner service account"]
 }
 
 module "orchestrator_account" {
-  source  = "terraform-google-modules/service-accounts/google"
-  version = "4.1.1"
+  source     = "terraform-google-modules/service-accounts/google"
+  version    = "4.1.1"
   project_id = google_project_service.compute.project
-  project_roles      = [
+  project_roles = [
     "${var.project_id}=>roles/compute.admin",
     "${var.project_id}=>roles/iam.serviceAccountUser",
     "${var.project_id}=>roles/monitoring.metricWriter"
   ]
   generate_keys = true
-  names = ["${var.project_prefix}-ci-orchestrator"]
-  descriptions = ["Gitlab CI orchestrator service account"]
+  names         = ["${var.project_prefix}-ci-orchestrator"]
+  descriptions  = ["Gitlab CI orchestrator service account"]
+}
+
+module "ci_cache" {
+  source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
+  version = "~> 3.2.0"
+
+  name          = "${var.project_prefix}-ci-cache"
+  project_id    = var.project_id
+  location      = var.cache_location
+  force_destroy = true
+  iam_members = [{
+    role   = "roles/storage.admin"
+    member = "serviceAccount:${module.runner_account.email}"
+  }]
 }
 
 resource "google_storage_bucket_iam_member" "gcr" {
   count  = length(var.gcr_bucket_names)
   bucket = var.gcr_bucket_names[count.index]
-  role   = "roles/storage.admin"
-  member = "serviceAccount:${module.runner_account.email}"
-}
-
-resource "google_storage_bucket_iam_member" "cache" {
-  bucket = google_storage_bucket.ci_cache.name
   role   = "roles/storage.admin"
   member = "serviceAccount:${module.runner_account.email}"
 }
@@ -216,7 +212,7 @@ resource "null_resource" "orchestrator_provisioner" {
       Shared = true
       [runners.cache.gcs]
         BucketName = "${google_storage_bucket.ci_cache.name}"
-        CredentialsFile = "/etc/gitlab-runner/application_default_credentials.json"
+        CredentialsFile = "${local.application_default_credentials_string}"
 EOF
     destination = module.shared_ci.config_template_path
   }
@@ -251,7 +247,7 @@ EOF
         "sudo -i docker-machine rm -y test-runner"
       ],
       module.shared_ci.init_gitlab_runner,
-      ["sudo mv /tmp/application_default_credentials.json /etc/gitlab-runner/application_default_credentials.json"],
+      ["sudo mv /tmp/application_default_credentials.json ${local.application_default_credentials_string}"],
       module.shared_ci.register_gitlab_runner[count.index],
       local.install_monitoring_agent
     )

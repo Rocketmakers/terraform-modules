@@ -48,18 +48,6 @@ variable "instance_count" {
   default     = 1
 }
 
-variable "disable_compute_on_destroy" {
-  type = object({
-    disable_service            = bool
-    disable_dependent_services = bool
-  })
-  description = "Whether to disable GCP Compute engine and/or dependent services when the module is destroyed"
-  default = {
-    disable_service            = false
-    disable_dependent_services = false
-  }
-}
-
 variable "name" {
   type        = string
   description = "Main name of resources created"
@@ -133,9 +121,9 @@ variable "orchestrator_max_builds" {
 }
 
 variable "runner_machine_name" {
-  type = string
+  type        = string
   description = "Name of the Gitlab Runner machine"
-  default = "auto-scale-%s"
+  default     = "auto-scale-%s"
 }
 
 variable "runner_disk_size" {

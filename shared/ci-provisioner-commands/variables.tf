@@ -41,3 +41,9 @@ variable "gitlab_runner_locked" {
 variable "config_template_path" {
   default = "/tmp/test-config.template.toml"
 }
+
+variable "docker_machine_version" {
+  type = string
+  description = "Docker machine version for runner"
+  default = "v0.16.2-gitlab.13"
+}

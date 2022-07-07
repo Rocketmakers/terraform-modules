@@ -1,0 +1,204 @@
+# scalable-gitlab-ci
+
+This module creates an orchestrator VM inside GCP which is used to receive the jobs which uses docker+machine to create new instances. When there are no jobs, the orchestrator is the only vm running and can be on a minimal instance size.
+
+## Accessing a private Google Container Registry (GCR)
+
+If your CI needs to push images to a private GCR then you need to provide the name of the bucket in the `gcr_bucket_names` variable:
+
+```terraform
+gcr_bucket_names = [
+  "eu.artifacts.my-cool-project.appspot.com"
+]
+```
+
+If you don't need to push to a private GCR then you can leave `gcr_bucket_names` empty.
+
+### ⚠️ Use on a fresh project ⚠️
+
+If your project has not yet pushed any container images to Google Container Registry then you will need to manually enable and push an image to the project before the `ci-box` module will work. This is because the CI box needs the GCR bucket to exist before terraform can grant permissions for the VM to access the bucket.
+
+Follow the GCR [Quickstart](https: //cloud.google.com/container-registry/docs/quickstart) guide for how to do this.
+
+## Required Inputs
+
+| name    | description          | type   |
+| ------- | -------------------- | ------ |
+| `cache_location` | The location of the cache bucket | string |
+| `cidr_ranges` | CIDR ranges allowed to access the runner instance | list(string) |
+| `gcr_bucket_names` | Names of google container registry buckets that the runner instance has permission to access e.g. ["eu.artifacts.my-cool-project.appspot.com"] | list(string) |
+| `gitlab_token` | Token used to register gitlab runner | string |
+| `project_id` | Google Cloud project ID where the runner instance and related resources will be created | string |
+| `project_prefix` | A prefix given to resource names related to the runner instance | string |
+| `region` | The Region in which the created address should reside. | string |
+| `runner_tags` | List of tags for gitlab runner (no tags will be added by default) | list(string) |
+| `zones` | List of Google Cloud zones where instances should be placed (the zones will be used in a round-robin strategy when creating instances) | list(string) |
+
+## Optional Inputs
+
+| name    | description          | type   | default value   |
+| ------- | -------------------- | ------ | --------------- |
+| `allow_stopping_for_update` | Allow the instance to stop when being updated | bool | true |
+| `engine_install_url` | URL to use for engine installation through docker-machine | string | https://releases.rancher.com/install-docker/19.03.9.sh |
+| `gitlab_runner_concurrency` | The maximum number of jobs that the runner will run concurrently | number | 3 |
+| `gitlab_runner_docker_image` | The value passed to --docker-image when registering the runner (see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker) | string | docker:stable |
+| `gitlab_runner_locked` | Setting true will limit the runner to the project that provided the registration token. Setting false will allow other projects to enable the runner. | bool | true |
+| `gitlab_runner_version` | The version of gitlab-runner to install (see https://docs.gitlab.com/runner/install/bleeding-edge.html#download-any-other-tagged-release) | string | latest |
+| `image_name` | Google image name to base CI on | string | ubuntu-1804-bionic-v20190628 |
+| `image_project` | Google image project to base CI on | string | ubuntu-os-cloud |
+| `instance_count` | The number of VM instances to create | number | 1 |
+| `name` | Main name of resources created | string | ci |
+| `orchestrator_disk_size` | Size of orchestrator disk in GB | number | 50 |
+| `orchestrator_idle_count` | Minimum number of VM's running at idle | number | 0 |
+| `orchestrator_idle_time` | Time elapsed for orchestrator to become idle | number | 300 |
+| `orchestrator_machine_type` | Machine type of the orchestrator vm | string | f1-micro |
+| `orchestrator_max_builds` | Max number of builds | number | 100 |
+| `runner_disk_size` | Size of runner disk in GB | number | 50 |
+| `runner_machine_name` | Name of the Gitlab Runner machine | string | auto-scale-%s |
+| `runner_machine_type` | Machine type of the runner vm | string | f1-micro |
+| `service_account_roles` | The roles that should be assigned to the service account running the CI box | list(string) | ["roles/monitoring.metricWriter"] |
+| `tags` | List of tags to enable ssh access | list(string) | ["ci","externalssh"] |
+| `username` | Username for CI box | string | ci |
+
+## Outputs
+
+| name      | description                 |
+| --------- | --------------------------- |
+| `addresses` | Static IP address of each instance |
+| `internal_addresses` | Internal network IP address of each instance |
+| `private_key` | Private SSH key |
+| `public_key` | Public SSH key |
+| `service_account_email` | Google service account email |
+| `service_account_key` | Google service account key |
+| `username` | Username for CI box |
+
+## Requirements
+
+These are required by the module.
+
+| name | version |
+| ---- | ------- |
+| `google` | >= 4.27.0 |
+| `terraform` | >= 1.1.6 |
+| `tls` | >= 3.4.0 |
+
+## Providers
+
+These are the providers used by the module.
+
+| name | version |
+| ---- | ------- |
+| `google` | >= 4.27.0 |
+| `null` |  |
+| `tls` | >= 3.4.0 |
+
+
+## Example Use Cases
+
+```
+provider "gitlab" {
+  token = "secret-gitlab-token"
+}
+
+terraform {
+  required_version = "1.1.6"
+
+  backend "gcs" {
+    bucket = "bucket"
+    prefix = "infrastructure/project-ci/terraform/state"
+  }
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "4.22.0"
+    }
+    gitlab = {
+      source  = "gitlabhq/gitlab"
+      version = "3.14.0"
+    }
+    null = {
+      source  = "hashicorp/null"
+      version = "3.1.1"
+    }
+  }
+}
+
+variable "project_id" {
+  type        = string
+  description = "Google Cloud project ID"
+  default     = "project-id"
+}
+
+variable "gitlab_project_id" {
+  type        = string
+  description = "Gitlab project id"
+  default     = "gitlab-project-id"
+}
+
+module "project-factory_project_services" {
+  source  = "terraform-google-modules/project-factory/google//modules/project_services"
+  version = "13.0.0"
+
+  project_id = var.project_id
+  activate_apis = [
+    "cloudkms.googleapis.com",
+    "containerregistry.googleapis.com",
+    "compute.googleapis.com",
+    "run.googleapis.com",
+    "servicenetworking.googleapis.com",
+    "vpcaccess.googleapis.com",
+    "secretmanager.googleapis.com"
+  ]
+}
+
+data "gitlab_project" "this" {
+  id = var.gitlab_project_id
+}
+
+resource "google_container_registry" "registry" {
+  project  = var.project_id
+  location = "EU"
+}
+
+module "ci" {
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-gitlab-ci?ref=v1.0.1"
+
+  project_id                = var.project_id
+  zones                     = ["europe-west1-b"]
+  region                    = "europe-west1"
+  runner_tags               = [var.project_id]
+  project_prefix            = var.project_id
+  cidr_ranges               = ["212.139.176.173/32"]
+  orchestrator_machine_type = "f1-micro"
+  runner_machine_type       = "n2d-standard-2"
+  service_account_roles = [
+    "${var.project_id}=>roles/cloudkms.cryptoKeyDecrypter",
+    "${var.project_id}=>roles/storage.admin",
+    "${var.project_id}=>roles/viewer",
+    "${var.project_id}=>roles/secretmanager.admin",
+    "${var.project_id}=>roles/run.admin",
+    "${var.project_id}=>roles/iam.serviceAccountUser",
+    "${var.project_id}=>roles/monitoring.metricWriter",
+  ]
+  gitlab_token              = data.gitlab_project.this.runners_token
+  gcr_bucket_names          = [google_container_registry.registry.id]
+  gitlab_runner_concurrency = 3
+  cache_location            = "EU"
+}
+```
+
+### Rebuilding CI box
+
+Terraform has a concept of tainting resources to force a rebuild. If there is a problem with our CI box, we can `taint` it to force a rebuild. To do this, firstly identify the resource to taint by running the following command in the folder that contains your terraform state:
+
+```bash
+terraform state list
+```
+
+Pick the resource you want to taint (most likely `module.ci_box.google_compute_instance.ci_box`):
+
+```bash
+terraform taint <resource_in_state>
+```
+
+Then, reapply the terraform and the resource (and any dependencies) will be rebuilt.
