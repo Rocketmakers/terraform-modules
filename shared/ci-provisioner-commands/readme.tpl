@@ -1,6 +1,6 @@
 # ci provisioner commands
 
-Returns the string list for provisioning a gitlab runner. This module is intended for use within one of the cloud specific `gitlab-ci` modules although it could be used to provision any linux machine as a gitlab runner.
+Returns the string list for provisioning a gitlab runner. This module is intended for use within one of the cloud specific `scalable-gitlab-ci` modules although it could be used to provision any linux machine as a gitlab runner.
 
 {{{ this.coreContent }}}
 
