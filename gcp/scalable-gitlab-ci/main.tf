@@ -134,7 +134,7 @@ resource "google_compute_instance" "orchestrator" {
   machine_type              = var.orchestrator_machine_type
   tags                      = var.tags
   allow_stopping_for_update = var.allow_stopping_for_update
-  zone                      = var.zones
+  zone                      = var.zone
 
   service_account {
     email  = module.orchestrator_account.email
