@@ -1,7 +1,6 @@
 locals {
   application_default_credentials_string = "/etc/gitlab-runner/application_default_credentials.json"
   ci_cache_bucket_name                   = "${var.project_prefix}-ci-cache"
-  service_account_module_version         = "4.1.1"
 }
 module "shared_ci" {
   source                     = "../../shared/ci-provisioner-commands"
@@ -57,10 +56,13 @@ module "ci_cache" {
   project_id    = var.project_id
   location      = var.cache_location
   force_destroy = true
-  iam_members = [{
-    role   = "roles/storage.admin"
-    member = "serviceAccount:${module.runner_account.email}"
-  }]
+}
+
+resource "google_storage_bucket_iam_member" "cache" {
+  count  = length(var.gcr_bucket_names)
+  bucket = var.gcr_bucket_names[count.index]
+  role   = "roles/storage.admin"
+  member = "serviceAccount:${module.runner_account.email}"
 }
 
 resource "google_storage_bucket_iam_member" "gcr" {
@@ -226,7 +228,7 @@ EOF
       host        = google_compute_address.orchestrator_static_ip.address
     }
 
-    content     = base64decode(module.runner_account.key)
+    content     = module.runner_account.key # module auto decodes key
     destination = "/tmp/application_default_credentials.json"
   }
 
@@ -248,7 +250,7 @@ EOF
       ],
       module.shared_ci.init_gitlab_runner,
       ["sudo mv /tmp/application_default_credentials.json ${local.application_default_credentials_string}"],
-      module.shared_ci.register_gitlab_runner,
+      module.shared_ci.register_gitlab_runner[0],
       local.install_monitoring_agent
     )
   }

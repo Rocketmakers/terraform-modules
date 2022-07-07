@@ -97,7 +97,7 @@ variable "orchestrator_disk_size" {
 
 variable "orchestrator_idle_count" {
   type        = number
-  description = "Minimum number or VM's that will be left running when there is no demand for jobs"
+  description = "Minimum number of VM's that will be left running when there is no demand for jobs"
   default     = 0
 }
 
@@ -127,7 +127,7 @@ variable "runner_disk_size" {
 
 variable "gitlab_runner_concurrency" {
   type        = number
-  description = "The maximum number of jobs that the runner will run concurrently on a singe VM"
+  description = "The maximum number of jobs that the runner will run concurrently on a single VM"
   default     = 3
 }
 
