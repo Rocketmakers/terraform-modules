@@ -79,6 +79,8 @@ module "project-factory_project_services" {
     "vpcaccess.googleapis.com",
     "secretmanager.googleapis.com"
   ]
+  disable_services_on_destroy = false
+  disable_dependent_services = false
 }
 
 data "gitlab_project" "this" {
