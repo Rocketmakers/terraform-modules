@@ -24,7 +24,7 @@ locals {
 module "runner_account" {
   source        = "terraform-google-modules/service-accounts/google"
   version       = "4.1.1"
-  project_id    = google_project_service.compute.project
+  project_id    = var.project_id
   project_roles = var.service_account_roles
   generate_keys = true
   names         = ["${var.project_prefix}-ci-runner"]
@@ -34,7 +34,7 @@ module "runner_account" {
 module "orchestrator_account" {
   source     = "terraform-google-modules/service-accounts/google"
   version    = "4.1.1"
-  project_id = google_project_service.compute.project
+  project_id = var.project_id
   project_roles = [
     "${var.project_id}=>roles/compute.admin",
     "${var.project_id}=>roles/iam.serviceAccountUser",
@@ -74,7 +74,7 @@ resource "tls_private_key" "orchestrator_ssh" {
 resource "google_compute_network" "ci_network" {
   name                    = "${var.project_prefix}-${var.name}"
   auto_create_subnetworks = false
-  project                 = google_project_service.compute.project
+  project                 = var.project_id
 }
 
 resource "google_compute_subnetwork" "ci_subnet" {
