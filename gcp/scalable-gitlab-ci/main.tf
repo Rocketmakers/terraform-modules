@@ -1,6 +1,6 @@
 locals {
   application_default_credentials_string = "/etc/gitlab-runner/application_default_credentials.json"
-  ci_cache_bucket_name = "${var.project_prefix}-ci-cache"
+  ci_cache_bucket_name                   = "${var.project_prefix}-ci-cache"
 }
 module "shared_ci" {
   source                     = "../../shared/ci-provisioner-commands"
