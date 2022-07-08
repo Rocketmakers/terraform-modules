@@ -30,7 +30,7 @@ Follow the GCR [Quickstart](https: //cloud.google.com/container-registry/docs/qu
 | `gitlab_token` | Token used to register gitlab runner | string |
 | `project_id` | Google Cloud project ID where the runner instance and related resources will be created | string |
 | `project_prefix` | A prefix given to resource names related to the runner instance | string |
-| `region` | The Region in which the created address should reside. | string |
+| `region` | The GCP region where VMs and related resources will be created. | string |
 | `runner_machine_type` | Machine type of the runner vm | string |
 | `runner_tags` | List of tags for gitlab runner (no tags will be added by default) | list(string) |
 | `zone` | Google Cloud zone where instance should be placed | string |
@@ -41,7 +41,7 @@ Follow the GCR [Quickstart](https: //cloud.google.com/container-registry/docs/qu
 | ------- | -------------------- | ------ | --------------- |
 | `allow_stopping_for_update` | Allow the instance to stop when being updated | bool | true |
 | `engine_install_url` | URL to use for engine installation through docker-machine | string | https://releases.rancher.com/install-docker/19.03.9.sh |
-| `gitlab_max_runners` | The maximum number of jobs that the runner will run concurrently on a single VM | number | 3 |
+| `gitlab_max_runners` | The maximum number of VMs that will be created (one VM will run one job at a time). | number | 3 |
 | `gitlab_runner_docker_image` | The value passed to --docker-image when registering the runner (see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker) | string | docker:stable |
 | `gitlab_runner_locked` | Setting true will limit the runner to the project that provided the registration token. Setting false will allow other projects to enable the runner. | bool | true |
 | `gitlab_runner_version` | The version of gitlab-runner to install (see https://docs.gitlab.com/runner/install/bleeding-edge.html#download-any-other-tagged-release) | string | latest |

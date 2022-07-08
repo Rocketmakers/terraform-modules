@@ -32,7 +32,7 @@ variable "zone" {
 
 variable "region" {
   type        = string
-  description = "The Region in which the created address should reside."
+  description = "The GCP region where VMs and related resources will be created."
 }
 
 variable "runner_tags" {
@@ -127,7 +127,7 @@ variable "runner_disk_size" {
 
 variable "gitlab_max_runners" {
   type        = number
-  description = "The maximum number of jobs that the runner will run concurrently on a single VM"
+  description = "The maximum number of VMs that will be created (one VM will run one job at a time)."
   default     = 3
 }
 
