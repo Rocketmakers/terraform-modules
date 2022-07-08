@@ -41,7 +41,7 @@ Follow the GCR [Quickstart](https: //cloud.google.com/container-registry/docs/qu
 | ------- | -------------------- | ------ | --------------- |
 | `allow_stopping_for_update` | Allow the instance to stop when being updated | bool | true |
 | `engine_install_url` | URL to use for engine installation through docker-machine | string | https://releases.rancher.com/install-docker/19.03.9.sh |
-| `gitlab_runner_concurrency` | The maximum number of jobs that the runner will run concurrently on a single VM | number | 3 |
+| `gitlab_max_runners` | The maximum number of jobs that the runner will run concurrently on a single VM | number | 3 |
 | `gitlab_runner_docker_image` | The value passed to --docker-image when registering the runner (see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker) | string | docker:stable |
 | `gitlab_runner_locked` | Setting true will limit the runner to the project that provided the registration token. Setting false will allow other projects to enable the runner. | bool | true |
 | `gitlab_runner_version` | The version of gitlab-runner to install (see https://docs.gitlab.com/runner/install/bleeding-edge.html#download-any-other-tagged-release) | string | latest |
