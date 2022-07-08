@@ -41,7 +41,7 @@ Follow the GCR [Quickstart](https: //cloud.google.com/container-registry/docs/qu
 | ------- | -------------------- | ------ | --------------- |
 | `allow_stopping_for_update` | Allow the instance to stop when being updated | bool | true |
 | `engine_install_url` | URL to use for engine installation through docker-machine | string | https://releases.rancher.com/install-docker/19.03.9.sh |
-| `gitlab_runner_concurrency` | The maximum number of jobs that the runner will run concurrently on a singe VM | number | 3 |
+| `gitlab_runner_concurrency` | The maximum number of jobs that the runner will run concurrently on a single VM | number | 3 |
 | `gitlab_runner_docker_image` | The value passed to --docker-image when registering the runner (see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker) | string | docker:stable |
 | `gitlab_runner_locked` | Setting true will limit the runner to the project that provided the registration token. Setting false will allow other projects to enable the runner. | bool | true |
 | `gitlab_runner_version` | The version of gitlab-runner to install (see https://docs.gitlab.com/runner/install/bleeding-edge.html#download-any-other-tagged-release) | string | latest |
@@ -49,7 +49,7 @@ Follow the GCR [Quickstart](https: //cloud.google.com/container-registry/docs/qu
 | `image_project` | Google image project to base CI on | string | ubuntu-os-cloud |
 | `name` | Main name of resources created | string | ci |
 | `orchestrator_disk_size` | Size of orchestrator disk in GB | number | 50 |
-| `orchestrator_idle_count` | Minimum number or VM's that will be left running when there is no demand for jobs | number | 0 |
+| `orchestrator_idle_count` | Minimum number of VM's that will be left running when there is no demand for jobs | number | 0 |
 | `orchestrator_idle_time` | Number of seconds for the machine to be in Idle State before it is destroyed | number | 300 |
 | `orchestrator_machine_type` | Machine type of the orchestrator vm | string | f1-micro |
 | `orchestrator_max_builds` | Maximum job count before machine is removed. | number | 100 |
@@ -183,7 +183,7 @@ module "ci" {
   ]
   gitlab_token              = data.gitlab_project.this.runners_token
   gcr_bucket_names          = [google_container_registry.registry.id]
-  gitlab_runner_concurrency = 3
+  gitlab_max_runners        = 3
   cache_location            = "EUROPE-WEST1"
 }
 ```

@@ -113,7 +113,7 @@ module "ci" {
   ]
   gitlab_token              = data.gitlab_project.this.runners_token
   gcr_bucket_names          = [google_container_registry.registry.id]
-  gitlab_runner_concurrency = 3
+  gitlab_max_runners        = 3
   cache_location            = "EUROPE-WEST1"
 }
 ```

@@ -8,7 +8,7 @@ module "shared_ci" {
   username                   = var.username
   runner_tags                = var.runner_tags
   gitlab_token               = var.gitlab_token
-  gitlab_runner_concurrency  = var.gitlab_runner_concurrency
+  gitlab_runner_concurrency  = 1
   gitlab_runner_version      = var.gitlab_runner_version
   gitlab_runner_docker_image = var.gitlab_runner_docker_image
   gitlab_runner_locked       = var.gitlab_runner_locked
@@ -180,7 +180,7 @@ resource "null_resource" "orchestrator_provisioner" {
 
     content     = <<-EOF
   [[runners]]
-    limit = ${var.gitlab_runner_concurrency}
+    limit = ${var.gitlab_max_runners}
     builds_dir = "/tmp/builds"
     [runners.docker]
       image = "${var.gitlab_runner_docker_image}"
