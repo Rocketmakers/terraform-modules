@@ -125,7 +125,7 @@ variable "runner_disk_size" {
   default     = 50
 }
 
-variable "gitlab_runner_concurrency" {
+variable "gitlab_max_runners" {
   type        = number
   description = "The maximum number of jobs that the runner will run concurrently on a single VM"
   default     = 3
