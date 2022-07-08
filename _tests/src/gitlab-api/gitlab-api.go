@@ -19,6 +19,11 @@ type TestGitlabRunnerOptions struct {
 	TerraformOptions *terraform.Options
 }
 
+type TestScalableGitlabRunnerOptions struct {
+	RunnerTag        string
+	TerraformOptions *terraform.Options
+}
+
 func createGitlabApiClient() (*gitlab.Client, error) {
 	variableName := "GITLAB_TOKEN"
 	gitlabApiToken := os.Getenv(variableName)
