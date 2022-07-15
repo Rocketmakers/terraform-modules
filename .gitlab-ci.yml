@@ -48,9 +48,9 @@ stages:
   rules:
     - *ignore-mr-duplicate-pipeline
     - *ignore-mr-reminder
+    - *not-on-pipeline-trigger
     - *not-on-schedules
     - *not-on-tags
-    - *not-on-pipeline-trigger
 
 ##############
 ## Validate ##
@@ -134,9 +134,9 @@ scalable-runner-test:
   rules:
     - *ignore-mr-duplicate-pipeline
     - *ignore-mr-reminder
+    - *only-on-pipeline-trigger
     - *not-on-schedules
     - *not-on-tags
-    - *only-on-pipeline-trigger
   script:
     - sleep 10
     - echo "Hello world"
