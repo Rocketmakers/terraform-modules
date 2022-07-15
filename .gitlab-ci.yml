@@ -26,6 +26,12 @@ stages:
     - &only-on-tags
       if: $CI_COMMIT_TAG != null
       when: on_success
+    - &only-on-pipeline-trigger
+      if: $CI_PIPELINE_TRIGGERED == true
+      when: on_success
+    - &not-on-pipeline-trigger
+      if: $CI_PIPELINE_TRIGGERED == true
+      when: never
 
 .internal-runner:
   tags:
@@ -45,6 +51,7 @@ stages:
     - *ignore-mr-reminder
     - *not-on-schedules
     - *not-on-tags
+    - *not-on-pipeline-trigger
 
 ##############
 ## Validate ##
@@ -121,3 +128,20 @@ notify:merge-request-reminder:
   before_script: []
   script:
     - node /app/lib/index.js
+
+scalable-runner-test:
+  image: alpine:latest
+  stage: analysis
+  rules:
+    - *ignore-mr-duplicate-pipeline
+    - *ignore-mr-reminder
+    - *not-on-schedules
+    - *not-on-tags
+    - *only-on-pipeline-trigger
+  only:
+    - triggers
+  script:
+    - sleep 10
+    - echo "Hello world"
+  tags:
+    - gcp-6faab9c3-9d73-4d51-ad84-d777b2d0cef0
