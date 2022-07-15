@@ -29,6 +29,9 @@ stages:
     - &not-on-pipeline-trigger
       if: $CI_PIPELINE_TRIGGERED == "true"
       when: never
+    - &only-on-pipeline-trigger
+      if: $CI_PIPELINE_TRIGGERED == "true"
+      when: on_success
 
 .internal-runner:
   tags:
@@ -134,8 +137,7 @@ scalable-runner-test:
     - *ignore-mr-reminder
     - *not-on-schedules
     - *not-on-tags
-  only:
-    - triggers
+    - *only-on-pipeline-trigger
   script:
     - sleep 10
     - echo "Hello world"
