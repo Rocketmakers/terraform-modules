@@ -28,7 +28,6 @@ stages:
       when: on_success
     - &not-on-pipeline-trigger
       if: $CI_PIPELINE_TRIGGERED == "true"
-      when: never
     - &only-on-pipeline-trigger
       if: $CI_PIPELINE_TRIGGERED == "true"
       when: on_success
