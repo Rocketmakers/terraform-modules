@@ -21,10 +21,7 @@ output "addresses" {
 
 output "internal_addresses" {
   description = "Internal network IP address of each instance"
-  value = [
-    for instance in google_compute_instance.orchestrator :
-    length(instance.network_interface) > 0 ? instance.network_interface[0].network_ip : "NOT SET"
-  ]
+  value = google_compute_instance.orchestrator.network_interface[0].network_ip
 }
 
 output "service_account_key" {
