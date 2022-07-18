@@ -1,6 +1,6 @@
 variables:
   LOG_LEVEL: info
-  NO_SCRIPTS: 'true'
+  NO_SCRIPTS: "true"
 
   # Required to validate and test the gitlab modules
   GITLAB_TOKEN: $GITLAB_ACCESS_TOKEN
@@ -28,8 +28,6 @@ stages:
       when: never
     - &not-on-pipeline-trigger
       if: $CI_PIPELINE_SOURCE == "trigger"
-      when: never
-    - &never
       when: never
     ## Inclusive Rules
     - &on-tags
@@ -127,9 +125,9 @@ notify:merge-request-reminder:
   variables:
     SLACK_WEBHOOK_URL: $SLACK_WEBHOOK_URL_PLATFORM
     GITLAB_PROJECT_IDS: $CI_PROJECT_ID
-    INCLUDE_WIP: 'false'
-    INCLUDE_DRAFT: 'false'
-    SLACK_TARGET: ':eyes:'
+    INCLUDE_WIP: "false"
+    INCLUDE_DRAFT: "false"
+    SLACK_TARGET: ":eyes:"
   rules:
     - if: "$MERGE_REQUEST_REMINDER == 'true'"
     - *not-mr-duplicate-pipeline
