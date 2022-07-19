@@ -33,6 +33,7 @@ func TestGcpGitlabCi(t *testing.T) {
 	gitlabrunners.TestCIRunners(t, &gitlabrunners.TestScalableGitlabRunnerOptions{
 		RunnerTag:        runnerTag,
 		ProjectID: 				"terraform-testing-317911",
+		GitLabProjectId: 	"33153506",
 		TerraformOptions: terraformOptions,
 	}, assertions)
 
