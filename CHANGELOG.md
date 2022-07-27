@@ -7,7 +7,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* **gcp-gitlab-ci:** Added job to test scalable CI (see [merge request](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/-/merge_requests/27))
 * **gcp-gitlab-ci:** New scalable GCP runner (see [merge request](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/-/merge_requests/25))
 
 
