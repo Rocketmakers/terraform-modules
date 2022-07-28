@@ -15,12 +15,12 @@ output "public_key" {
 }
 
 output "orchestrator_public_ip_address" {
-  description = "Static IP address of each instance"
+  description = "Static IP address of the orchestrator instance"
   value       = google_compute_address.orchestrator_static_ip.address
 }
 
 output "orchestrator_internal_ip_address" {
-  description = "Internal network IP address of each instance"
+  description = "Internal network IP address of the orchestrator instance"
   value       = google_compute_instance.orchestrator.network_interface[0].network_ip
 }
 
