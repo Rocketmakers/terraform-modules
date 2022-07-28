@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v1.1.0...v1.1.1) (2022-07-28)
+
+
+### Bug Fixes
+
+* **gcp-gitlab-ci:** Fix the outputs in scalable-gitlab-ci ([212f7f6](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/212f7f657250fbad380b43d18ee0c90fbc764779))
+* **gcp-gitlab-ci:** Include project ID in scalable runner service account roles ([dbb5a04](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/dbb5a044e614595f8c243cd16cdaa7824dd474da))
+
 ## [1.1.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v1.0.1...v1.1.0) (2022-07-27)
 
 
