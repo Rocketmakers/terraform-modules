@@ -13,7 +13,7 @@ module "project-factory_project_services" {
     "secretmanager.googleapis.com"
   ]
   disable_services_on_destroy = false
-  disable_dependent_services = false
+  disable_dependent_services  = false
 }
 
 resource "google_container_registry" "registry" {
@@ -32,9 +32,9 @@ module "ci" {
 
   source = "../../../../gcp/scalable-gitlab-ci"
 
-  project_id     = var.project_id
-  project_prefix = "scalable"
-  zone                     = "europe-west1-b"
+  project_id                = var.project_id
+  project_prefix            = "scalable"
+  zone                      = "europe-west1-b"
   region                    = "europe-west1"
   runner_tags               = [var.project_id]
   cidr_ranges               = ["212.139.176.173/32"]
@@ -49,8 +49,8 @@ module "ci" {
     "${var.project_id}=>roles/iam.serviceAccountUser",
     "${var.project_id}=>roles/monitoring.metricWriter",
   ]
-  gitlab_token              = data.gitlab_project.runner_token.runners_token
-  gcr_bucket_names          = [google_container_registry.registry.id]
-  gitlab_max_runners        = 3
-  cache_location            = "EUROPE-WEST1"
+  gitlab_token       = data.gitlab_project.runner_token.runners_token
+  gcr_bucket_names   = [google_container_registry.registry.id]
+  gitlab_max_runners = 3
+  cache_location     = "EUROPE-WEST1"
 }

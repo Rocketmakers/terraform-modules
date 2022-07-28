@@ -4,7 +4,7 @@ variable "runner_tag" {
 }
 
 variable "project_id" {
-  type = string
+  type        = string
   description = "Project id"
-  default = "terraform-testing-317911"
+  default     = "terraform-testing-317911"
 }
