@@ -63,8 +63,8 @@ Follow the GCR [Quickstart](https: //cloud.google.com/container-registry/docs/qu
 
 | name      | description                 |
 | --------- | --------------------------- |
-| `addresses` | Static IP address of each instance |
-| `internal_addresses` | Internal network IP address of each instance |
+| `orchestrator_internal_ip_address` | Internal network IP address of the orchestrator instance |
+| `orchestrator_public_ip_address` | Static IP address of the orchestrator instance |
 | `private_key` | Private SSH key |
 | `public_key` | Public SSH key |
 | `service_account_email` | Google service account email |
@@ -162,7 +162,7 @@ resource "google_container_registry" "registry" {
 }
 
 module "ci" {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-gitlab-ci?ref=v1.1.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-gitlab-ci?ref=v1.1.1"
 
   project_id                = var.project_id
   zone                     = "europe-west1-b"

@@ -14,17 +14,14 @@ output "public_key" {
   value       = tls_private_key.orchestrator_ssh.public_key_openssh
 }
 
-output "addresses" {
-  description = "Static IP address of each instance"
-  value       = google_compute_address.orchestrator_static_ip.*.address
+output "orchestrator_public_ip_address" {
+  description = "Static IP address of the orchestrator instance"
+  value       = google_compute_address.orchestrator_static_ip.address
 }
 
-output "internal_addresses" {
-  description = "Internal network IP address of each instance"
-  value = [
-    for instance in google_compute_instance.orchestrator :
-    length(instance.network_interface) > 0 ? instance.network_interface[0].network_ip : "NOT SET"
-  ]
+output "orchestrator_internal_ip_address" {
+  description = "Internal network IP address of the orchestrator instance"
+  value       = google_compute_instance.orchestrator.network_interface[0].network_ip
 }
 
 output "service_account_key" {
