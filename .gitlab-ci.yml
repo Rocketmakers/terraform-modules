@@ -1,6 +1,6 @@
 variables:
   LOG_LEVEL: info
-  NO_SCRIPTS: 'true'
+  NO_SCRIPTS: "true"
 
   # Required to validate and test the gitlab modules
   GITLAB_TOKEN: $GITLAB_ACCESS_TOKEN
@@ -12,19 +12,31 @@ stages:
 
 .base-rules:
   rules:
+    ## Exclusive Rules
     # Current bug in gitlab rules will duplicate pipelines for open MRs
-    - &ignore-mr-duplicate-pipeline
+    - &not-mr-duplicate-pipeline
       if: $CI_MERGE_REQUEST_EVENT_TYPE == "detached"
       when: never
-    - &ignore-mr-reminder
+    - &not-mr-reminder
       if: $MERGE_REQUEST_REMINDER == "true"
       when: never
     - &not-on-schedules
-      if: $CI_PIPELINE_SOURCE != "schedule"
+      if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
     - &not-on-tags
-      if: $CI_COMMIT_TAG == null
-    - &only-on-tags
-      if: $CI_COMMIT_TAG != null
+      if: $CI_COMMIT_TAG
+      when: never
+    - &not-on-pipeline-trigger
+      if: $CI_PIPELINE_SOURCE == "trigger"
+      when: never
+    ## Inclusive Rules
+    - &on-tags
+      if: $CI_COMMIT_TAG
+      when: on_success
+    - &on-pipeline-trigger
+      if: $CI_PIPELINE_SOURCE == "trigger"
+      when: on_success
+    - &run
       when: on_success
 
 .internal-runner:
@@ -41,10 +53,12 @@ stages:
   before_script:
     - make install
   rules:
-    - *ignore-mr-duplicate-pipeline
-    - *ignore-mr-reminder
+    - *not-mr-duplicate-pipeline
+    - *not-mr-reminder
+    - *not-on-pipeline-trigger
     - *not-on-schedules
     - *not-on-tags
+    - *run
 
 ##############
 ## Validate ##
@@ -82,7 +96,7 @@ release:create-tag:
   script:
     - npx rocketmakers-tag --log=trace --pkgJsonPath=./package.json
   rules:
-    - *ignore-mr-reminder
+    - *not-mr-reminder
     - if: "$CI_COMMIT_BRANCH && $CI_COMMIT_TITLE =~ /Merge branch 'release\\/[0-9\\.a-zA-Z]+' into 'master'/"
 
 notify:release:
@@ -96,8 +110,8 @@ notify:release:
   script:
     - 'cd /slack && npm run success -- -e=$ENV -v=$CI_COMMIT_TAG -m="A new version of rocketmakers terraform modules has been released. See the changelog for details: https://gitlab.com/rocketmakers/infrastructure/terraform-modules/-/blob/$CI_COMMIT_TAG/CHANGELOG.md"'
   rules:
-    - *only-on-tags
-    - *ignore-mr-reminder
+    - *on-tags
+    - *not-mr-reminder
 
 ############################
 ## Merge Request Reminder ##
@@ -111,13 +125,29 @@ notify:merge-request-reminder:
   variables:
     SLACK_WEBHOOK_URL: $SLACK_WEBHOOK_URL_PLATFORM
     GITLAB_PROJECT_IDS: $CI_PROJECT_ID
-    INCLUDE_WIP: 'false'
-    INCLUDE_DRAFT: 'false'
-    SLACK_TARGET: ':eyes:'
+    INCLUDE_WIP: "false"
+    INCLUDE_DRAFT: "false"
+    SLACK_TARGET: ":eyes:"
   rules:
     - if: "$MERGE_REQUEST_REMINDER == 'true'"
-    - *ignore-mr-duplicate-pipeline
+    - *not-mr-duplicate-pipeline
   needs: []
   before_script: []
   script:
     - node /app/lib/index.js
+
+scalable-runner-test:
+  image: alpine:latest
+  stage: analysis
+  rules:
+    - *not-mr-duplicate-pipeline
+    - *not-mr-reminder
+    - *on-pipeline-trigger
+    - *not-on-schedules
+    - *not-on-tags
+  script:
+    - sleep 10
+    - echo "Hello world"
+  tags:
+    # Check the GITLAB Scalable Runner test
+    - gcp-6faab9c3-9d73-4d51-ad84-d777b2d0cef0

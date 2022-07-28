@@ -1,6 +1,6 @@
 {
   "name": "terraform-modules",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "description": "Terraform modules for use in Rocketmakers projects",
   "private": true,
   "license": "MIT",
