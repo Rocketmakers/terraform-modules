@@ -245,12 +245,12 @@ EOF
       module.shared_ci.init_docker,
       module.shared_ci.init_docker_machine,
       [
-        "sudo -i docker-machine create --driver google --google-project ${var.project_id} --google-machine-type ${var.runner_machine_type} --google-network ${google_compute_network.ci_network.name} --google-zone ${var.zone} --google-username root --engine-install-url ${var.engine_install_url} --google-machine-image ${data.google_compute_image.ubuntu_image.self_link} --google-skip-firewall-create --google-use-internal-ip test-runner",
+        "sudo -i docker-machine create --driver google --google-project ${var.project_id} --google-machine-type ${var.runner_machine_type} --google-network ${google_compute_network.ci_network.name} --google-subnetwork ${google_compute_subnetwork.ci_subnet.name} --google-zone ${var.zone} --google-username root --engine-install-url ${var.engine_install_url} --google-machine-image ${data.google_compute_image.ubuntu_image.self_link} --google-skip-firewall-create --google-use-internal-ip test-runner",
         "sudo -i docker-machine rm -y test-runner"
       ],
       module.shared_ci.init_gitlab_runner,
       ["sudo mv /tmp/application_default_credentials.json ${local.application_default_credentials_string}"],
-      module.shared_ci.register_gitlab_runner[0],
+      module.shared_ci.register_gitlab_runner,
       local.install_monitoring_agent
     )
   }
