@@ -43,6 +43,7 @@ This module creates one or more VMs within Azure acting as gitlab-runners. Each 
 | `ip_addresses` | CI Box public IP address |
 | `private_key` | CI Box private key - used for SSH |
 | `public_key` | Public SSH key |
+| `service_principal_ids` | The ids of the underlying service principal accounts |
 | `username` | Username for CI box |
 
 ## Requirements
@@ -69,7 +70,7 @@ These are the providers used by the module.
 
 ```
 module ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/gitlab-ci?ref=v1.1.1"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/gitlab-ci?ref=v1.1.2"
 
   container_registry_name   = var.container_registry_name
   key_vault_name            = var.key_vault_name

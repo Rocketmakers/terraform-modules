@@ -3,15 +3,15 @@ locals {
   ci_cache_bucket_name                   = "${var.project_prefix}-ci-cache"
 }
 module "shared_ci" {
-  source                     = "../../shared/ci-provisioner-commands"
-  names                      = tolist(google_compute_address.orchestrator_static_ip[*].name)
-  username                   = var.username
-  runner_tags                = var.runner_tags
-  gitlab_token               = var.gitlab_token
-  gitlab_runner_concurrency  = 1
-  gitlab_runner_version      = var.gitlab_runner_version
-  gitlab_runner_docker_image = var.gitlab_runner_docker_image
-  gitlab_runner_locked       = var.gitlab_runner_locked
+  source                          = "../../shared/ci-provisioner-commands"
+  name                            = google_compute_address.orchestrator_static_ip.name
+  username                        = var.username
+  runner_tags                     = var.runner_tags
+  gitlab_token                    = var.gitlab_token
+  gitlab_orchestrator_concurrency = var.gitlab_max_runners
+  gitlab_runner_version           = var.gitlab_runner_version
+  gitlab_runner_docker_image      = var.gitlab_runner_docker_image
+  gitlab_runner_locked            = var.gitlab_runner_locked
 }
 
 locals {
@@ -59,8 +59,7 @@ module "ci_cache" {
 }
 
 resource "google_storage_bucket_iam_member" "cache" {
-  count  = length(var.gcr_bucket_names)
-  bucket = var.gcr_bucket_names[count.index]
+  bucket = local.ci_cache_bucket_name
   role   = "roles/storage.admin"
   member = "serviceAccount:${module.runner_account.email}"
 }
@@ -245,12 +244,12 @@ EOF
       module.shared_ci.init_docker,
       module.shared_ci.init_docker_machine,
       [
-        "sudo -i docker-machine create --driver google --google-project ${var.project_id} --google-machine-type ${var.runner_machine_type} --google-network ${google_compute_network.ci_network.name} --google-zone ${var.zone} --google-username root --engine-install-url ${var.engine_install_url} --google-machine-image ${data.google_compute_image.ubuntu_image.self_link} --google-skip-firewall-create --google-use-internal-ip test-runner",
+        "sudo -i docker-machine create --driver google --google-project ${var.project_id} --google-machine-type ${var.runner_machine_type} --google-network ${google_compute_network.ci_network.name} --google-subnetwork ${google_compute_subnetwork.ci_subnet.name} --google-zone ${var.zone} --google-username root --engine-install-url ${var.engine_install_url} --google-machine-image ${data.google_compute_image.ubuntu_image.self_link} --google-skip-firewall-create --google-use-internal-ip test-runner",
         "sudo -i docker-machine rm -y test-runner"
       ],
       module.shared_ci.init_gitlab_runner,
       ["sudo mv /tmp/application_default_credentials.json ${local.application_default_credentials_string}"],
-      module.shared_ci.register_gitlab_runner[0],
+      module.shared_ci.register_gitlab_runner,
       local.install_monitoring_agent
     )
   }
