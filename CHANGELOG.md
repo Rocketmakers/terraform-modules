@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.2](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v1.1.1...v1.1.2) (2022-08-09)
+
+
+### Features
+
+* **azure-gitlab-ci:** Exposed ids of underlying service principals ([19f1834](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/19f18341421526abbcdb6786d061eaed4a603e42))
+
+
+### Bug Fixes
+
+* **gcp-gitlab-ci:** Start test runner with subnetwork, allow concurrency to be set ([9b1b8c4](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/9b1b8c429be9fdffd77b7ad907fd1c66b8d53c60))
+* **gcp-gitlab-ci:** Switch gcr bucket for cache bucket so ci has permission for both ([09152e5](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/09152e5c94b7910c40291648e2663a473e7b8329))
+* **gcp-gitlab-ci:** Set one name instead of names in shared ci, set gitlab orchestrator concurrency ([0a51696](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/0a516966c80661f00c0ad0d244586ed960b87b70))
+
+
 ### [1.1.1](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v1.1.0...v1.1.1) (2022-07-28)
 
 
