@@ -59,8 +59,7 @@ module "ci_cache" {
 }
 
 resource "google_storage_bucket_iam_member" "cache" {
-  count  = length(var.gcr_bucket_names)
-  bucket = var.gcr_bucket_names[count.index]
+  bucket = local.ci_cache_bucket_name
   role   = "roles/storage.admin"
   member = "serviceAccount:${module.runner_account.email}"
 }
