@@ -3,15 +3,15 @@ locals {
   ci_cache_bucket_name                   = "${var.project_prefix}-ci-cache"
 }
 module "shared_ci" {
-  source                     = "../../shared/ci-provisioner-commands"
-  names                      = tolist(google_compute_address.orchestrator_static_ip[*].name)
-  username                   = var.username
-  runner_tags                = var.runner_tags
-  gitlab_token               = var.gitlab_token
-  gitlab_runner_concurrency  = 1
-  gitlab_runner_version      = var.gitlab_runner_version
-  gitlab_runner_docker_image = var.gitlab_runner_docker_image
-  gitlab_runner_locked       = var.gitlab_runner_locked
+  source                          = "../../shared/ci-provisioner-commands"
+  name                            = google_compute_address.orchestrator_static_ip.name
+  username                        = var.username
+  runner_tags                     = var.runner_tags
+  gitlab_token                    = var.gitlab_token
+  gitlab_orchestrator_concurrency = var.gitlab_max_runners
+  gitlab_runner_version           = var.gitlab_runner_version
+  gitlab_runner_docker_image      = var.gitlab_runner_docker_image
+  gitlab_runner_locked            = var.gitlab_runner_locked
 }
 
 locals {

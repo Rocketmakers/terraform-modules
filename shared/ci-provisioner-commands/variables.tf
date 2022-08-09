@@ -1,6 +1,6 @@
-variable "names" {
-  type        = list(string)
-  description = "Main names of resources created"
+variable "name" {
+  type        = string
+  description = "Main name of resources created"
 }
 
 variable "username" {
@@ -18,9 +18,9 @@ variable "gitlab_token" {
   description = "Token used to register gitlab runner"
 }
 
-variable "gitlab_runner_concurrency" {
+variable "gitlab_orchestrator_concurrency" {
   type        = number
-  description = "The maximum number of jobs that the runner will run concurrently"
+  description = "The maximum number of jobs that the orchestrator will run concurrently from gitlab"
 }
 
 variable "gitlab_runner_version" {
