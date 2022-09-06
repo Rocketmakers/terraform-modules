@@ -28,6 +28,33 @@ type TestScalableGitlabRunnerOptions struct {
 	TerraformOptions *terraform.Options
 }
 
+func nTrue(b []bool) int {
+	n := 0
+	for _, v := range b {
+			if v {
+					n++
+			}
+	}
+	return n
+}
+
+/*
+Check the status of the pipeline created as part of the test
+*/
+func haveAllTestPipelinesSucceeded(client *gitlab.Client, gitlabProjectId string, pipelineIds []int) bool {
+	arr := []bool{}
+	for _, s := range pipelineIds {
+		pipeline, _, err := client.Pipelines.GetPipeline(gitlabProjectId, s);
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		arr = append(arr, pipeline.Status == "success")
+	}
+
+	return nTrue(arr) == len(pipelineIds)
+}
+
 /**
 Get token from Environment Variables
 */
@@ -141,10 +168,12 @@ func TestCIRunners(t *testing.T, opt *TestScalableGitlabRunnerOptions, assertion
 	}
 
 	numberOfPipelines := 5
+	pipelineIds := []int{}
 	// Trigger multiple jobs to ensure orchestrator creates multiple VM's
 	for i := 0; i < numberOfPipelines; i++ {
-		_, _, err := client.PipelineTriggers.RunPipelineTrigger(gitlabProjectId, runPipelineTriggerOptions)
+		pipeline, _, err := client.PipelineTriggers.RunPipelineTrigger(gitlabProjectId, runPipelineTriggerOptions)
 		require.NoError(t, err)
+		pipelineIds = append(pipelineIds, pipeline.ID)
 	}
 
 	if (cleanUp) {
@@ -161,7 +190,7 @@ func TestCIRunners(t *testing.T, opt *TestScalableGitlabRunnerOptions, assertion
 	}
 
 	const retryInterval = 1 * time.Second
-	const retryTimeout = 30 * time.Second
+	const retryTimeout = 300 * time.Second
 	pollErr := wait.PollImmediate(retryInterval, retryTimeout, func() (bool, error) {
 		list, err := listVMInstancesForProject(opt.ProjectID, "europe-west1-b")
 		if err != nil {
@@ -176,12 +205,20 @@ func TestCIRunners(t *testing.T, opt *TestScalableGitlabRunnerOptions, assertion
 
 	assert.Equal(t, pollErr, nil, "Expecting to find VM's associated with the scalable CI");
 	
-	// Allow time for the runner to become active
-	vmSpinDownWaitSeconds := 300
-	fmt.Printf("\nWaiting %v seconds to allow the VM's to spin down...\n\n", vmSpinDownWaitSeconds)
-	time.Sleep(time.Duration(vmSpinDownWaitSeconds) * time.Second)
+
+	// Check that the jobs all succeed
+	const retryInterval = 5 * time.Second
+	wait.PollImmediate(retryInterval, retryTimeout, func() (bool, error) {
+		return haveAllTestPipelinesSucceeded(git, pipelineIds), nil
+	})
+	
+	fmt.Printf("\nWaiting %v seconds to allow the VM's to spin down...\n\n", retryTimeout)
+	time.Sleep(retryTimeout)
 	// // Exit code 2 means there are changes in the plan
 	// // Exit code 1 means there was an error in the plan
 	exit_code := terraform.PlanExitCode(t, terraformOptions)
 	assert.Equal(t, 0, exit_code, "Expecting plan with no changes")
+
+	// Run assertions before the terraform resources are destroyed
+	assertions(t, terraformOptions)
 }
