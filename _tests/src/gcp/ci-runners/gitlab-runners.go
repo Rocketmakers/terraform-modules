@@ -48,7 +48,8 @@ func haveAllTestPipelinesSucceeded(client *gitlab.Client, gitlabProjectId string
 		if err != nil {
 			log.Fatal(err)
 		}
-
+		
+		log.Printf("Pipeline %s = %s\n", s, pipeline.Status)
 		arr = append(arr, pipeline.Status == "success")
 	}
 
@@ -157,7 +158,7 @@ func TestCIRunners(t *testing.T, opt *TestScalableGitlabRunnerOptions, assertion
 	time.Sleep(time.Duration(waitSeconds) * time.Second)
 	
 	// Trigger multiple pipelines
-	fmt.Printf("\nCreating Pipeline Triggers")
+	fmt.Printf("\nCreating Pipeline Triggers\n")
 	trigger, err := createGitlabPipelineTrigger(client, gitlabProjectId, gitlabBranch, gitlabToken)
 	require.NoError(t, err)
 
@@ -189,9 +190,9 @@ func TestCIRunners(t *testing.T, opt *TestScalableGitlabRunnerOptions, assertion
 		defer terraform.Destroy(t, terraformOptions)
 	}
 
-	const retryInterval = 1 * time.Second
+	const retryInterval = 5 * time.Second
 	const retryTimeout = 300 * time.Second
-	pollErr := wait.PollImmediate(retryInterval, retryTimeout, func() (bool, error) {
+	instancePollErr := wait.PollImmediate(retryInterval, retryTimeout, func() (bool, error) {
 		list, err := listVMInstancesForProject(opt.ProjectID, "europe-west1-b")
 		if err != nil {
 			log.Printf("%s", err)
@@ -203,14 +204,14 @@ func TestCIRunners(t *testing.T, opt *TestScalableGitlabRunnerOptions, assertion
 		return len(list) >= opt.ExpectedNumberOfInstances, nil
 	})
 
-	assert.Equal(t, pollErr, nil, "Expecting to find VM's associated with the scalable CI");
+	assert.Equal(t, instancePollErr, nil, "Expecting to find VM's associated with the scalable CI");
 	
-
-	// Check that the jobs all succeed
-	const retryInterval = 5 * time.Second
-	wait.PollImmediate(retryInterval, retryTimeout, func() (bool, error) {
-		return haveAllTestPipelinesSucceeded(git, pipelineIds), nil
+	log.Println("Checking Pipelines Succeed")
+	pipelineSucceededErr := wait.PollImmediate(retryInterval, retryTimeout, func() (bool, error) {
+		return haveAllTestPipelinesSucceeded(client, gitlabProjectId, pipelineIds), nil
 	})
+
+	assert.Equal(t, pipelineSucceededErr, nil, "Expecting to all test pipelines to succeed");
 	
 	fmt.Printf("\nWaiting %v seconds to allow the VM's to spin down...\n\n", retryTimeout)
 	time.Sleep(retryTimeout)
