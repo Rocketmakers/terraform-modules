@@ -15,7 +15,8 @@ import (
 func TestGcpGitlabCi(t *testing.T) {
 	// Construct the terraform options with default retryable errors to handle the most common
 	// retryable errors in terraform testing.
-	runnerTag := "gcp-d7500544-e29d-451b-bd3f-083065f46b67"
+	runnerTag := "gcp-6faab9c3-9d73-4d51-ad84-d777b2d0cef0"
+	gitlabMaxRunners := 3
 
 	backendConfigOptions := backendconfig.GcsBackendConfigOptions{
 		Prefix: "gcp/scalable-gitlab-ci",
@@ -27,6 +28,7 @@ func TestGcpGitlabCi(t *testing.T) {
 		TerraformDir:  "../../../config/gcp/scalable-gitlab-ci",
 		Vars: map[string]interface{}{
 			"runner_tag":     runnerTag,
+			"gitlab_max_runners": gitlabMaxRunners,
 		},
 	})
 
@@ -34,6 +36,7 @@ func TestGcpGitlabCi(t *testing.T) {
 		RunnerTag:        runnerTag,
 		ProjectID: 				"terraform-testing-317911",
 		GitLabProjectId: 	"33153506",
+		ExpectedNumberOfInstances: gitlabMaxRunners,
 		TerraformOptions: terraformOptions,
 	}, assertions)
 

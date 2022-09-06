@@ -24,6 +24,7 @@ type TestScalableGitlabRunnerOptions struct {
 	RunnerTag        string
 	ProjectID   		 string
 	GitLabProjectId  string
+	ExpectedNumberOfInstances int
 	TerraformOptions *terraform.Options
 }
 
@@ -66,7 +67,6 @@ func listVMInstancesForProject(projectID string, zone string) ([]string, error) 
 
 	log.Println("Checking for VM Instances in zone", zone)
 	it := instancesClient.List(ctx, req)
-	log.Println("Found VM Instances", it)
 	for {
 					instance, err := it.Next()
 					if err == iterator.Done {
@@ -75,6 +75,7 @@ func listVMInstancesForProject(projectID string, zone string) ([]string, error) 
 					if err != nil {
 						return nil, err
 					}
+					log.Printf("Found VM Instance %s", instance.GetName())
 					if strings.Contains(instance.GetName(), "auto-scale-") {
 						arr = append(arr, instance.GetName())
 					}
@@ -124,11 +125,12 @@ func TestCIRunners(t *testing.T, opt *TestScalableGitlabRunnerOptions, assertion
 	terraform.InitAndApply(t, terraformOptions)
 	
 	// Allow time for the runner to become active
-	waitSeconds := 10
+	waitSeconds := 60
 	fmt.Printf("\nWaiting %v seconds to allow the runner to become active...\n\n", waitSeconds)
 	time.Sleep(time.Duration(waitSeconds) * time.Second)
-
+	
 	// Trigger multiple pipelines
+	fmt.Printf("\nCreating Pipeline Triggers")
 	trigger, err := createGitlabPipelineTrigger(client, gitlabProjectId, gitlabBranch, gitlabToken)
 	require.NoError(t, err)
 
@@ -138,8 +140,9 @@ func TestCIRunners(t *testing.T, opt *TestScalableGitlabRunnerOptions, assertion
 		Token: gitlab.String(trigger.Token),
 	}
 
+	numberOfPipelines := 5
 	// Trigger multiple jobs to ensure orchestrator creates multiple VM's
-	for i := 1; i < 3; i++ {
+	for i := 0; i < numberOfPipelines; i++ {
 		_, _, err := client.PipelineTriggers.RunPipelineTrigger(gitlabProjectId, runPipelineTriggerOptions)
 		require.NoError(t, err)
 	}
@@ -149,19 +152,18 @@ func TestCIRunners(t *testing.T, opt *TestScalableGitlabRunnerOptions, assertion
 		listPipelinesOptions := &gitlab.ListProjectPipelinesOptions {
 			Source: gitlab.String("trigger"),
 		}
-		defer triggeredPipelines, _, _ := client.Pipelines.ListProjectPipelines(gitlabProjectId,listPipelinesOptions)
-
-		log.Println(triggeredPipelines)
+		defer client.Pipelines.ListProjectPipelines(gitlabProjectId,listPipelinesOptions)
 
 		// Clean up resources at the end of the test.
 		defer client.PipelineTriggers.DeletePipelineTrigger(gitlabProjectId, trigger.ID)
+
 		defer terraform.Destroy(t, terraformOptions)
 	}
 
 	const retryInterval = 1 * time.Second
 	const retryTimeout = 30 * time.Second
 	pollErr := wait.PollImmediate(retryInterval, retryTimeout, func() (bool, error) {
-		list, err := listVMInstancesForProject(opt.ProjectID, "europe-west1-d")
+		list, err := listVMInstancesForProject(opt.ProjectID, "europe-west1-b")
 		if err != nil {
 			log.Printf("%s", err)
 		}
@@ -169,12 +171,15 @@ func TestCIRunners(t *testing.T, opt *TestScalableGitlabRunnerOptions, assertion
 			log.Println("Currently no VM instances in GCP which include name auto-scale-")
 		}
 
-		return len(list) >= 1, nil
+		return len(list) >= opt.ExpectedNumberOfInstances, nil
 	})
 
-	assert.NotEqual(t, pollErr, , "Should find ");
 	assert.Equal(t, pollErr, nil, "Expecting to find VM's associated with the scalable CI");
-
+	
+	// Allow time for the runner to become active
+	vmSpinDownWaitSeconds := 300
+	fmt.Printf("\nWaiting %v seconds to allow the VM's to spin down...\n\n", vmSpinDownWaitSeconds)
+	time.Sleep(time.Duration(vmSpinDownWaitSeconds) * time.Second)
 	// // Exit code 2 means there are changes in the plan
 	// // Exit code 1 means there was an error in the plan
 	exit_code := terraform.PlanExitCode(t, terraformOptions)
