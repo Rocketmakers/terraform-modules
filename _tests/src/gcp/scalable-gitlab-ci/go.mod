@@ -5,29 +5,28 @@ go 1.17
 require (
 	github.com/gruntwork-io/terratest v0.40.18
 	github.com/stretchr/testify v1.8.0
-	github.com/xanzy/go-gitlab v0.68.2
-	gitlabrunners v1.0.0
+	github.com/xanzy/go-gitlab v0.73.1
+	k8s.io/apimachinery v0.20.6
 )
 
 require (
-	cloud.google.com/go/compute v1.7.0 // indirect
+	cloud.google.com/go/compute v1.9.0 // indirect
 	cloud.google.com/go/iam v0.3.0 // indirect
 	github.com/go-logr/logr v0.2.0 // indirect
 	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
-	github.com/google/uuid v1.2.0 // indirect
-	github.com/googleapis/enterprise-certificate-proxy v0.0.0-20220520183353-fd19c99a87aa // indirect
-	github.com/googleapis/go-type-adapters v1.0.0 // indirect
+	github.com/google/uuid v1.3.0 // indirect
+	github.com/googleapis/enterprise-certificate-proxy v0.1.0 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.1 // indirect
-	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
-	k8s.io/apimachinery v0.20.6 // indirect
+	golang.org/x/time v0.0.0-20220722155302-e5dcc9cfc0b9 // indirect
 	k8s.io/klog/v2 v2.4.0 // indirect
+	rmutils v1.0.0 // indirect
 )
 
 require (
 	backendconfig v1.0.0
-	cloud.google.com/go v0.102.0 // indirect
-	cloud.google.com/go/storage v1.22.1 // indirect
+	cloud.google.com/go v0.102.1 // indirect
+	cloud.google.com/go/storage v1.26.0 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/aws/aws-sdk-go v1.40.56 // indirect
@@ -58,21 +57,25 @@ require (
 	github.com/zclconf/go-cty v1.9.1 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
-	golang.org/x/net v0.0.0-20220607020251-c690dde0001d // indirect
-	golang.org/x/oauth2 v0.0.0-20220608161450-d0670ef3b1eb // indirect
-	golang.org/x/sys v0.0.0-20220610221304-9f5ed59c137d // indirect
+	golang.org/x/net v0.0.0-20220805013720-a33c5aa5df48 // indirect
+	golang.org/x/oauth2 v0.0.0-20220822191816-0ebed06d0094 // indirect
+	golang.org/x/sys v0.0.0-20220728004956-3c1f35247d10 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
-	google.golang.org/api v0.84.0 // indirect
+	google.golang.org/api v0.95.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20220616135557-88e70c0c3a90 // indirect
-	google.golang.org/grpc v1.47.0 // indirect
-	google.golang.org/protobuf v1.28.0 // indirect
+	google.golang.org/genproto v0.0.0-20220810155839-1856144b1d9c // indirect
+	google.golang.org/grpc v1.48.0 // indirect
+	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	rmgcp v1.0.0
+	rmgitlab v1.0.0
 )
 
 replace (
 	backendconfig v1.0.0 => ../../backend-config
 	gitlabapi v1.0.0 => ../../gitlab-api
-	gitlabrunners v1.0.0 => ../ci-runners
+	rmgcp v1.0.0 => ../../modules/gcp
+	rmgitlab v1.0.0 => ../../modules/gitlab
+	rmutils v1.0.0 => ../../modules/rmutils
 )

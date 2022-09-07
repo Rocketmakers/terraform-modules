@@ -1,11 +1,19 @@
 {
   "cSpell.words": [
+    "apimachinery",
     "azurerm",
+    "backendconfig",
     "dind",
     "gitlab",
+    "gruntwork",
     "Kubernetes",
+    "Retryable",
+    "rmgitlab",
     "rocketmakers",
+    "stretchr",
     "Terraform",
-    "terratest"
-  ]
+    "terratest",
+    "xanzy"
+  ],
+  "go.useLanguageServer": true
 }
