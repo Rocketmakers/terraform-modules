@@ -22,7 +22,7 @@ func CreateGitlabPipelineTrigger(client *gitlab.Client, gitlabProjectId string, 
 
 	if err != nil {
 		log.Printf("Could not create pipeline trigger", err)
-		return nil, nil
+		return nil, err
 	}
 
 	return newPipelineTrigger, nil

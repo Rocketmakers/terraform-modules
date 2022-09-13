@@ -4,12 +4,12 @@ variable "runner_tag" {
 }
 
 variable "project_id" {
-  type = string
+  type        = string
   description = "Project id"
-  default = "terraform-testing-317911"
+  default     = "terraform-testing-317911"
 }
 variable "gitlab_max_runners" {
-  type        = number
+  type = number
 }
 
 variable "runner_machine_name" {

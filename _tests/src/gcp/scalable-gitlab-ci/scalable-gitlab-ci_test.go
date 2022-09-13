@@ -91,12 +91,6 @@ func TestGcpGitlabCi(t *testing.T) {
 	}
 
 	if cleanUp {
-
-		listPipelinesOptions := &gitlab.ListProjectPipelinesOptions{
-			Source: gitlab.String("trigger"),
-		}
-		defer client.Pipelines.ListProjectPipelines(gitlabProjectId, listPipelinesOptions)
-
 		// Clean up resources at the end of the test.
 		defer client.PipelineTriggers.DeletePipelineTrigger(gitlabProjectId, trigger.ID)
 
@@ -117,14 +111,14 @@ func TestGcpGitlabCi(t *testing.T) {
 		return len(list) >= gitlabMaxRunners, nil
 	})
 
-	assert.Equal(t, instancePollErr, nil, "Expecting to find VM's associated with the scalable CI")
+	assert.NoError(t, instancePollErr, "Expecting to find VM's associated with the scalable CI")
 
 	log.Println("Checking Pipelines Succeed")
 	pipelineSucceededErr := wait.PollImmediate(retryInterval, retryTimeout, func() (bool, error) {
 		return rmgitlab.HaveAllTestPipelinesSucceeded(client, gitlabProjectId, pipelineIds), nil
 	})
 
-	assert.Equal(t, pipelineSucceededErr, nil, "Expecting to all test pipelines to succeed")
+	assert.NoError(t, pipelineSucceededErr, "Expecting to all test pipelines to succeed")
 
 	log.Printf("\nWaiting %v to allow the VM's to spin down...\n\n", retryTimeout)
 	time.Sleep(retryTimeout)
