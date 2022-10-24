@@ -135,5 +135,11 @@ func TestGcpGitlabCi(t *testing.T) {
 	service_account_email := terraform.Output(t, terraformOptions, "service_account_email")
 	assert.NotNil(t, service_account_email)
 
+	runner_service_account_key := terraform.Output(t, terraformOptions, "runner_service_account_key")
+	assert.NotNil(t, runner_service_account_key)
+
+	runner_service_account_email := terraform.Output(t, terraformOptions, "runner_service_account_email")
+	assert.NotNil(t, runner_service_account_email)
+
 	log.Println("🚀 Done 🚀")
 }
