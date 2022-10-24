@@ -25,23 +25,34 @@ output "orchestrator_internal_ip_address" {
 }
 
 output "service_account_key" {
-  description = "Google service account key"
+  description = "[Deprecated] Google service account key. Use orchestrator_service_account_key instead"
   value       = module.orchestrator_account.key
   sensitive   = true
 }
 
 output "service_account_email" {
-  description = "Google service account email"
+  description = "[Deprecated] Google service account email. Use orchestrator_service_account_email instead"
+  value       = module.orchestrator_account.email
+}
+
+output "orchestrator_service_account_key" {
+  description = "Google service account key for the orchestrator"
+  value       = module.orchestrator_account.key
+  sensitive   = true
+}
+
+output "orchestrator_service_account_email" {
+  description = "Google service account email for the orchestrator"
   value       = module.orchestrator_account.email
 }
 
 output "runner_service_account_key" {
-  description = "Google service account key for the runner"
+  description = "Google service account key for the runner(s)"
   value       = module.runner_account.key
   sensitive   = true
 }
 
 output "runner_service_account_email" {
-  description = "Google service account email for the runner"
+  description = "Google service account email for the runner(s)"
   value       = module.runner_account.email
 }

@@ -65,12 +65,14 @@ Follow the GCR [Quickstart](https: //cloud.google.com/container-registry/docs/qu
 | --------- | --------------------------- |
 | `orchestrator_internal_ip_address` | Internal network IP address of the orchestrator instance |
 | `orchestrator_public_ip_address` | Static IP address of the orchestrator instance |
+| `orchestrator_service_account_email` | Google service account email for the orchestrator |
+| `orchestrator_service_account_key` | Google service account key for the orchestrator |
 | `private_key` | Private SSH key |
 | `public_key` | Public SSH key |
-| `runner_service_account_email` | Google service account email for the runner |
-| `runner_service_account_key` | Google service account key for the runner |
-| `service_account_email` | Google service account email |
-| `service_account_key` | Google service account key |
+| `runner_service_account_email` | Google service account email for the runner(s) |
+| `runner_service_account_key` | Google service account key for the runner(s) |
+| `service_account_email` | [Deprecated] Google service account email. Use orchestrator_service_account_email instead |
+| `service_account_key` | [Deprecated] Google service account key. Use orchestrator_service_account_key instead |
 | `username` | Username for CI box |
 
 ## Requirements
