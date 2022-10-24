@@ -129,11 +129,17 @@ func TestGcpGitlabCi(t *testing.T) {
 	assert.Equal(t, 0, exit_code, "Expecting plan with no changes")
 
 	// Run assertions before the terraform resources are destroyed
-	service_account_key := terraform.Output(t, terraformOptions, "service_account_key")
-	assert.NotNil(t, service_account_key)
+	orchestrator_service_account_key := terraform.Output(t, terraformOptions, "orchestrator_service_account_key")
+	assert.NotNil(t, orchestrator_service_account_key)
 
-	service_account_email := terraform.Output(t, terraformOptions, "service_account_email")
-	assert.NotNil(t, service_account_email)
+	orchestrator_service_account_email := terraform.Output(t, terraformOptions, "orchestrator_service_account_email")
+	assert.NotNil(t, orchestrator_service_account_email)
+
+	runner_service_account_key := terraform.Output(t, terraformOptions, "runner_service_account_key")
+	assert.NotNil(t, runner_service_account_key)
+
+	runner_service_account_email := terraform.Output(t, terraformOptions, "runner_service_account_email")
+	assert.NotNil(t, runner_service_account_email)
 
 	log.Println("🚀 Done 🚀")
 }
