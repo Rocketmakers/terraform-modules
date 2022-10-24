@@ -67,6 +67,8 @@ Follow the GCR [Quickstart](https: //cloud.google.com/container-registry/docs/qu
 | `orchestrator_public_ip_address` | Static IP address of the orchestrator instance |
 | `private_key` | Private SSH key |
 | `public_key` | Public SSH key |
+| `runner_service_account_email` | Google service account email for the runner |
+| `runner_service_account_key` | Google service account key for the runner |
 | `service_account_email` | Google service account email |
 | `service_account_key` | Google service account key |
 | `username` | Username for CI box |
