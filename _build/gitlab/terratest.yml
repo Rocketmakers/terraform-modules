@@ -30,12 +30,25 @@
       junit:
         - _tests/src/$TERRATEST_DIR/*.xml
 
+##################
+## Test Anchors ##
+##################
 .terratest.gcp:
   extends: 
     - .terratest
   before_script:
     - *get_gcp_credentials
 
+.terratest.az:
+  extends: 
+    - .terratest
+  image: rocketmakers/ci-terraform-az:3.7.0
+  before_script:
+    - make az-login
+
+###########
+## Tests ##
+###########
 scalable-runner-test.gcp:
   extends:
     - .terratest.gcp
@@ -49,3 +62,11 @@ non-scalable-runner-test.gcp:
   variables:
     TERRATEST_DIR: gcp/gitlab-ci
     TEST_NAME: gcp-gitlab-ci
+
+non-scalable-runner-test.az:
+  extends:
+    - .terratest.az
+  variables:
+    TERRATEST_DIR: azure/gitlab-ci
+    TEST_NAME: azure-gitlab-ci
+    RUN_TERRATEST: "true"
