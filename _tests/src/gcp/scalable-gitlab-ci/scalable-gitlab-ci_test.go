@@ -2,7 +2,6 @@ package gcpscalablegitlabci
 
 import (
 	"backendconfig"
-	"log"
 	"os"
 	"path/filepath"
 	"testing"
@@ -10,12 +9,14 @@ import (
 
 	"rmgcp"
 	"rmgitlab"
+	"rmutils"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/xanzy/go-gitlab"
 	"k8s.io/apimachinery/pkg/util/wait"
 
+	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
@@ -28,12 +29,16 @@ func TestGcpGitlabCi(t *testing.T) {
 	gcpProjectId := "terraform-testing-317911"
 	gitlabBranch := "develop"
 	projectPrefix := "testing"
+	gcpProjectZone := "europe-west1-b"
+	gcpProjectRegion := "europe-west1"
 	runnerMachineName := "auto-scale-"
-	cleanUp := os.Getenv("CLEANUP") != "false"
 	retryInterval := 5 * time.Second
 	retryTimeout := 300 * time.Second
 	numberOfPipelines := 5
-	
+
+	ipAddress, err := rmutils.GetMachineExternalIPAddress()
+	require.NoError(t, err)
+
 	backendConfigOptions := backendconfig.GcsBackendConfigOptions{
 		Prefix: "gcp/scalable-gitlab-ci",
 	}
@@ -43,10 +48,13 @@ func TestGcpGitlabCi(t *testing.T) {
 		BackendConfig: backendConfig,
 		TerraformDir:  "../../../config/gcp/scalable-gitlab-ci",
 		Vars: map[string]interface{}{
-			"project_prefix": projectPrefix,
-			"runner_tag": runnerTag,
-			"gitlab_max_runners": gitlabMaxRunners,
+			"project_prefix":      projectPrefix,
+			"runner_tag":          runnerTag,
+			"gcp_project_region":  gcpProjectRegion,
+			"gcp_project_zone":    gcpProjectZone,
+			"gitlab_max_runners":  gitlabMaxRunners,
 			"runner_machine_name": runnerMachineName + "%s",
+			"cidr_range":          ipAddress.String() + "/32",
 		},
 	})
 
@@ -58,9 +66,14 @@ func TestGcpGitlabCi(t *testing.T) {
 	client, err := rmgitlab.CreateGitlabApiClient(gitlabToken)
 	require.NoError(t, err)
 
+	defer rmgitlab.RemoveGitlabTestRunners(client, t, gitlabProjectId, projectPrefix+"-ci")
+
 	// Remove the lock file so we get the latest providers each time
 	lockFilePath := filepath.Join(terraformOptions.TerraformDir, ".terraform.lock.hcl")
 	os.Remove(lockFilePath)
+
+	// This has to occur before the init stage https://github.com/gruntwork-io/terratest/issues/511#issuecomment-619873137
+	defer terraform.Destroy(t, terraformOptions)
 
 	// Create resources
 	// Run "terraform init" and "terraform apply". Fail the test if there are any errors.
@@ -68,12 +81,12 @@ func TestGcpGitlabCi(t *testing.T) {
 
 	// Allow time for the runner to become active
 	waitSeconds := 60
-	log.Printf("\nWaiting %v seconds to allow the runner to become active...\n\n", waitSeconds)
+	logger.Logf(t, "\nWaiting %v seconds to allow the runner to become active...\n\n", waitSeconds)
 	time.Sleep(time.Duration(waitSeconds) * time.Second)
 
 	// Trigger multiple pipelines
-	log.Printf("\nCreating Pipeline Triggers\n")
-	trigger, err := rmgitlab.CreateGitlabPipelineTrigger(client, gitlabProjectId, gitlabBranch, gitlabToken)
+	logger.Log(t, "\nCreating Pipeline Triggers\n")
+	trigger, err := rmgitlab.CreateGitlabPipelineTrigger(client, t, gitlabProjectId, gitlabBranch, gitlabToken)
 	require.NoError(t, err)
 
 	// Trigger
@@ -90,22 +103,15 @@ func TestGcpGitlabCi(t *testing.T) {
 		pipelineIds = append(pipelineIds, pipeline.ID)
 	}
 
-	if cleanUp {
-		// Clean up resources at the end of the test.
-		defer client.PipelineTriggers.DeletePipelineTrigger(gitlabProjectId, trigger.ID)
-
-		defer rmgitlab.RemoveGitlabTestRunners(client, gitlabProjectId, projectPrefix + "-ci")
-
-		defer terraform.Destroy(t, terraformOptions)
-	}
+	defer client.PipelineTriggers.DeletePipelineTrigger(gitlabProjectId, trigger.ID)
 
 	instancePollErr := wait.PollImmediate(retryInterval, retryTimeout, func() (bool, error) {
-		list, err := rmgcp.ListVMInstancesForProject(gcpProjectId, "europe-west1-b", runnerMachineName)
+		list, err := rmgcp.ListVMInstancesForProject(t, gcpProjectId, gcpProjectZone, runnerMachineName)
 		if err != nil {
-			log.Printf("%s", err)
+			logger.Logf(t, "%s", err)
 		}
 		if len(list) == 0 {
-			log.Printf("Currently no VM instances in GCP which include name %s\n", runnerMachineName)
+			logger.Logf(t, "Currently no VM instances in GCP which include name %s\n", runnerMachineName)
 		}
 
 		return len(list) >= gitlabMaxRunners, nil
@@ -113,14 +119,14 @@ func TestGcpGitlabCi(t *testing.T) {
 
 	assert.NoError(t, instancePollErr, "Expecting to find VM's associated with the scalable CI")
 
-	log.Println("Checking Pipelines Succeed")
+	logger.Log(t, "Checking Pipelines Succeed")
 	pipelineSucceededErr := wait.PollImmediate(retryInterval, retryTimeout, func() (bool, error) {
-		return rmgitlab.HaveAllTestPipelinesSucceeded(client, gitlabProjectId, pipelineIds), nil
+		return rmgitlab.HaveAllTestPipelinesSucceeded(client, t, gitlabProjectId, pipelineIds), nil
 	})
 
 	assert.NoError(t, pipelineSucceededErr, "Expecting to all test pipelines to succeed")
 
-	log.Printf("\nWaiting %v to allow the VM's to spin down...\n\n", retryTimeout)
+	logger.Logf(t, "\nWaiting %v to allow the VM's to spin down...\n\n", retryTimeout)
 	time.Sleep(retryTimeout)
 
 	// // Exit code 2 means there are changes in the plan
@@ -141,5 +147,5 @@ func TestGcpGitlabCi(t *testing.T) {
 	runner_service_account_email := terraform.Output(t, terraformOptions, "runner_service_account_email")
 	assert.NotNil(t, runner_service_account_email)
 
-	log.Println("🚀 Done 🚀")
+	logger.Log(t, "🚀 Done 🚀")
 }

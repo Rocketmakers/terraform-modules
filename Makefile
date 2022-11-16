@@ -3,11 +3,14 @@
 #############################
 M 									= $(shell printf "\033[34;1m▶\033[0m")
 sed 								= $(shell printf "sed")
-SHELL 							:= /bin/bash
+UNAME 							= $(shell uname -s)
+SHELL 							:= /bin/bash -o pipefail
 SHELL_SCRIPTS 			:= _build/scripts
 TSNODE 							:= node_modules/.bin/ts-node
 TSNODE_SCRIPTS			:= _build/run
 LOG_LEVEL						?= info
+TERRATEST_LOG_PARSER_VERSION ?= v0.40.24
+ARCHITECTURE                 ?= linux_amd64
 
 # Set false to leave resources in place after testing (speed up feedback loops)
 CLEANUP ?= true
@@ -26,6 +29,13 @@ endif
 ifeq ($(detected_OS),Darwin)
 	sed = $(shell printf "gsed")
 endif
+
+define InstallTerratestLogParser
+	curl --location --silent --fail --show-error -o terratest_log_parser https://github.com/gruntwork-io/terratest/releases/download/${TERRATEST_LOG_PARSER_VERSION}/terratest_log_parser_${ARCHITECTURE}
+	chmod +x terratest_log_parser
+	mv terratest_log_parser /usr/local/bin
+endef
+
 
 .PHONY: clean
 clean:
@@ -64,9 +74,14 @@ setup-go:
 	asdf install golang
 
 .PHONY: test
-test: setup-go
+test: setup-go setup-terraform
 	$(info $(M) Running tests for $(TERRATEST_DIR)...)
+ifeq ($(UNAME),Darwin)
 	(cd _tests/src/$(TERRATEST_DIR) && go test -timeout 60m)
+else 
+	$(call InstallTerratestLogParser)
+	(cd _tests/src/$(TERRATEST_DIR) && go test -timeout 60m | tee test_output.log) && (terratest_log_parser -testlog _tests/src/$(TERRATEST_DIR)/test_output.log -outputdir _tests/src/$(TERRATEST_DIR))
+endif
 
 .PHONY: format-all
 format-all:
@@ -88,3 +103,8 @@ bump-version: install
 changelog:
 	$(info $(M) Generating changelog...)
 	npx standard-version
+
+.PHONY: send-slack
+send-slack: install
+	$(info $(M) Sending slack message...)
+	$(TSNODE) $(TSNODE_SCRIPTS)/slack.ts --log=${LOG_LEVEL} -t=${TEST_NAME}

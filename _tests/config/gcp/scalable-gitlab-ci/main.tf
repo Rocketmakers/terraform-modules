@@ -10,13 +10,17 @@ module "project-factory_project_services" {
     "run.googleapis.com",
     "servicenetworking.googleapis.com",
     "vpcaccess.googleapis.com",
-    "secretmanager.googleapis.com"
+    "secretmanager.googleapis.com",
+    "cloudresourcemanager.googleapis.com"
   ]
   disable_services_on_destroy = false
   disable_dependent_services  = false
 }
 
 resource "google_container_registry" "registry" {
+  depends_on = [
+    module.project-factory_project_services
+  ]
   project  = var.project_id
   location = "EU"
 }
@@ -34,10 +38,10 @@ module "ci" {
 
   project_id                = var.project_id
   project_prefix            = var.project_prefix
-  zone                      = "europe-west1-b"
-  region                    = "europe-west1"
+  zone                      = var.gcp_project_zone
+  region                    = var.gcp_project_region
   runner_tags               = [var.runner_tag]
-  cidr_ranges               = ["212.139.176.173/32"]
+  cidr_ranges               = [var.cidr_range]
   orchestrator_machine_type = "f1-micro"
   orchestrator_idle_time    = 10
   runner_machine_type       = "n2d-standard-2"

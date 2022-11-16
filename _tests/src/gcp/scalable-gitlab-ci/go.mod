@@ -12,6 +12,7 @@ require (
 require (
 	cloud.google.com/go/compute v1.9.0 // indirect
 	cloud.google.com/go/iam v0.3.0 // indirect
+	github.com/glendc/go-external-ip v0.1.0 // indirect
 	github.com/go-logr/logr v0.2.0 // indirect
 	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect

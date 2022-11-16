@@ -1,6 +1,7 @@
 package awsgitlabci
 
 import (
+	"rmutils"
 	"backendconfig"
 	"fmt"
 	"gitlabapi"
