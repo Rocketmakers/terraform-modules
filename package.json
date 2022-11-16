@@ -6,7 +6,7 @@
   "license": "MIT",
   "devDependencies": {
     "@rocketmakers/log": "^0.1.0",
-    "@rocketmakers/shell-commands": "^5.1.0",
+    "@rocketmakers/shell-commands": "^5.4.0",
     "@types/bunyan": "^1.8.8",
     "@types/node": "^16.11.21",
     "@types/underscore": "^1.10.23",
