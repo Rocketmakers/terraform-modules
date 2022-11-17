@@ -89,45 +89,36 @@ data "azurerm_key_vault" "core" {
   resource_group_name = data.azurerm_resource_group.core.name
 }
 
-resource "azurerm_virtual_machine" "ci_box" {
-  count                 = var.instance_count
-  name                  = "${var.project_prefix}-${var.name}-vm-${count.index + 1}"
+resource "azurerm_linux_virtual_machine" "ci_box" {
+  count = var.instance_count
+  name  = "${var.project_prefix}-${var.name}-vm-${count.index + 1}"
+
+  computer_name  = "${var.project_prefix}-${var.name}-${count.index + 1}"
+  admin_username = var.username
+
   resource_group_name   = data.azurerm_resource_group.core.name
   location              = azurerm_network_interface.ci[count.index].location
   network_interface_ids = [azurerm_network_interface.ci[count.index].id]
-  vm_size               = var.vm_size
+  size                  = var.vm_size
 
-  storage_image_reference {
+  source_image_reference {
     publisher = var.image_config.publisher
     offer     = var.image_config.offer
     sku       = var.image_config.sku
     version   = var.image_config.version
   }
 
-  # If we don't do this and we destroy our CI box, then we'll be unable to recreate it as the disk will
-  # already exist
-  delete_os_disk_on_termination = true
-
-  storage_os_disk {
-    name              = "${var.project_prefix}-${var.name}-${count.index + 1}"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
-    disk_size_gb      = var.disk_size
+  os_disk {
+    name                 = "${var.project_prefix}-${var.name}-${count.index + 1}"
+    caching              = "ReadWrite"
+    disk_size_gb         = var.disk_size
+    storage_account_type = "Standard_LRS"
   }
 
-  os_profile {
-    computer_name  = "${var.project_prefix}-${var.name}-${count.index + 1}"
-    admin_username = var.username
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = true
-
-    ssh_keys {
-      path     = "/home/${var.username}/.ssh/authorized_keys"
-      key_data = tls_private_key.ci_ssh.public_key_openssh
-    }
+  disable_password_authentication = true
+  admin_ssh_key {
+    username   = var.username
+    public_key = tls_private_key.ci_ssh.public_key_openssh
   }
 
   identity {
@@ -156,7 +147,7 @@ resource "azurerm_key_vault_access_policy" "ci" {
   key_vault_id = data.azurerm_key_vault.core.id
 
   tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = azurerm_virtual_machine.ci_box[count.index].identity[0].principal_id
+  object_id = azurerm_linux_virtual_machine.ci_box[count.index].identity[0].principal_id
 
   key_permissions = [
     "Get",
@@ -174,7 +165,7 @@ resource "azurerm_role_assignment" "ci" {
   count                = var.instance_count
   scope                = data.azurerm_subscription.current.id
   role_definition_name = "Reader"
-  principal_id         = azurerm_virtual_machine.ci_box[count.index].identity[0].principal_id
+  principal_id         = azurerm_linux_virtual_machine.ci_box[count.index].identity[0].principal_id
 }
 
 ##################################
@@ -189,5 +180,5 @@ resource "azurerm_role_assignment" "acr" {
   count                = var.instance_count
   scope                = data.azurerm_container_registry.core.id
   role_definition_name = "AcrPush"
-  principal_id         = azurerm_virtual_machine.ci_box[count.index].identity[0].principal_id
+  principal_id         = azurerm_linux_virtual_machine.ci_box[count.index].identity[0].principal_id
 }

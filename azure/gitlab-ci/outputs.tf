@@ -29,6 +29,6 @@ output "internal_ip_addresses" {
 output "service_principal_ids" {
   description = "The ids of the underlying service principal accounts"
   value = [
-    for instance in azurerm_virtual_machine.ci_box : instance.identity[0].principal_id
+    for instance in azurerm_linux_virtual_machine.ci_box : instance.identity[0].principal_id
   ]
 }
