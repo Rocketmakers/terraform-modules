@@ -86,12 +86,6 @@ variable "gitlab_runner_locked" {
 # Instance details #
 ####################
 
-variable "instance_count" {
-  type        = number
-  description = "The number of VM instances to create"
-  default     = 1
-}
-
 variable "resource_group_name" {
   type        = string
   description = "Resource group"

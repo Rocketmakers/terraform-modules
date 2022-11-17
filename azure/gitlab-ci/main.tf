@@ -90,16 +90,16 @@ data "azurerm_key_vault" "core" {
 }
 
 resource "azurerm_linux_virtual_machine" "ci_box" {
-  count                 = var.instance_count
-  name                  = "${var.project_prefix}-${var.name}-vm-${count.index + 1}"
-  
+  count = var.instance_count
+  name  = "${var.project_prefix}-${var.name}-vm-${count.index + 1}"
+
   computer_name  = "${var.project_prefix}-${var.name}-${count.index + 1}"
   admin_username = var.username
-  
+
   resource_group_name   = data.azurerm_resource_group.core.name
   location              = azurerm_network_interface.ci[count.index].location
   network_interface_ids = [azurerm_network_interface.ci[count.index].id]
-  size               = var.vm_size
+  size                  = var.vm_size
 
   source_image_reference {
     publisher = var.image_config.publisher
@@ -109,15 +109,15 @@ resource "azurerm_linux_virtual_machine" "ci_box" {
   }
 
   os_disk {
-    name              = "${var.project_prefix}-${var.name}-${count.index + 1}"
-    caching           = "ReadWrite"
-    disk_size_gb      = var.disk_size
+    name                 = "${var.project_prefix}-${var.name}-${count.index + 1}"
+    caching              = "ReadWrite"
+    disk_size_gb         = var.disk_size
     storage_account_type = "Standard_LRS"
   }
-  
+
   disable_password_authentication = true
   admin_ssh_key {
-    username = var.username
+    username   = var.username
     public_key = tls_private_key.ci_ssh.public_key_openssh
   }
 

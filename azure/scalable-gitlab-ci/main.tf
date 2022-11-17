@@ -67,11 +67,11 @@ data "azurerm_key_vault_secret" "registration_token" {
 
 module "shared_ci" {
   source                     = "../../shared/ci-provisioner-commands"
-  names                      = tolist(azurerm_public_ip.ci[*].name)
+  name                      = azurerm_public_ip.ci.name
   username                   = var.username
   runner_tags                = var.runner_tags
   gitlab_token               = data.azurerm_key_vault_secret.registration_token.value
-  gitlab_runner_concurrency  = var.gitlab_runner_concurrency
+  gitlab_orchestrator_concurrency  = var.gitlab_runner_concurrency
   gitlab_runner_version      = var.gitlab_runner_version
   gitlab_runner_docker_image = var.gitlab_runner_docker_image
   gitlab_runner_locked       = var.gitlab_runner_locked
@@ -116,8 +116,7 @@ resource "azurerm_subnet_network_security_group_association" "ci" {
 }
 
 resource "azurerm_public_ip" "ci" {
-  count               = var.instance_count
-  name                = "${data.azurerm_resource_group.ci.name}-${var.name}-${count.index + 1}"
+  name                = "${data.azurerm_resource_group.ci.name}-${var.name}"
   resource_group_name = data.azurerm_resource_group.ci.name
   location            = azurerm_network_security_group.ci.location
   allocation_method   = var.public_ip_allocation_method
@@ -125,16 +124,15 @@ resource "azurerm_public_ip" "ci" {
 }
 
 resource "azurerm_network_interface" "ci" {
-  count               = var.instance_count
-  name                = "${data.azurerm_resource_group.ci.name}-${var.name}-nic-${count.index + 1}"
+  name                = "${data.azurerm_resource_group.ci.name}-${var.name}-nic"
   resource_group_name = azurerm_subnet.ci.resource_group_name
-  location            = azurerm_public_ip.ci[count.index].location
+  location            = azurerm_public_ip.ci.location
 
   ip_configuration {
     name                          = "ci-config"
     subnet_id                     = azurerm_subnet.ci.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.ci[count.index].id
+    public_ip_address_id          = azurerm_public_ip.ci.id
   }
 }
 
@@ -148,12 +146,11 @@ data "azurerm_key_vault" "core" {
   resource_group_name = data.azurerm_resource_group.core.name
 }
 
-resource "azurerm_virtual_machine" "ci_box" {
-  count                 = var.instance_count
-  name                  = "${var.project_prefix}-${var.name}-vm-${count.index + 1}"
+resource "azurerm_linux_virtual_machine" "ci_box" {
+  name                  = "${var.project_prefix}-${var.name}-vm"
   resource_group_name   = data.azurerm_resource_group.ci.name
-  location              = azurerm_network_interface.ci[count.index].location
-  network_interface_ids = [azurerm_network_interface.ci[count.index].id]
+  location              = azurerm_network_interface.ci.location
+  network_interface_ids = [azurerm_network_interface.ci.id]
   vm_size               = var.orchestrator_vm_size
 
   storage_image_reference {
@@ -168,7 +165,7 @@ resource "azurerm_virtual_machine" "ci_box" {
   delete_os_disk_on_termination = true
 
   storage_os_disk {
-    name              = "${var.project_prefix}-${var.name}-${count.index + 1}"
+    name              = "${var.project_prefix}-${var.name}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
@@ -176,7 +173,7 @@ resource "azurerm_virtual_machine" "ci_box" {
   }
 
   os_profile {
-    computer_name  = "${var.project_prefix}-${var.name}-${count.index + 1}"
+    computer_name  = "${var.project_prefix}-${var.name}"
     admin_username = var.username
   }
 
@@ -221,10 +218,8 @@ resource "azurerm_role_assignment" "runner_acr_push" {
 # We want to run this separately so that the instance is created and the internal ip is attached to azurerm_virtual_network.ci
 # This allows us to run docker-machine create within our provisioning so that the ssh keys are created before multiple jobs try to start up instances
 resource "null_resource" "orchestrator_provisioner" {
-  count = var.instance_count
-
   triggers = {
-    instance_id = azurerm_virtual_machine.ci_box[count.index].id
+    instance_id = azurerm_linux_virtual_machine.ci_box.id
   }
 
   provisioner "file" {
@@ -233,7 +228,7 @@ resource "null_resource" "orchestrator_provisioner" {
       user        = var.username
       timeout     = "500s"
       private_key = tls_private_key.orchestrator_ssh.private_key_pem
-      host        = azurerm_public_ip.ci[count.index].ip_address
+      host        = azurerm_public_ip.ci.ip_address
     }
 
     content     = <<-EOF
@@ -281,7 +276,7 @@ EOF
       user        = var.username
       timeout     = "500s"
       private_key = tls_private_key.orchestrator_ssh.private_key_pem
-      host        = azurerm_public_ip.ci[count.index].ip_address
+      host        = azurerm_public_ip.ci.ip_address
     }
 
     inline = concat(
@@ -292,7 +287,7 @@ EOF
         "sudo -i docker-machine rm -y test-runner"
       ],
       module.shared_ci.init_gitlab_runner,
-      module.shared_ci.register_gitlab_runner[count.index]
+      module.shared_ci.register_gitlab_runner
     )
   }
 }
