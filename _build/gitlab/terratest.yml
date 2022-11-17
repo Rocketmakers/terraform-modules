@@ -18,6 +18,8 @@
       when: never
     - if: $MERGE_REQUEST_REMINDER == "true"
       when: never
+    - if: $CI_PIPELINE_SOURCE == "trigger"
+      when: never
     - if: $CI_COMMIT_BRANCH == "develop"
       when: on_success
     - if: $RUN_TERRATEST == "true"
