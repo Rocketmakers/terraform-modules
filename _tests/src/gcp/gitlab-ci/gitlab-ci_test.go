@@ -1,7 +1,10 @@
 package gcpgitlabci
 
 import (
+	"rmutils"
+
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"backendconfig"
 	"fmt"
 	"gitlabapi"
@@ -21,12 +24,16 @@ func TestGcpGitlabCi(t *testing.T) {
 	}
 	backendConfig := backendconfig.GetGcsBackendBucketConfig(&backendConfigOptions)
 
+	ipAddress, err := rmutils.GetMachineExternalIPAddress()
+	require.NoError(t, err)
+
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		BackendConfig: backendConfig,
 		TerraformDir:  "../../../config/gcp/gitlab-ci",
 		Vars: map[string]interface{}{
 			"runner_tag":     runnerTag,
 			"instance_count": instanceCount,
+			"cidr_range": ipAddress.String() + "/32",
 		},
 	})
 

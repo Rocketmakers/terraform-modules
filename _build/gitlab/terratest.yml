@@ -1,0 +1,53 @@
+### GCP ANCHOR TO AUTHENTICATE RUNNER ###
+.get_gcp_credentials: &get_gcp_credentials
+  - echo "$ROCKETMAKERS_TERRATEST_GCR_GOOGLE_KEY" | base64 --decode > ${HOME}/gcloud-service-key.json
+  - export GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcloud-service-key.json
+  - gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+  - gcloud projects list
+  - gcloud config set project terraform-testing-317911
+
+.terratest:
+  stage: test
+  resource_group: "terratest-$TEST_NAME"
+  extends: 
+    - .defaults
+  script:
+    - CGO_ENABLED=0 make test TERRATEST_DIR=$TERRATEST_DIR
+  rules:
+    - if: $CI_MERGE_REQUEST_EVENT_TYPE == "detached"
+      when: never
+    - if: $MERGE_REQUEST_REMINDER == "true"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "trigger"
+      when: never
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: on_success
+    - if: $RUN_TERRATEST == "true"
+      when: on_success
+  after_script:
+    - make send-slack TEST_NAME=$TEST_NAME
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - _tests/src/$TERRATEST_DIR/*.xml
+
+.terratest.gcp:
+  extends: 
+    - .terratest
+  before_script:
+    - *get_gcp_credentials
+
+scalable-runner-test.gcp:
+  extends:
+    - .terratest.gcp
+  variables:
+    TERRATEST_DIR: gcp/scalable-gitlab-ci
+    TEST_NAME: gcp-scalable-gitlab-ci
+
+non-scalable-runner-test.gcp:
+  extends:
+    - .terratest.gcp
+  variables:
+    TERRATEST_DIR: gcp/gitlab-ci
+    TEST_NAME: gcp-gitlab-ci

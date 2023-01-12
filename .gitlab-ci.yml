@@ -3,10 +3,11 @@ variables:
   NO_SCRIPTS: "true"
 
   # Required to validate and test the gitlab modules
-  GITLAB_TOKEN: $GITLAB_ACCESS_TOKEN
+  GITLAB_TOKEN: $GITLAB_TERRATEST_TOKEN
 
 stages:
   - analysis
+  - test
   - release
   - notify
 
@@ -39,6 +40,10 @@ stages:
     - &run
       when: on_success
 
+# Split test code to make file more readable
+include:
+  - "/_build/gitlab/terratest.yml"
+
 .internal-runner:
   tags:
     - rocketmakers-internal-dind
@@ -49,7 +54,7 @@ stages:
   retry:
     max: 2
     when: runner_system_failure
-  image: rocketmakers/ci-terraform-gcp:3.2.0
+  image: rocketmakers/ci-terraform-gcp:3.7.0
   before_script:
     - make install
   rules:
