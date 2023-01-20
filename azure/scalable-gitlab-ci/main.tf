@@ -147,43 +147,32 @@ data "azurerm_key_vault" "core" {
 }
 
 resource "azurerm_linux_virtual_machine" "ci_box" {
-  name                  = "${var.project_prefix}-${var.name}-vm"
-  resource_group_name   = data.azurerm_resource_group.ci.name
-  location              = azurerm_network_interface.ci.location
-  network_interface_ids = [azurerm_network_interface.ci.id]
-  vm_size               = var.orchestrator_vm_size
+  name                            = "${var.project_prefix}-${var.name}-vm"
+  resource_group_name             = data.azurerm_resource_group.ci.name
+  location                        = azurerm_network_interface.ci.location
+  network_interface_ids           = [azurerm_network_interface.ci.id]
+  size                            = var.orchestrator_vm_size
+  admin_username                  = var.username
+  computer_name                   = "${var.project_prefix}-${var.name}"
+  disable_password_authentication = true
 
-  storage_image_reference {
+  source_image_reference {
     publisher = var.image_config.publisher
     offer     = var.image_config.offer
     sku       = var.image_config.sku
     version   = var.image_config.version
   }
 
-  # If we don't do this and we destroy our CI box, then we'll be unable to recreate it as the disk will
-  # already exist
-  delete_os_disk_on_termination = true
-
-  storage_os_disk {
-    name              = "${var.project_prefix}-${var.name}"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
-    disk_size_gb      = var.disk_size_gb
+  os_disk {
+    name                 = "${var.project_prefix}-${var.name}"
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+    disk_size_gb         = var.disk_size_gb
   }
 
-  os_profile {
-    computer_name  = "${var.project_prefix}-${var.name}"
-    admin_username = var.username
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = true
-
-    ssh_keys {
-      path     = "/home/${var.username}/.ssh/authorized_keys"
-      key_data = tls_private_key.orchestrator_ssh.public_key_openssh
-    }
+  admin_ssh_key {
+    username   = var.username
+    public_key = tls_private_key.orchestrator_ssh.public_key_openssh
   }
 
   identity {
