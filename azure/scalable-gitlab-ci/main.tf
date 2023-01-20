@@ -66,15 +66,15 @@ data "azurerm_key_vault_secret" "registration_token" {
 }
 
 module "shared_ci" {
-  source                     = "../../shared/ci-provisioner-commands"
-  name                      = azurerm_public_ip.ci.name
-  username                   = var.username
-  runner_tags                = var.runner_tags
-  gitlab_token               = data.azurerm_key_vault_secret.registration_token.value
-  gitlab_orchestrator_concurrency  = var.gitlab_runner_concurrency
-  gitlab_runner_version      = var.gitlab_runner_version
-  gitlab_runner_docker_image = var.gitlab_runner_docker_image
-  gitlab_runner_locked       = var.gitlab_runner_locked
+  source                          = "../../shared/ci-provisioner-commands"
+  name                            = azurerm_public_ip.ci.name
+  username                        = var.username
+  runner_tags                     = var.runner_tags
+  gitlab_token                    = data.azurerm_key_vault_secret.registration_token.value
+  gitlab_orchestrator_concurrency = var.gitlab_runner_concurrency
+  gitlab_runner_version           = var.gitlab_runner_version
+  gitlab_runner_docker_image      = var.gitlab_runner_docker_image
+  gitlab_runner_locked            = var.gitlab_runner_locked
 }
 
 resource "azurerm_virtual_network" "ci" {
