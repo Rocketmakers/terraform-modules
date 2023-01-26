@@ -46,7 +46,7 @@
     - .terratest
   image: rocketmakers/ci-terraform-az:3.7.0
   before_script:
-    - make az-login
+    - az login --service-principal -u $CI_ACCESS_APP_ID -p $CI_ACCESS_PASSWORD --tenant $CI_ACCESS_TENANT_OBJECT_ID
 
 ###########
 ## Tests ##
