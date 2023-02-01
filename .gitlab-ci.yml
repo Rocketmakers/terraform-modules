@@ -1,6 +1,6 @@
 variables:
   LOG_LEVEL: info
-  NO_SCRIPTS: "true"
+  NO_SCRIPTS: 'true'
 
   # Required to validate and test the gitlab modules
   GITLAB_TOKEN: $GITLAB_TERRATEST_TOKEN
@@ -42,7 +42,7 @@ stages:
 
 # Split test code to make file more readable
 include:
-  - "/_build/gitlab/terratest.yml"
+  - '/_build/gitlab/terratest.yml'
 
 .internal-runner:
   tags:
@@ -130,9 +130,9 @@ notify:merge-request-reminder:
   variables:
     SLACK_WEBHOOK_URL: $SLACK_WEBHOOK_URL_PLATFORM
     GITLAB_PROJECT_IDS: $CI_PROJECT_ID
-    INCLUDE_WIP: "false"
-    INCLUDE_DRAFT: "false"
-    SLACK_TARGET: ":eyes:"
+    INCLUDE_WIP: 'false'
+    INCLUDE_DRAFT: 'false'
+    SLACK_TARGET: ':eyes:'
   rules:
     - if: "$MERGE_REQUEST_REMINDER == 'true'"
     - *not-mr-duplicate-pipeline
@@ -141,7 +141,7 @@ notify:merge-request-reminder:
   script:
     - node /app/lib/index.js
 
-scalable-runner-test:
+.scalable-runner-test:
   image: alpine:latest
   stage: analysis
   rules:
@@ -153,6 +153,15 @@ scalable-runner-test:
   script:
     - sleep 10
     - echo "Hello world"
+
+gcp-scalable-runner-test:
+  extends: .scalable-runner-test
   tags:
     # Check the GITLAB Scalable Runner test
     - gcp-6faab9c3-9d73-4d51-ad84-d777b2d0cef0
+
+azure-scalable-runner-test:
+  extends: .scalable-runner-test
+  tags:
+    # Check the GITLAB Scalable Runner test
+    - azure-3308e4b9-3e83-470e-bb39-9cca0666b0fc
