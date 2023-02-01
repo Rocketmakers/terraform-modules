@@ -34,8 +34,11 @@ stages:
     - &on-tags
       if: $CI_COMMIT_TAG
       when: on_success
-    - &on-pipeline-trigger
-      if: $CI_PIPELINE_SOURCE == "trigger"
+    - &on-azure-pipeline-trigger
+      if: $CI_PIPELINE_SOURCE == "trigger" && $AZURE == "true"
+      when: on_success
+    - &on-gcp-pipeline-trigger
+      if: $CI_PIPELINE_SOURCE == "trigger" && $GCP == "true"
       when: on_success
     - &run
       when: on_success
@@ -144,24 +147,30 @@ notify:merge-request-reminder:
 .scalable-runner-test:
   image: alpine:latest
   stage: analysis
-  rules:
-    - *not-mr-duplicate-pipeline
-    - *not-mr-reminder
-    - *on-pipeline-trigger
-    - *not-on-schedules
-    - *not-on-tags
   script:
     - sleep 10
     - echo "Hello world"
 
 gcp-scalable-runner-test:
   extends: .scalable-runner-test
+  rules:
+    - *not-mr-duplicate-pipeline
+    - *not-mr-reminder
+    - *on-gcp-pipeline-trigger
+    - *not-on-schedules
+    - *not-on-tags
   tags:
     # Check the GITLAB Scalable Runner test
     - gcp-6faab9c3-9d73-4d51-ad84-d777b2d0cef0
 
 azure-scalable-runner-test:
   extends: .scalable-runner-test
+  rules:
+    - *not-mr-duplicate-pipeline
+    - *not-mr-reminder
+    - *on-azure-pipeline-trigger
+    - *not-on-schedules
+    - *not-on-tags
   tags:
     # Check the GITLAB Scalable Runner test
     - azure-3308e4b9-3e83-470e-bb39-9cca0666b0fc
