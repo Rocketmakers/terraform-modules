@@ -1,21 +1,26 @@
-output "orchestrator_service_account_email" {
-  description = "The email of the service account associated with the orchestrator"
-  value       = module.ci.service_account_email
+output "runner_client_id" {
+  description = "The client id for the runner"
+  value       = module.scalable_gitlab_ci.runner_client_id
 }
 
-output "orchestrator_service_account_key" {
-  description = "The key of the service account associated with the orchestrator"
-  value       = module.ci.service_account_key
+output "runner_client_secret" {
+  description = "The client secret for the runner"
+  value       = module.scalable_gitlab_ci.runner_client_secret
   sensitive   = true
 }
 
-output "runner_service_account_email" {
-  description = "The email of the service account associated with the runner(s)"
-  value       = module.ci.runner_service_account_email
+output "runner_principal_id" {
+  description = "The principal id for the runner"
+  value       = module.scalable_gitlab_ci.runner_principal_id
 }
 
-output "runner_service_account_key" {
-  description = "The key of the service account associated with the runner(s)"
-  value       = module.ci.runner_service_account_key
+output "orchestrator_private_key" {
+  description = "Private SSH key for the orchestrator instance"
+  value       = module.scalable_gitlab_ci.orchestrator_private_key
   sensitive   = true
+}
+
+output "orchestrator_public_ip_address" {
+  description = "Static IP address of the orchestrator instance"
+  value       = module.scalable_gitlab_ci.orchestrator_public_ip_address
 }

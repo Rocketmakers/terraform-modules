@@ -7,18 +7,13 @@ This module creates an orchestrator VM inside Azure which is used to receive the
 | name    | description          | type   |
 | ------- | -------------------- | ------ |
 | `container_registry_name` | Container registry name to enable access to | string |
-| `core_resource_group_name` | The resource group containing the container registry and key vault | string |
-| `disk_size_gb` | Size of disk in GB | number |
-| `gitlab_runner_concurrency` | The maximum number of machines that will be in place at any one time (one job per machine) | number |
-| `idle_count` | The minimum number of runner machines that should be in place when there is no demand for jobs. | number |
+| `core_resource_group_name` | The resource group containing the container registry | string |
+| `gitlab_token` | Token used to register gitlab runner | string |
 | `idle_time_seconds` | The maximum time a machine will remain in place without running any jobs. | number |
-| `key_vault_name` | Azure key vault id that jobs on the runner will need to access. | string |
 | `max_builds_per_machine` | The maximum number of jobs that will be run on a machine before it is removed. | number |
 | `primary_location` | Main location to store everything (e.g. westeurope) | string |
 | `project_prefix` | A prefix given to resource names related to the runner instance | string |
-| `registration_token_key_vault_id` | The id of the azure key vault containing the token used to register the gitlab runner | string |
-| `registration_token_secret_name` | The name of the azure key vault secret containing the token used to register the gitlab runner | string |
-| `resource_group_name` | Resource group | string |
+| `resource_group_name` | The name of the resource group in which to place resources | string |
 | `runner_tags` | List of tags for gitlab runner, used to allow the runner to be selected for jobs. | list(string) |
 | `subnet_service_endpoints` | The list of Service endpoints to associate with the subnet. | list(string) |
 | `trusted_cidr_ranges` | CIDR ranges allowed to access CI instances via ssh | list(string) |
@@ -28,17 +23,22 @@ This module creates an orchestrator VM inside Azure which is used to receive the
 | name    | description          | type   | default value   |
 | ------- | -------------------- | ------ | --------------- |
 | `engine_install_url` | URL to use for engine installation through docker-machine | string | https://releases.rancher.com/install-docker/19.03.9.sh |
+| `gitlab_max_runners` | The maximum number of VMs that will be created (one VM will run one job at a time). | number | 3 |
 | `gitlab_runner_docker_image` | The value passed to --docker-image when registering the runner (see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker) | string | docker:stable |
 | `gitlab_runner_locked` | Setting true will limit the runner to the project that provided the registration token. Setting false will allow other projects to enable the runner. | bool | true |
 | `gitlab_runner_version` | The version of gitlab-runner to install (see https://docs.gitlab.com/runner/install/bleeding-edge.html#download-any-other-tagged-release) | string | latest |
+| `idle_count` | The minimum number of runner machines that should be in place when there is no demand for jobs. | number | 0 |
 | `image_config` | The details of the OS image used on the instance | object({<br />    publisher = string<br />    offer     = string<br />    sku       = string<br />    version   = string<br />  }) | {"offer":"UbuntuServer","publisher":"Canonical","sku":"18.04-LTS","version":"latest"} |
-| `instance_count` | The number of VM instances to create | number | 1 |
 | `name` | Main name of resources created | string | ci |
 | `network_address_space` | The address space that is used the virtual network. You can supply more than one address space. | list(string) | ["10.0.0.0/16"] |
 | `network_subnet_address_prefixes` | The address prefixes of the CI boxes subnet. | list(string) | ["10.0.0.0/24"] |
+| `orchestrator_disk_size_gb` | Size of disk in GB | number | 50 |
+| `orchestrator_storage_type` | Storage type of the orchestrator VM. Possible values are Standard_LRS, StandardSSD_LRS, Premium_LRS, StandardSSD_ZRS and Premium_ZRS. | string | Standard_LRS |
 | `orchestrator_vm_size` | Size of orchestrator VM to deploy | string | Standard_B1ls |
 | `public_ip_allocation_method` | The allocation method for the public ip associated with the cluster | string | Static |
-| `public_ip_sku` | The sku for the public ip associated with the cluster | string | Standard |
+| `public_ip_sku` | The sku for the public ip associated with the orchestrator | string | Standard |
+| `runner_machine_name` | Name of the machine. It must contain %s, which is replaced with a unique machine identifier. | string | auto-scale-%s |
+| `runner_storage_type` | Storage type of the runner VM. Possible values are Standard_LRS, StandardSSD_LRS, Premium_LRS, StandardSSD_ZRS and Premium_ZRS. | string | Premium_LRS |
 | `runner_vm_size` | Size of runner VM to deploy | string | Standard_B2s |
 | `username` | Username for CI box | string | ci |
 
@@ -46,15 +46,15 @@ This module creates an orchestrator VM inside Azure which is used to receive the
 
 | name      | description                 |
 | --------- | --------------------------- |
-| `internal_ip_addresses` | Internal network IP address of each instance |
-| `ip_addresses` | CI Box public IP address |
-| `private_key` | CI Box private key - used for SSH |
-| `public_key` | Public SSH key |
+| `orchestrator_internal_ip_address` | Internal network IP address of the orchestrator instance |
+| `orchestrator_private_key` | Private SSH key for the orchestrator instance |
+| `orchestrator_public_ip_address` | Static IP address of the orchestrator instance |
+| `orchestrator_public_key` | Public SSH key for the orchestrator instance |
+| `orchestrator_username` | Username for orchestrator vm |
 | `runner_client_id` | The client id for the runner |
 | `runner_client_secret` | The client secret for the runner |
 | `runner_principal_id` | The principal id for the runner |
 | `subnet_id` | The id for the network subnet |
-| `username` | Username for CI box |
 
 ## Requirements
 

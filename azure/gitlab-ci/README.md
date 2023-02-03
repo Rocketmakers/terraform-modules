@@ -10,7 +10,7 @@ This module creates one or more VMs within Azure acting as gitlab-runners. Each 
 | `key_vault_name` | Azure key vault id that jobs on the runner will need to access. | string |
 | `primary_location` | Main location to store everything (e.g. westeurope) | string |
 | `project_prefix` | A prefix given to resource names related to the runner instance | string |
-| `resource_group` | Resource group | string |
+| `resource_group_name` | The name of the resource group in which to place resources | string |
 | `runner_registration_token` | The gitlab registration token that will be used to register the runner. | string |
 | `runner_tags` | List of tags for gitlab runner, used to allow the runner to be selected for jobs. | list(string) |
 | `ssh_cidr_ranges` | CIDR ranges allowed to access CI instances via ssh | list(string) |
@@ -52,7 +52,7 @@ These are required by the module.
 
 | name | version |
 | ---- | ------- |
-| `azurerm` | >= 2.97.0 |
+| `azurerm` | 2.97.0 |
 | `terraform` | >= 1.1.6 |
 | `tls` | >= 3.1.0 |
 
@@ -62,7 +62,7 @@ These are the providers used by the module.
 
 | name | version |
 | ---- | ------- |
-| `azurerm` | >= 2.97.0 |
+| `azurerm` | 2.97.0 |
 | `tls` | >= 3.1.0 |
 
 

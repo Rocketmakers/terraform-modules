@@ -93,6 +93,9 @@ func TestGcpGitlabCi(t *testing.T) {
 	runPipelineTriggerOptions := &gitlab.RunPipelineTriggerOptions{
 		Ref:   gitlab.String(gitlabBranch),
 		Token: gitlab.String(trigger.Token),
+		Variables: map[string]string{
+			"GCP":"true",
+		},
 	}
 
 	pipelineIds := []int{}

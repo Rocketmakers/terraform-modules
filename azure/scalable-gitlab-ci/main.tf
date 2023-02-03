@@ -60,28 +60,23 @@ resource "azurerm_storage_container" "sc" {
   container_access_type = "private"
 }
 
-data "azurerm_key_vault_secret" "registration_token" {
-  name         = var.registration_token_secret_name
-  key_vault_id = var.registration_token_key_vault_id
-}
-
 module "shared_ci" {
-  source                     = "../../shared/ci-provisioner-commands"
-  name                      = azurerm_public_ip.ci.name
-  username                   = var.username
-  runner_tags                = var.runner_tags
-  gitlab_token               = data.azurerm_key_vault_secret.registration_token.value
-  gitlab_orchestrator_concurrency  = var.gitlab_runner_concurrency
-  gitlab_runner_version      = var.gitlab_runner_version
-  gitlab_runner_docker_image = var.gitlab_runner_docker_image
-  gitlab_runner_locked       = var.gitlab_runner_locked
+  source                          = "../../shared/ci-provisioner-commands"
+  name                            = azurerm_public_ip.ci.name
+  username                        = var.username
+  runner_tags                     = var.runner_tags
+  gitlab_token                    = var.gitlab_token
+  gitlab_orchestrator_concurrency = var.gitlab_max_runners
+  gitlab_runner_version           = var.gitlab_runner_version
+  gitlab_runner_docker_image      = var.gitlab_runner_docker_image
+  gitlab_runner_locked            = var.gitlab_runner_locked
 }
 
 resource "azurerm_virtual_network" "ci" {
   name                = "${data.azurerm_resource_group.ci.name}-network"
   address_space       = var.network_address_space
   resource_group_name = data.azurerm_resource_group.ci.name
-  location            = var.primary_location
+  location            = data.azurerm_resource_group.ci.location
 }
 
 resource "azurerm_subnet" "ci" {
@@ -141,49 +136,33 @@ resource "tls_private_key" "orchestrator_ssh" {
   rsa_bits  = 4096
 }
 
-data "azurerm_key_vault" "core" {
-  name                = var.key_vault_name
-  resource_group_name = data.azurerm_resource_group.core.name
-}
-
 resource "azurerm_linux_virtual_machine" "ci_box" {
   name                  = "${var.project_prefix}-${var.name}-vm"
   resource_group_name   = data.azurerm_resource_group.ci.name
   location              = azurerm_network_interface.ci.location
   network_interface_ids = [azurerm_network_interface.ci.id]
-  vm_size               = var.orchestrator_vm_size
+  size                  = var.orchestrator_vm_size
+  computer_name         = "${var.project_prefix}-${var.name}"
+  admin_username        = var.username
 
-  storage_image_reference {
+  source_image_reference {
     publisher = var.image_config.publisher
     offer     = var.image_config.offer
     sku       = var.image_config.sku
     version   = var.image_config.version
   }
 
-  # If we don't do this and we destroy our CI box, then we'll be unable to recreate it as the disk will
-  # already exist
-  delete_os_disk_on_termination = true
-
-  storage_os_disk {
-    name              = "${var.project_prefix}-${var.name}"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
-    disk_size_gb      = var.disk_size_gb
+  os_disk {
+    name                 = "${var.project_prefix}-${var.name}"
+    caching              = "ReadWrite"
+    storage_account_type = var.orchestrator_storage_type
+    disk_size_gb         = var.orchestrator_disk_size_gb
   }
 
-  os_profile {
-    computer_name  = "${var.project_prefix}-${var.name}"
-    admin_username = var.username
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = true
-
-    ssh_keys {
-      path     = "/home/${var.username}/.ssh/authorized_keys"
-      key_data = tls_private_key.orchestrator_ssh.public_key_openssh
-    }
+  disable_password_authentication = true
+  admin_ssh_key {
+    username   = var.username
+    public_key = tls_private_key.orchestrator_ssh.public_key_openssh
   }
 
   identity {
@@ -233,7 +212,7 @@ resource "null_resource" "orchestrator_provisioner" {
 
     content     = <<-EOF
   [[runners]]
-    limit = ${var.gitlab_runner_concurrency}
+    limit = ${var.gitlab_max_runners}
     builds_dir = "/tmp/builds"
     [runners.docker]
       image = "${var.gitlab_runner_docker_image}"
@@ -242,13 +221,14 @@ resource "null_resource" "orchestrator_provisioner" {
       IdleCount = ${var.idle_count}
       IdleTime = ${var.idle_time_seconds}
       MaxBuilds = ${var.max_builds_per_machine}
-      MachineName = "auto-scale-%s"
+      MachineName = "${var.runner_machine_name}"
       MachineDriver = "azure"
       MachineOptions = [
         "azure-subscription-id=${data.azurerm_subscription.current.subscription_id}",
-        "azure-location=${var.primary_location}",
+        "azure-location=${data.azurerm_resource_group.ci.location}",
         "azure-ssh-user=gitlab",
         "azure-size=${var.runner_vm_size}",
+        "azure-storage-type=${var.runner_storage_type}",
         "azure-resource-group=${data.azurerm_resource_group.ci.name}",
         "azure-vnet=${azurerm_virtual_network.ci.name}",
         "azure-subnet=${azurerm_subnet.ci.name}",
@@ -283,7 +263,7 @@ EOF
       module.shared_ci.init_docker,
       module.shared_ci.init_docker_machine,
       [
-        nonsensitive("sudo -i docker-machine create --driver azure --azure-subscription-id ${data.azurerm_subscription.current.subscription_id} --azure-client-id ${azuread_application.orchestrator.application_id} --azure-client-secret ${azuread_service_principal_password.orchestrator.value} --azure-location ${var.primary_location} --azure-size ${var.runner_vm_size} --azure-ssh-user gitlab --azure-resource-group ${data.azurerm_resource_group.ci.name} --azure-vnet ${azurerm_virtual_network.ci.name} --azure-subnet ${azurerm_subnet.ci.name} --azure-use-private-ip --azure-no-public-ip --engine-install-url ${var.engine_install_url} test-runner"),
+        nonsensitive("sudo -i docker-machine create --driver azure --azure-subscription-id ${data.azurerm_subscription.current.subscription_id} --azure-client-id ${azuread_application.orchestrator.application_id} --azure-client-secret ${azuread_service_principal_password.orchestrator.value} --azure-location ${data.azurerm_resource_group.ci.location} --azure-size ${var.runner_vm_size} --azure-ssh-user gitlab --azure-resource-group ${data.azurerm_resource_group.ci.name} --azure-vnet ${azurerm_virtual_network.ci.name} --azure-subnet ${azurerm_subnet.ci.name} --azure-use-private-ip --azure-no-public-ip --engine-install-url ${var.engine_install_url} test-runner"),
         "sudo -i docker-machine rm -y test-runner"
       ],
       module.shared_ci.init_gitlab_runner,

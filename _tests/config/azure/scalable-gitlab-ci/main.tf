@@ -1,25 +1,23 @@
-locals {
-  project_name = "terratest"
-  location     = "West Europe"
-}
+module "scalable_gitlab_ci" {
+  source = "../../../../azure/scalable-gitlab-ci"
 
-module "gitlab_ci" {
-  source = "../../../../azure/gitlab-ci"
-
-  resource_group            = var.resource_group_name
-  primary_location          = local.location
-  project_prefix            = local.project_name
   container_registry_name   = azurerm_container_registry.acr.name
-  key_vault_name            = "terratest"
-  runner_registration_token = data.gitlab_project.runner_token.runners_token
-  ssh_cidr_ranges = [
-    # Rocketmakers office
-    "212.139.176.173",
-  ]
+  gitlab_token              = data.gitlab_project.runner_token.runners_token
+  subnet_service_endpoints  = ["Microsoft.KeyVault"]
+  idle_time_seconds         = 10
+  orchestrator_storage_type = "Standard_LRS"
+  runner_storage_type       = "Premium_LRS"
 
   # The following are provided via test code
-  runner_tags    = [var.runner_tag]
-  instance_count = var.instance_count
+  resource_group_name      = var.resource_group_name
+  primary_location         = var.primary_location
+  project_prefix           = var.project_prefix
+  runner_tags              = [var.runner_tag]
+  gitlab_max_runners       = var.gitlab_max_runners
+  max_builds_per_machine   = var.max_builds_per_machine
+  trusted_cidr_ranges      = [var.cidr_range]
+  runner_machine_name      = var.runner_machine_name
+  core_resource_group_name = var.resource_group_name
 
   depends_on = [
     azurerm_container_registry.acr
@@ -27,9 +25,9 @@ module "gitlab_ci" {
 }
 
 resource "azurerm_container_registry" "acr" {
-  name                = "rocketmakers${local.project_name}"
+  name                = "rocketmakers${var.project_prefix}"
   resource_group_name = var.resource_group_name
-  location            = local.location
+  location            = var.primary_location
   sku                 = "Basic"
 }
 

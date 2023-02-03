@@ -6,7 +6,6 @@ locals {
 module "gitlab_ci" {
   source = "../../../../azure/gitlab-ci"
 
-  resource_group            = var.resource_group_name
   primary_location          = local.location
   project_prefix            = local.project_name
   container_registry_name   = azurerm_container_registry.acr.name
@@ -18,6 +17,7 @@ module "gitlab_ci" {
   ]
 
   # The following are provided via test code
+  resource_group = var.resource_group_name
   runner_tags    = [var.runner_tag]
   instance_count = var.instance_count
 
