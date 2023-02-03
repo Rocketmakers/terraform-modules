@@ -52,7 +52,7 @@ These are required by the module.
 
 | name | version |
 | ---- | ------- |
-| `azurerm` | 2.97.0 |
+| `azurerm` | >= 2.97.0 |
 | `terraform` | >= 1.1.6 |
 | `tls` | >= 3.1.0 |
 
@@ -62,7 +62,7 @@ These are the providers used by the module.
 
 | name | version |
 | ---- | ------- |
-| `azurerm` | 2.97.0 |
+| `azurerm` | >= 2.97.0 |
 | `tls` | >= 3.1.0 |
 
 
