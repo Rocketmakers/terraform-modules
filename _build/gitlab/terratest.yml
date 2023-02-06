@@ -57,7 +57,6 @@ non-scalable-runner-test.az:
   variables:
     TERRATEST_DIR: azure/gitlab-ci
     TEST_NAME: azure-gitlab-ci
-    RUN_TERRATEST: 'true'
 
 scalable-runner-test.az:
   extends:
@@ -65,6 +64,7 @@ scalable-runner-test.az:
   variables:
     TERRATEST_DIR: azure/scalable-gitlab-ci
     TEST_NAME: azure-scalable-gitlab-ci
+    RUN_TERRATEST: 'true'
 
 non-scalable-runner-test.gcp:
   extends:
