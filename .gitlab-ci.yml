@@ -145,7 +145,7 @@ notify:merge-request-reminder:
     - node /app/lib/index.js
 
 .scalable-runner-test:
-  image: rocketmakers/ci-deploy-k8s-az:3.8.0
+  image: alpine:latest
   stage: analysis
   script:
     - sleep 10

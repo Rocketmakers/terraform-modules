@@ -6,6 +6,9 @@ terraform {
     azurerm = {
       source = "hashicorp/azurerm"
     }
+    azuread = {
+      source = "hashicorp/azuread"
+    }
     tls = {
       source = "hashicorp/tls"
     }
@@ -17,4 +20,7 @@ terraform {
 
 provider "azurerm" {
   features {}
+}
+
+provider "azuread" {
 }

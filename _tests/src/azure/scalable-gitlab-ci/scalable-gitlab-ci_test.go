@@ -35,7 +35,7 @@ func TestAzureGitlabCi(t *testing.T) {
 	require.NoError(t, err)
 
 	backendConfigOptions := backendconfig.AzureBackendConfigOptions{
-		Key: "gitlab-ci.tfstate",
+		Key: "scalable-gitlab-ci.tfstate",
 	}
 	backendConfig := backendconfig.GetAzureBackendBucketConfig(&backendConfigOptions)
 
