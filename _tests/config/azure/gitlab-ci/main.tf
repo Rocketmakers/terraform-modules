@@ -17,9 +17,9 @@ module "gitlab_ci" {
   ]
 
   # The following are provided via test code
-  resource_group = var.resource_group_name
-  runner_tags    = [var.runner_tag]
-  instance_count = var.instance_count
+  resource_group_name = var.resource_group_name
+  runner_tags         = [var.runner_tag]
+  instance_count      = var.instance_count
 
   depends_on = [
     azurerm_container_registry.acr
