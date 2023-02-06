@@ -136,7 +136,7 @@ resource "tls_private_key" "orchestrator_ssh" {
   rsa_bits  = 4096
 }
 
-resource "azurerm_linux_virtual_machine" "ci_box" {
+resource "azurerm_linux_virtual_machine" "orchestrator" {
   name                  = "${var.project_prefix}-${var.name}-vm"
   resource_group_name   = data.azurerm_resource_group.ci.name
   location              = azurerm_network_interface.ci.location
@@ -198,7 +198,7 @@ resource "azurerm_role_assignment" "runner_acr_push" {
 # This allows us to run docker-machine create within our provisioning so that the ssh keys are created before multiple jobs try to start up instances
 resource "null_resource" "orchestrator_provisioner" {
   triggers = {
-    instance_id = azurerm_linux_virtual_machine.ci_box.id
+    instance_id = azurerm_linux_virtual_machine.orchestrator.id
   }
 
   provisioner "file" {

@@ -1,4 +1,4 @@
-# scalable-gitlab-ci
+# scalable-azure-ci
 
 This module creates an orchestrator VM inside Azure which is used to receive the jobs which uses docker+machine to create new instances. When there are no jobs, the orchestrator is the only vm running and can be on a minimal instance size.
 
@@ -16,18 +16,19 @@ module ci {
   idle_count                = 0
   idle_time_seconds         = 300
   max_builds_per_machine    = 100
-  gitlab_runner_concurrency = 3
-  disk_size_gb              = 50
+  gitlab_max_runners        = 3
+  orchestrator_disk_size_gb = 50
+  orchestrator_storage_type = "Standard_LRS"
+  runner_storage_type       = "Premium_LRS"
 
-  registration_token_secret_name  = "gitlab-runner-registration-token"
-  registration_token_key_vault_id = dependency.key_vault.outputs.key_vault_id
-  resource_group_name             = dependency.resource_group_ci.outputs.resource_group_name
-  primary_location                = dependency.resource_group_ci.outputs.resource_group_location
+  gitlab_token              = var.gitlab_token
+  resource_group_name       = var.resource_group_name
+  primary_location          = var.primary_location
 
-  core_resource_group_name = dependency.resource_group_core.outputs.resource_group_name
-  container_registry_name  = dependency.container_registry.outputs.registry_name
-  key_vault_name           = dependency.key_vault.outputs.key_vault_name
+  core_resource_group_name = var.core_resource_group_name
+  container_registry_name  = var.container_registry_name
   subnet_service_endpoints = ["Microsoft.KeyVault"]
+  trusted_cidr_ranges      = [var.cidr_range]
 }
 ```
 
@@ -39,7 +40,7 @@ Terraform has a concept of tainting resources to force a rebuild. If there is a 
 terraform state list
 ```
 
-Pick the resource you want to taint (most likely `module.ci_box.aws_instance.ci`):
+Pick the resource you want to taint (most likely `module.ci.azurerm_linux_virtual_machine.orchestrator`):
 
 ```bash
 terraform taint <resource_in_state>
