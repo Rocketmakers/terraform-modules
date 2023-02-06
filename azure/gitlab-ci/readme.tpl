@@ -14,7 +14,7 @@ module ci {
   key_vault_name            = var.key_vault_name
   primary_location          = var.primary_location
   project_prefix            = var.project_prefix
-  resource_group            = var.resource_group_name
+  resource_group_name       = var.resource_group_name
   runner_registration_token = var.runner_registration_token_name
   runner_tags               = var.runner_tags_name
   ssh_cidr_ranges           = var.ssh_cidr_ranges
@@ -29,7 +29,7 @@ Terraform has a concept of tainting resources to force a rebuild. If there is a 
 terraform state list
 ```
 
-Pick the resource you want to taint (most likely `module.ci_box.aws_instance.ci`):
+Pick the resource you want to taint (most likely `module.ci.azurerm_linux_virtual_machine.ci_box`):
 
 ```bash
 terraform taint <resource_in_state>

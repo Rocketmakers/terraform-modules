@@ -10,7 +10,7 @@ This module creates one or more VMs within Azure acting as gitlab-runners. Each 
 | `key_vault_name` | Azure key vault id that jobs on the runner will need to access. | string |
 | `primary_location` | Main location to store everything (e.g. westeurope) | string |
 | `project_prefix` | A prefix given to resource names related to the runner instance | string |
-| `resource_group` | Resource group | string |
+| `resource_group_name` | The name of the resource group in which to place resources | string |
 | `runner_registration_token` | The gitlab registration token that will be used to register the runner. | string |
 | `runner_tags` | List of tags for gitlab runner, used to allow the runner to be selected for jobs. | list(string) |
 | `ssh_cidr_ranges` | CIDR ranges allowed to access CI instances via ssh | list(string) |
@@ -76,7 +76,7 @@ module ci {
   key_vault_name            = var.key_vault_name
   primary_location          = var.primary_location
   project_prefix            = var.project_prefix
-  resource_group            = var.resource_group_name
+  resource_group_name       = var.resource_group_name
   runner_registration_token = var.runner_registration_token_name
   runner_tags               = var.runner_tags_name
   ssh_cidr_ranges           = var.ssh_cidr_ranges
@@ -91,7 +91,7 @@ Terraform has a concept of tainting resources to force a rebuild. If there is a 
 terraform state list
 ```
 
-Pick the resource you want to taint (most likely `module.ci_box.aws_instance.ci`):
+Pick the resource you want to taint (most likely `module.ci.azurerm_linux_virtual_machine.ci_box`):
 
 ```bash
 terraform taint <resource_in_state>

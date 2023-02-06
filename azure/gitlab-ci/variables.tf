@@ -84,9 +84,9 @@ variable "instance_count" {
   default     = 1
 }
 
-variable "resource_group" {
+variable "resource_group_name" {
   type        = string
-  description = "Resource group"
+  description = "The name of the resource group in which to place resources"
 }
 
 variable "primary_location" {

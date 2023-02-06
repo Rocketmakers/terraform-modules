@@ -8,6 +8,7 @@ variable "project_id" {
   description = "Project id"
   default     = "terraform-testing-317911"
 }
+
 variable "gitlab_max_runners" {
   type = number
 }

@@ -8,8 +8,8 @@
 
 .terratest:
   stage: test
-  resource_group: "terratest-$TEST_NAME"
-  extends: 
+  resource_group: 'terratest-$TEST_NAME'
+  extends:
     - .defaults
   script:
     - CGO_ENABLED=0 make test TERRATEST_DIR=$TERRATEST_DIR
@@ -36,27 +36,34 @@
 ## Test Anchors ##
 ##################
 .terratest.gcp:
-  extends: 
+  extends:
     - .terratest
   before_script:
     - *get_gcp_credentials
 
 .terratest.az:
-  extends: 
+  extends:
     - .terratest
   image: rocketmakers/ci-terraform-az:3.7.0
   before_script:
-    - az login --service-principal -u $CI_ACCESS_APP_ID -p $CI_ACCESS_PASSWORD --tenant $CI_ACCESS_TENANT_OBJECT_ID
+    - az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
 
 ###########
 ## Tests ##
 ###########
-scalable-runner-test.gcp:
+non-scalable-runner-test.az:
   extends:
-    - .terratest.gcp
+    - .terratest.az
   variables:
-    TERRATEST_DIR: gcp/scalable-gitlab-ci
-    TEST_NAME: gcp-scalable-gitlab-ci
+    TERRATEST_DIR: azure/gitlab-ci
+    TEST_NAME: azure-gitlab-ci
+
+scalable-runner-test.az:
+  extends:
+    - .terratest.az
+  variables:
+    TERRATEST_DIR: azure/scalable-gitlab-ci
+    TEST_NAME: azure-scalable-gitlab-ci
 
 non-scalable-runner-test.gcp:
   extends:
@@ -65,10 +72,9 @@ non-scalable-runner-test.gcp:
     TERRATEST_DIR: gcp/gitlab-ci
     TEST_NAME: gcp-gitlab-ci
 
-non-scalable-runner-test.az:
+scalable-runner-test.gcp:
   extends:
-    - .terratest.az
+    - .terratest.gcp
   variables:
-    TERRATEST_DIR: azure/gitlab-ci
-    TEST_NAME: azure-gitlab-ci
-    RUN_TERRATEST: "true"
+    TERRATEST_DIR: gcp/scalable-gitlab-ci
+    TEST_NAME: gcp-scalable-gitlab-ci

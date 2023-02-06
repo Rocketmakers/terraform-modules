@@ -1,29 +1,27 @@
-output "username" {
-  description = "Username for CI box"
+output "orchestrator_username" {
+  description = "Username for orchestrator vm"
   value       = var.username
 }
 
-output "private_key" {
-  description = "CI Box private key - used for SSH"
+output "orchestrator_private_key" {
+  description = "Private SSH key for the orchestrator instance"
   value       = tls_private_key.orchestrator_ssh.private_key_pem
   sensitive   = true
 }
 
-output "public_key" {
-  description = "Public SSH key"
+output "orchestrator_public_key" {
+  description = "Public SSH key for the orchestrator instance"
   value       = tls_private_key.orchestrator_ssh.public_key_openssh
 }
 
-output "ip_addresses" {
-  description = "CI Box public IP address"
-  value       = azurerm_public_ip.ci[*].ip_address
+output "orchestrator_public_ip_address" {
+  description = "Static IP address of the orchestrator instance"
+  value       = azurerm_public_ip.ci.ip_address
 }
 
-output "internal_ip_addresses" {
-  description = "Internal network IP address of each instance"
-  value = [
-    for instance in azurerm_network_interface.ci : instance.private_ip_address
-  ]
+output "orchestrator_internal_ip_address" {
+  description = "Internal network IP address of the orchestrator instance"
+  value       = azurerm_network_interface.ci.private_ip_address
 }
 
 output "runner_client_id" {
