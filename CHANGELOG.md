@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v1.1.2...v2.0.0) (2023-01-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* **azure-gitlab-ci:** Updating azure_virtual_machine resource to linux_virtual_machine will destroy and rebuild the runner
+
+### Features
+
+* **azure-gitlab-ci:** Updated azure_virtual_machine resource to linux_virtual_machine ([6d215e5](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/6d215e528d8fe7385e08d1602294a44d36f8a026))
+* **gcp-gitlab-ci:** Updated scalable runner outputs to be specific in orchestrator ([a9c603f](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/a9c603f4db1796a0cf5cab292f164809f9fe2dd5))
+* **gcp-gitlab-ci:** Updated scalable runner to expose runner service account ([c179de6](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/c179de6b133f8a3ca414628f34184362440afc49))
+
+
 ### [1.1.2](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v1.1.1...v1.1.2) (2022-08-09)
 
 
