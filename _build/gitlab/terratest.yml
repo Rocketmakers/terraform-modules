@@ -54,6 +54,7 @@
 non-scalable-runner-test.az:
   extends:
     - .terratest.az
+  resource_group: azure-runner-test
   variables:
     TERRATEST_DIR: azure/gitlab-ci
     TEST_NAME: azure-gitlab-ci
@@ -61,6 +62,7 @@ non-scalable-runner-test.az:
 scalable-runner-test.az:
   extends:
     - .terratest.az
+  resource_group: azure-runner-test
   variables:
     TERRATEST_DIR: azure/scalable-gitlab-ci
     TEST_NAME: azure-scalable-gitlab-ci
