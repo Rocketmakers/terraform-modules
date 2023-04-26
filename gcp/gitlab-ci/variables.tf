@@ -76,7 +76,7 @@ variable "gitlab_runner_locked" {
 
 variable "docker_prune_cron_schedule" {
   type        = string
-  description = "The schedule to use for pruning docker images to prevent disk space filling up. Default value is weekly on Sundays at 0400 UTC."
+  description = "The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC."
   default     = "0 4 * * *"
 }
 
