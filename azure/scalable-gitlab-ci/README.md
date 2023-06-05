@@ -30,7 +30,7 @@ This module creates an orchestrator VM inside Azure which is used to receive the
 | `idle_count` | The minimum number of runner machines that should be in place when there is no demand for jobs. | number | 0 |
 | `image_config` | The details of the OS image used on the instance | object({<br />    publisher = string<br />    offer     = string<br />    sku       = string<br />    version   = string<br />  }) | {"offer":"0001-com-ubuntu-server-focal","publisher":"Canonical","sku":"20_04-lts","version":"latest"} |
 | `name` | Main name of resources created | string | ci |
-| `network_address_space` | The address space that is used the virtual network. You can supply more than one address space. | list(string) |  |
+| `network_address_space` | The address space that is used the virtual network. You can supply more than one address space. | list(string) | ["10.0.0.0/16"] |
 | `network_subnet_address_prefixes` | The address prefixes of the CI boxes subnet. | list(string) | ["10.0.0.0/24"] |
 | `orchestrator_disk_size_gb` | Size of disk in GB | number | 50 |
 | `orchestrator_storage_type` | Storage type of the orchestrator VM. Possible values are Standard_LRS, StandardSSD_LRS, Premium_LRS, StandardSSD_ZRS and Premium_ZRS. | string | Standard_LRS |
