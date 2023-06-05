@@ -115,7 +115,7 @@ variable "image_config" {
 
   default = {
     project_name = "ubuntu-os-cloud"
-    image_name   = "ubuntu-1804-bionic-v20190628"
+    image_name   = "ubuntu-2004-focal-v20230302"
   }
 }
 
