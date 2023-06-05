@@ -16,9 +16,8 @@ module "shared_ci" {
 
 locals {
   install_monitoring_agent = [
-    "curl -sSO https://dl.google.com/cloudagents/add-monitoring-agent-repo.sh",
-    "sudo bash add-monitoring-agent-repo.sh --also-install",
-    "sudo service stackdriver-agent start"
+    "curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh",
+    "sudo bash add-google-cloud-ops-agent-repo.sh --also-install",
   ]
 }
 
@@ -52,7 +51,7 @@ module "orchestrator_account" {
 
 module "ci_cache" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "3.2.0"
+  version = "3.4.1"
 
   name          = local.ci_cache_bucket_name
   project_id    = var.project_id
@@ -61,7 +60,7 @@ module "ci_cache" {
 }
 
 resource "google_storage_bucket_iam_member" "cache" {
-  bucket = local.ci_cache_bucket_name
+  bucket = module.ci_cache.name
   role   = "roles/storage.admin"
   member = "serviceAccount:${module.runner_account.email}"
 }
@@ -74,8 +73,7 @@ resource "google_storage_bucket_iam_member" "gcr" {
 }
 
 resource "tls_private_key" "orchestrator_ssh" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
+  algorithm = "ED25519"
 }
 
 resource "google_compute_network" "ci_network" {
@@ -214,7 +212,7 @@ resource "null_resource" "orchestrator_provisioner" {
       Path = "gitlab-runner"
       Shared = true
       [runners.cache.gcs]
-        BucketName = "${local.ci_cache_bucket_name}"
+        BucketName = "${module.ci_cache.name}"
         CredentialsFile = "${local.application_default_credentials_string}"
 EOF
     destination = module.shared_ci.config_template_path

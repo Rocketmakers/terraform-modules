@@ -13,9 +13,8 @@ module "shared_ci" {
 
 locals {
   install_monitoring_agent = [
-    "curl -sSO https://dl.google.com/cloudagents/add-monitoring-agent-repo.sh",
-    "sudo bash add-monitoring-agent-repo.sh --also-install",
-    "sudo service stackdriver-agent start"
+    "curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh",
+    "sudo bash add-google-cloud-ops-agent-repo.sh --also-install",
   ]
 }
 
@@ -42,8 +41,7 @@ resource "google_storage_bucket_iam_member" "member" {
 }
 
 resource "tls_private_key" "ci_ssh" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
+  algorithm = "ED25519"
 }
 
 resource "google_compute_network" "ci_network" {
