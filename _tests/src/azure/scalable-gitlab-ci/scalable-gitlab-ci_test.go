@@ -1,4 +1,4 @@
-package gcpscalablegitlabci
+package azurescalablegitlabci
 
 import (
 	"backendconfig"
@@ -7,7 +7,6 @@ import (
 	"testing"
 	"time"
 
-	"rmgcp"
 	"rmgitlab"
 	"rmutils"
 
@@ -15,23 +14,19 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/xanzy/go-gitlab"
 	"k8s.io/apimachinery/pkg/util/wait"
-
+	"github.com/gruntwork-io/terratest/modules/azure"
 	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
-func TestGcpGitlabCi(t *testing.T) {
-	// Construct the terraform options with default retryable errors to handle the most common
-	// retryable errors in terraform testing.
-	runnerTag := "gcp-6faab9c3-9d73-4d51-ad84-d777b2d0cef0"
+func TestAzureGitlabCi(t *testing.T) {
+	runnerTag := "azure-3308e4b9-3e83-470e-bb39-9cca0666b0fc"
 	gitlabMaxRunners := 3
 	gitlabProjectId := "33153506"
-	gcpProjectId := "terraform-testing-317911"
 	gitlabBranch := "develop"
 	projectPrefix := "testing"
-	gcpProjectZone := "europe-west1-b"
-	gcpProjectRegion := "europe-west1"
 	runnerMachineName := "auto-scale-"
+	primaryLocation := "West Europe"
 	retryInterval := 5 * time.Second
 	retryTimeout := 300 * time.Second
 	numberOfPipelines := 5
@@ -39,22 +34,23 @@ func TestGcpGitlabCi(t *testing.T) {
 	ipAddress, err := rmutils.GetMachineExternalIPAddress()
 	require.NoError(t, err)
 
-	backendConfigOptions := backendconfig.GcsBackendConfigOptions{
-		Prefix: "gcp/scalable-gitlab-ci",
+	backendConfigOptions := backendconfig.AzureBackendConfigOptions{
+		Key: "scalable-gitlab-ci.tfstate",
 	}
-	backendConfig := backendconfig.GetGcsBackendBucketConfig(&backendConfigOptions)
+	backendConfig := backendconfig.GetAzureBackendBucketConfig(&backendConfigOptions)
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		BackendConfig: backendConfig,
-		TerraformDir:  "../../../config/gcp/scalable-gitlab-ci",
+		TerraformDir:  "../../../config/azure/scalable-gitlab-ci",
 		Vars: map[string]interface{}{
 			"project_prefix":      projectPrefix,
 			"runner_tag":          runnerTag,
-			"gcp_project_region":  gcpProjectRegion,
-			"gcp_project_zone":    gcpProjectZone,
 			"gitlab_max_runners":  gitlabMaxRunners,
 			"runner_machine_name": runnerMachineName + "%s",
 			"cidr_range":          ipAddress.String() + "/32",
+			"max_builds_per_machine": 3,
+			"resource_group_name": backendConfig["resource_group_name"],
+			"primary_location": primaryLocation,
 		},
 	})
 
@@ -94,7 +90,7 @@ func TestGcpGitlabCi(t *testing.T) {
 		Ref:   gitlab.String(gitlabBranch),
 		Token: gitlab.String(trigger.Token),
 		Variables: map[string]string{
-			"GCP":"true",
+			"AZURE":"true",
 		},
 	}
 
@@ -109,12 +105,9 @@ func TestGcpGitlabCi(t *testing.T) {
 	defer client.PipelineTriggers.DeletePipelineTrigger(gitlabProjectId, trigger.ID)
 
 	instancePollErr := wait.PollImmediate(retryInterval, retryTimeout, func() (bool, error) {
-		list, err := rmgcp.ListVMInstancesForProject(t, gcpProjectId, gcpProjectZone, runnerMachineName)
-		if err != nil {
-			logger.Logf(t, "%s", err)
-		}
+		list := azure.GetVirtualMachinesForResourceGroup(t, backendConfig["resource_group_name"].(string), backendConfig["subscription_id"].(string))
 		if len(list) == 0 {
-			logger.Logf(t, "Currently no VM instances in GCP which include name %s\n", runnerMachineName)
+			logger.Logf(t, "Currently no VM instances in Azure which include name %s\n", runnerMachineName)
 		}
 
 		return len(list) >= gitlabMaxRunners, nil
@@ -138,17 +131,20 @@ func TestGcpGitlabCi(t *testing.T) {
 	assert.Equal(t, 0, exit_code, "Expecting plan with no changes")
 
 	// Run assertions before the terraform resources are destroyed
-	orchestrator_service_account_key := terraform.Output(t, terraformOptions, "orchestrator_service_account_key")
-	assert.NotNil(t, orchestrator_service_account_key)
+	orchestrator_public_ip_address := terraform.Output(t, terraformOptions, "orchestrator_public_ip_address")
+	assert.NotNil(t, orchestrator_public_ip_address)
 
-	orchestrator_service_account_email := terraform.Output(t, terraformOptions, "orchestrator_service_account_email")
-	assert.NotNil(t, orchestrator_service_account_email)
+	orchestrator_private_key := terraform.Output(t, terraformOptions, "orchestrator_private_key")
+	assert.NotNil(t, orchestrator_private_key)
 
-	runner_service_account_key := terraform.Output(t, terraformOptions, "runner_service_account_key")
-	assert.NotNil(t, runner_service_account_key)
+	runner_principal_id := terraform.Output(t, terraformOptions, "runner_principal_id")
+	assert.NotNil(t, runner_principal_id)
 
-	runner_service_account_email := terraform.Output(t, terraformOptions, "runner_service_account_email")
-	assert.NotNil(t, runner_service_account_email)
+	runner_client_id := terraform.Output(t, terraformOptions, "runner_client_id")
+	assert.NotNil(t, runner_client_id)
+
+	runner_client_secret := terraform.Output(t, terraformOptions, "runner_client_secret")
+	assert.NotNil(t, runner_client_secret)
 
 	logger.Log(t, "🚀 Done 🚀")
 }

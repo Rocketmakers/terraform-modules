@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"gitlabapi"
 	"testing"
+	"rmutils"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/stretchr/testify/require"
 )
 
 func TestAzureGitlabCi(t *testing.T) {
@@ -14,6 +16,9 @@ func TestAzureGitlabCi(t *testing.T) {
 	// retryable errors in terraform testing.
 	runnerTag := "azure-1f9044b0-231a-4d92-a4b1-7fddbe19bb0d"
 	instanceCount := 2
+
+	ipAddress, err := rmutils.GetMachineExternalIPAddress()
+	require.NoError(t, err)
 
 	backendConfigOptions := backendconfig.AzureBackendConfigOptions{
 		Key: "gitlab-ci.tfstate",
@@ -27,6 +32,7 @@ func TestAzureGitlabCi(t *testing.T) {
 			"runner_tag":          runnerTag,
 			"instance_count":      instanceCount,
 			"resource_group_name": backendConfig["resource_group_name"],
+			"cidr_range":          ipAddress.String() + "/32",
 		},
 	})
 

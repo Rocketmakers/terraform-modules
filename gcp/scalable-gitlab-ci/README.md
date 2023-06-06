@@ -45,7 +45,7 @@ Follow the GCR [Quickstart](https: //cloud.google.com/container-registry/docs/qu
 | `gitlab_runner_docker_image` | The value passed to --docker-image when registering the runner (see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker) | string | docker:stable |
 | `gitlab_runner_locked` | Setting true will limit the runner to the project that provided the registration token. Setting false will allow other projects to enable the runner. | bool | true |
 | `gitlab_runner_version` | The version of gitlab-runner to install (see https://docs.gitlab.com/runner/install/bleeding-edge.html#download-any-other-tagged-release) | string | latest |
-| `image_name` | Google image name to base CI on | string | ubuntu-1804-bionic-v20220616 |
+| `image_name` | Google image name to base CI on | string | ubuntu-2004-focal-v20230302 |
 | `image_project` | Google image project to base CI on | string | ubuntu-os-cloud |
 | `name` | Main name of resources created | string | ci |
 | `orchestrator_disk_size` | Size of orchestrator disk in GB | number | 50 |
@@ -64,16 +64,19 @@ Follow the GCR [Quickstart](https: //cloud.google.com/container-registry/docs/qu
 | name      | description                 |
 | --------- | --------------------------- |
 | `orchestrator_internal_ip_address` | Internal network IP address of the orchestrator instance |
+| `orchestrator_private_key` | Private SSH key for the orchestrator instance |
 | `orchestrator_public_ip_address` | Static IP address of the orchestrator instance |
+| `orchestrator_public_key` | Public SSH key for the orchestrator instance |
 | `orchestrator_service_account_email` | Google service account email for the orchestrator |
 | `orchestrator_service_account_key` | Google service account key for the orchestrator |
-| `private_key` | Private SSH key |
-| `public_key` | Public SSH key |
+| `orchestrator_username` | Username for orchestrator vm |
+| `private_key` | [Deprecated] Private SSH key. Use orchestrator_private_key instead |
+| `public_key` | [Deprecated] Public SSH key. Use orchestrator_public_key instead |
 | `runner_service_account_email` | Google service account email for the runner(s) |
 | `runner_service_account_key` | Google service account key for the runner(s) |
 | `service_account_email` | [Deprecated] Google service account email. Use orchestrator_service_account_email instead |
 | `service_account_key` | [Deprecated] Google service account key. Use orchestrator_service_account_key instead |
-| `username` | Username for CI box |
+| `username` | [Deprecated] Username for CI box. Use orchestrator_username instead |
 
 ## Requirements
 
@@ -166,7 +169,7 @@ resource "google_container_registry" "registry" {
 }
 
 module "ci" {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-gitlab-ci?ref=v2.0.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-gitlab-ci?ref=v2.1.0"
 
   project_id                = var.project_id
   zone                     = "europe-west1-b"

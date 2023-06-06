@@ -72,8 +72,8 @@ setup-go:
 	asdf plugin add golang https://github.com/kennyp/asdf-golang.git || true
 	asdf install golang
 
-.PHONY: az-login
-az-login: ## Login to the subscription required for this project
+.PHONY: local-az-login
+local-az-login: ## Login to the subscription required for this project
 	az login --tenant 09e95bcb-540c-433b-8597-3e94ab4119e5
 	az account set --subscription 68bb123f-6027-4e99-8ab0-a01fb16cdd79
 

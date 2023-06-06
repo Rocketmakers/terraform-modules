@@ -12,3 +12,8 @@ variable "resource_group_name" {
   type        = string
   description = "The name of the resource group in which to place resources"
 }
+
+variable "cidr_range" {
+  type        = string
+  description = "CIDR range allowed to access CI instances via ssh"
+}

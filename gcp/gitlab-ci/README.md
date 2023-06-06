@@ -37,12 +37,12 @@ Follow the GCR [Quickstart](https://cloud.google.com/container-registry/docs/qui
 | ------- | -------------------- | ------ | --------------- |
 | `allow_stopping_for_update` | Allow the instance to stop when being updated | bool | true |
 | `disk_size` | Size of disk in GB | number | 50 |
-| `docker_prune_cron_schedule` | The schedule to use for pruning docker images to prevent disk space filling up. Default value is weekly on Sundays at 0400 UTC. | string | 0 4 * * 0 |
+| `docker_prune_cron_schedule` | The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC. | string | 0 4 * * * |
 | `gitlab_runner_concurrency` | The maximum number of jobs that the runner will run concurrently | number | 3 |
 | `gitlab_runner_docker_image` | The value passed to --docker-image when registering the runner (see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker) | string | docker:stable |
 | `gitlab_runner_locked` | Setting true will limit the runner to the project that provided the registration token. Setting false will allow other projects to enable the runner. | bool | true |
 | `gitlab_runner_version` | The version of gitlab-runner to install (see https://docs.gitlab.com/runner/install/bleeding-edge.html#download-any-other-tagged-release) | string | latest |
-| `image_config` | The details of the OS image used in the instance | object({<br />    project_name = string<br />    image_name   = string<br />  }) | {"image_name":"ubuntu-1804-bionic-v20190628","project_name":"ubuntu-os-cloud"} |
+| `image_config` | The details of the OS image used in the instance | object({<br />    project_name = string<br />    image_name   = string<br />  }) | {"image_name":"ubuntu-2004-focal-v20230302","project_name":"ubuntu-os-cloud"} |
 | `instance_count` | The number of VM instances to create | number | 1 |
 | `machine_type` | Machine type of the vm | string | f1-micro |
 | `name` | Main name of resources created | string | ci |
@@ -88,7 +88,7 @@ These are the providers used by the module.
 
 ```
 module "ci_box" {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/gitlab-ci?ref=v2.0.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/gitlab-ci?ref=v2.1.0"
 
   instance_count             = var.instance_count
   gcp_region                 = var.gcp_region

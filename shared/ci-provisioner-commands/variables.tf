@@ -45,5 +45,5 @@ variable "config_template_path" {
 variable "docker_machine_version" {
   type        = string
   description = "Docker machine version for runner"
-  default     = "v0.16.2-gitlab.15"
+  default     = "v0.16.2-gitlab.21"
 }

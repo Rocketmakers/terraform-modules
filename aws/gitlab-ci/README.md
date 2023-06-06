@@ -17,7 +17,7 @@ This module creates one or more VMs within AWS acting as gitlab-runners. Each ru
 | name    | description          | type   | default value   |
 | ------- | -------------------- | ------ | --------------- |
 | `disk_size` | Size of disk in GB | number | 50 |
-| `docker_prune_cron_schedule` | The schedule to use for pruning docker images to prevent disk space filling up. Default value is weekly on Sundays at 0400 UTC. | string | 0 4 * * 0 |
+| `docker_prune_cron_schedule` | The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC. | string | 0 4 * * * |
 | `gitlab_runner_concurrency` | The maximum number of jobs that the runner will run concurrently | number | 3 |
 | `gitlab_runner_docker_image` | The value passed to --docker-image when registering the runner (see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker) | string | docker:stable |
 | `gitlab_runner_locked` | Setting true will limit the runner to the project that provided the registration token. Setting false will allow other projects to enable the runner. | bool | true |
@@ -62,7 +62,7 @@ These are the providers used by the module.
 
 ```
 module ci-box {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//aws/gitlab-ci?ref=v2.0.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//aws/gitlab-ci?ref=v2.1.0"
 
   availability_zones         = var.availability_zone
   project_prefix             = local.project_prefix

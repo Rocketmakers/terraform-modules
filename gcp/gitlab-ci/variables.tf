@@ -76,8 +76,8 @@ variable "gitlab_runner_locked" {
 
 variable "docker_prune_cron_schedule" {
   type        = string
-  description = "The schedule to use for pruning docker images to prevent disk space filling up. Default value is weekly on Sundays at 0400 UTC."
-  default     = "0 4 * * 0"
+  description = "The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC."
+  default     = "0 4 * * *"
 }
 
 ####################
@@ -115,7 +115,7 @@ variable "image_config" {
 
   default = {
     project_name = "ubuntu-os-cloud"
-    image_name   = "ubuntu-1804-bionic-v20190628"
+    image_name   = "ubuntu-2004-focal-v20230302"
   }
 }
 

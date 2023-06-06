@@ -68,7 +68,7 @@ variable "image_project" {
 variable "image_name" {
   type        = string
   description = "Google image name to base CI on"
-  default     = "ubuntu-1804-bionic-v20220616"
+  default     = "ubuntu-2004-focal-v20230302"
 }
 
 variable "username" {

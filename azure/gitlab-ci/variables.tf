@@ -70,8 +70,8 @@ variable "gitlab_runner_locked" {
 
 variable "docker_prune_cron_schedule" {
   type        = string
-  description = "The schedule to use for pruning docker images to prevent disk space filling up. Default value is weekly on Sundays at 0400 UTC."
-  default     = "0 4 * * 0"
+  description = "The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC."
+  default     = "0 4 * * *"
 }
 
 ####################
@@ -84,9 +84,9 @@ variable "instance_count" {
   default     = 1
 }
 
-variable "resource_group" {
+variable "resource_group_name" {
   type        = string
-  description = "Resource group"
+  description = "The name of the resource group in which to place resources"
 }
 
 variable "primary_location" {
@@ -106,8 +106,8 @@ variable "image_config" {
 
   default = {
     publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
+    offer     = "0001-com-ubuntu-server-focal"
+    sku       = "20_04-lts"
     version   = "latest"
   }
 }

@@ -20,7 +20,7 @@ Returns the string list for provisioning a gitlab runner. This module is intende
 | name    | description          | type   | default value   |
 | ------- | -------------------- | ------ | --------------- |
 | `config_template_path` |  | string | /tmp/test-config.template.toml |
-| `docker_machine_version` | Docker machine version for runner | string | v0.16.2-gitlab.15 |
+| `docker_machine_version` | Docker machine version for runner | string | v0.16.2-gitlab.21 |
 
 ## Outputs
 
@@ -39,7 +39,7 @@ Returns the string list for provisioning a gitlab runner. This module is intende
 
 ```
 module "ci-provisioner-commands" {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//shared/ci-provisioner-commands?ref=v2.0.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//shared/ci-provisioner-commands?ref=v2.1.0"
 
   names                      = var.names
   username                   = var.username

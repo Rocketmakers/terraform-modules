@@ -128,7 +128,7 @@ resource "aws_network_interface" "ci" {
 
 resource "aws_eip" "ci" {
   count             = var.instance_count
-  vpc               = true
+  domain            = "vpc"
   network_interface = aws_network_interface.ci[count.index].id
   tags              = var.tags
   depends_on        = [aws_internet_gateway.ci]
