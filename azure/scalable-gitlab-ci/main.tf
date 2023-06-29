@@ -54,8 +54,9 @@ resource "azurerm_storage_account" "sa" {
   name                     = "${lower(replace(var.project_prefix, "/\\W/", ""))}cicache"
   resource_group_name      = data.azurerm_resource_group.ci.name
   location                 = data.azurerm_resource_group.ci.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
+  account_tier             = var.cache_storage_tier
+  account_replication_type = var.cache_storage_replication_type
+  min_tls_version          = var.cache_storage_min_tls_version
 }
 
 resource "azurerm_storage_container" "sc" {
