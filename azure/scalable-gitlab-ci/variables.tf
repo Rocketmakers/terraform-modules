@@ -221,6 +221,6 @@ variable "cache_storage_replication_type" {
 
 variable "cache_storage_min_tls_version" {
   type        = string
-  description = "The replication type of the storage account used by runners as a shared cache."
+  description = "The minimum supported TLS version for the storage account used by runners as a shared cache."
   default     = "TLS1_2"
 }

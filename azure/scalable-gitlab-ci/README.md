@@ -22,7 +22,7 @@ This module creates an orchestrator VM inside Azure which is used to receive the
 
 | name    | description          | type   | default value   |
 | ------- | -------------------- | ------ | --------------- |
-| `cache_storage_min_tls_version` | The replication type of the storage account used by runners as a shared cache. | string | TLS1_2 |
+| `cache_storage_min_tls_version` | The minimum supported TLS version for the storage account used by runners as a shared cache. | string | TLS1_2 |
 | `cache_storage_replication_type` | The replication type of the storage account used by runners as a shared cache. | string | LRS |
 | `cache_storage_tier` | The tier of the storage account used by runners as a shared cache. | string | Standard |
 | `engine_install_url` | URL to use for engine installation through docker-machine | string | https://releases.rancher.com/install-docker/19.03.9.sh |
