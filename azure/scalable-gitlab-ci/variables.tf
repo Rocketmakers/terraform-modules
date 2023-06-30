@@ -206,3 +206,21 @@ variable "network_subnet_address_prefixes" {
   description = "The address prefixes of the CI boxes subnet."
   default     = ["10.0.0.0/24"]
 }
+
+variable "cache_storage_tier" {
+  type        = string
+  description = "The tier of the storage account used by runners as a shared cache."
+  default     = "Standard"
+}
+
+variable "cache_storage_replication_type" {
+  type        = string
+  description = "The replication type of the storage account used by runners as a shared cache."
+  default     = "LRS"
+}
+
+variable "cache_storage_min_tls_version" {
+  type        = string
+  description = "The minimum supported TLS version for the storage account used by runners as a shared cache."
+  default     = "TLS1_2"
+}

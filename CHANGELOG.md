@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.2](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v2.1.0...v2.1.2) (2023-06-30)
+
+
+### Bug Fixes
+
+* **azure-gitlab-ci:** Ensure Azure runners use same image as orchestrator ([db930b4](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/db930b404971d8d5d94e83670d69ef799d9d5fef))
+
+
+### Other Changes
+
+* **azure-gitlab-ci:** Allow min TLS version to be specified for Azure cache storage account and default to TLS 1.2 ([05a0159](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/05a015994c8e9ee257b216caeb09ee363a3984ff))
+
 ## [2.1.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v2.0.0...v2.1.0) (2023-06-06)
 
 ### Features

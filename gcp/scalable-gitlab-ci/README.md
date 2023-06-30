@@ -169,7 +169,7 @@ resource "google_container_registry" "registry" {
 }
 
 module "ci" {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-gitlab-ci?ref=v2.1.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-gitlab-ci?ref=v2.1.2"
 
   project_id                = var.project_id
   zone                     = "europe-west1-b"
