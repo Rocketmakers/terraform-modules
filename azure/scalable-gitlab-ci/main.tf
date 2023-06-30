@@ -1,3 +1,7 @@
+locals {
+  runner_image = "${var.image_config.publisher}:${var.image_config.offer}:${var.image_config.sku}:${var.image_config.version}"
+}
+
 data "azurerm_client_config" "current" {}
 
 data "azurerm_subscription" "current" {}
@@ -50,8 +54,9 @@ resource "azurerm_storage_account" "sa" {
   name                     = "${lower(replace(var.project_prefix, "/\\W/", ""))}cicache"
   resource_group_name      = data.azurerm_resource_group.ci.name
   location                 = data.azurerm_resource_group.ci.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
+  account_tier             = var.cache_storage_tier
+  account_replication_type = var.cache_storage_replication_type
+  min_tls_version          = var.cache_storage_min_tls_version
 }
 
 resource "azurerm_storage_container" "sc" {
@@ -226,6 +231,7 @@ resource "null_resource" "orchestrator_provisioner" {
       MachineOptions = [
         "azure-subscription-id=${data.azurerm_subscription.current.subscription_id}",
         "azure-location=${data.azurerm_resource_group.ci.location}",
+        "azure-image=${local.runner_image}",
         "azure-ssh-user=gitlab",
         "azure-size=${var.runner_vm_size}",
         "azure-storage-type=${var.runner_storage_type}",
@@ -263,7 +269,7 @@ EOF
       module.shared_ci.init_docker,
       module.shared_ci.init_docker_machine,
       [
-        nonsensitive("sudo -i docker-machine create --driver azure --azure-subscription-id ${data.azurerm_subscription.current.subscription_id} --azure-client-id ${azuread_application.orchestrator.application_id} --azure-client-secret ${azuread_service_principal_password.orchestrator.value} --azure-location ${data.azurerm_resource_group.ci.location} --azure-size ${var.runner_vm_size} --azure-ssh-user gitlab --azure-resource-group ${data.azurerm_resource_group.ci.name} --azure-vnet ${azurerm_virtual_network.ci.name} --azure-subnet ${azurerm_subnet.ci.name} --azure-use-private-ip --azure-no-public-ip --engine-install-url ${var.engine_install_url} test-runner"),
+        nonsensitive("sudo -i docker-machine create --driver azure --azure-subscription-id ${data.azurerm_subscription.current.subscription_id} --azure-client-id ${azuread_application.orchestrator.application_id} --azure-client-secret ${azuread_service_principal_password.orchestrator.value} --azure-location ${data.azurerm_resource_group.ci.location} --azure-image ${local.runner_image} --azure-size ${var.runner_vm_size} --azure-ssh-user gitlab --azure-resource-group ${data.azurerm_resource_group.ci.name} --azure-vnet ${azurerm_virtual_network.ci.name} --azure-subnet ${azurerm_subnet.ci.name} --azure-use-private-ip --azure-no-public-ip --engine-install-url ${var.engine_install_url} test-runner"),
         "sudo -i docker-machine rm -y test-runner"
       ],
       module.shared_ci.init_gitlab_runner,
