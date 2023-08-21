@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.3](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v2.1.2...v2.1.3) (2023-08-21)
+
+
+### Bug Fixes
+
+* **gcp:** Fixed service account roles for scalable runner ([24fc478](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/24fc4787e1ae35d7b121836ca71d69df8d8a4c71))
+
 ### [2.1.2](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v2.1.0...v2.1.2) (2023-06-30)
 
 
