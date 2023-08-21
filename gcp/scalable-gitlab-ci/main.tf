@@ -25,10 +25,8 @@ module "runner_account" {
   source  = "terraform-google-modules/service-accounts/google"
   version = "4.1.1"
 
-  project_id = var.project_id
-  project_roles = [
-    "${var.project_id}=>roles/monitoring.metricWriter",
-  ]
+  project_id    = var.project_id
+  project_roles = [for role in var.service_account_roles : "${var.project_id}=>${role}"]
   generate_keys = true
   names         = ["${var.project_prefix}-ci-runner"]
   descriptions  = ["Gitlab CI runner service account"]

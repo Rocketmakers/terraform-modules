@@ -36,6 +36,11 @@ define InstallTerratestLogParser
 	mv terratest_log_parser /usr/local/bin
 endef
 
+.PHONY: install
+install: node-setup
+	$(info $(M) INSTALLING NODE MODULES...)
+	$(SHELL) $(SHELL_SCRIPTS)/install.sh
+
 .PHONY: clean
 clean:
 	$(call header,CLEANING...)
@@ -47,11 +52,6 @@ clean:
 node-setup:
 	$(info $(M) NODE SETUP...)
 	$(SHELL) $(SHELL_SCRIPTS)/node-setup.sh
-
-.PHONY: install
-install: node-setup
-	$(info $(M) INSTALLING NODE MODULES...)
-	$(SHELL) $(SHELL_SCRIPTS)/install.sh
 
 .PHONY: setup-terraform
 setup-terraform:
