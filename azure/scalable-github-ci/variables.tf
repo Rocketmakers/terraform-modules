@@ -1,0 +1,142 @@
+variable "ssh_cidr_ranges" {
+  type        = list(string)
+  description = "CIDR ranges allowed to access CI instances via ssh"
+
+  validation {
+    condition     = length(var.ssh_cidr_ranges) > 0
+    error_message = "The ssh_cidr_ranges value must contain at least one CIDR."
+  }
+}
+
+variable "name" {
+  type        = string
+  description = "Main name of resources created"
+  default     = "ci"
+}
+
+#####################################################
+# Registration details (passed to shared/ci module) #
+#####################################################
+
+variable "username" {
+  type        = string
+  description = "Username for CI box"
+  default     = "ci"
+}
+
+variable "github_runner_concurrency" {
+  type        = number
+  description = "The maximum number of jobs that the runner will run concurrently"
+  default     = 3
+}
+
+variable "github_runner_version" {
+  type        = string
+  description = "The version of github-runner to install"
+  default     = "2.317.0"
+}
+
+variable "github_api_token" {
+  type        = string
+  description = "The Github API token to support retrieving a runner registeration token"
+}
+
+variable "github_organisation" {
+  type        = string
+  description = "The Github organisation to use"
+}
+
+variable "docker_prune_cron_schedule" {
+  type        = string
+  description = "The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC."
+  default     = "0 4 * * *"
+}
+
+####################
+# Instance details #
+####################
+
+variable "min_instance_count" {
+  type        = number
+  description = "The minimum number of VM instances to create"
+  default     = 1
+}
+
+variable "max_instance_count" {
+  type        = number
+  description = "The maximum number of VM instances to create"
+  default     = 1
+}
+
+variable "resource_group_name" {
+  type        = string
+  description = "The name of the resource group in which to place resources"
+}
+
+variable "primary_location" {
+  type        = string
+  description = "Main location to store everything (e.g. westeurope)"
+}
+
+variable "image_config" {
+  type = object({
+    publisher = string
+    offer     = string
+    sku       = string
+    version   = string
+  })
+
+  description = "The details of the OS image used on the instance"
+
+  default = {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-focal"
+    sku       = "20_04-lts"
+    version   = "latest"
+  }
+}
+
+variable "vm_size" {
+  type        = string
+  description = "Size of VM to deploy"
+}
+
+variable "disk_size" {
+  type        = number
+  description = "Size of disk in GB"
+  default     = 50
+}
+
+###################
+# Other resources #
+###################
+
+variable "container_registry_resource_group_name" {
+  type        = string
+  description = "The name of the resource group the container registry can be found in"
+}
+
+variable "container_registry_name" {
+  type        = string
+  description = "Container registry name to enable access to"
+}
+
+variable "network_address_space" {
+  type        = list(string)
+  description = "The address space that is used the virtual network. You can supply more than one address space."
+  default = [
+    "10.0.0.0/16"
+  ]
+}
+
+variable "network_subnet_address_prefixes" {
+  type        = list(string)
+  description = "The address prefixes of the CI boxes subnet."
+  default     = ["10.0.0.0/24"]
+}
+
+variable "subnet_service_endpoints" {
+  type        = list(string)
+  description = "The list of Service endpoints to associate with the subnet."
+}
+
