@@ -14,9 +14,9 @@ variable "name" {
   default     = "ci"
 }
 
-#####################################################
-# Registration details (passed to shared/ci module) #
-#####################################################
+########################
+# Registration details #
+########################
 
 variable "username" {
   type        = string
