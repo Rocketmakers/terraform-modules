@@ -49,7 +49,7 @@ These are required by the module.
 | name | version |
 | ---- | ------- |
 | `azurerm` | >= 3.108.0 |
-| `terraform` | >= 1.8.5 |
+| `terraform` | >= 1.1.6 |
 | `tls` | >= 4.0.5 |
 
 ## Providers
