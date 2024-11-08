@@ -32,6 +32,7 @@ resource "azurerm_subnet" "ci" {
   virtual_network_name              = azurerm_virtual_network.ci.name
   address_prefixes                  = var.network_subnet_address_prefixes
   private_endpoint_network_policies = "Enabled"
+  service_endpoints                 = var.network_subnet_service_endpoints
 }
 
 resource "azurerm_network_security_group" "ci" {

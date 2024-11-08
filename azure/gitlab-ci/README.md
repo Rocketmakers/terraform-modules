@@ -30,6 +30,7 @@ This module creates one or more VMs within Azure acting as gitlab-runners. Each 
 | `name` | Main name of resources created | string | ci |
 | `network_address_space` | The address space that is used the virtual network. You can supply more than one address space. | list(string) | ["10.0.0.0/16"] |
 | `network_subnet_address_prefixes` | The address prefixes of the CI boxes subnet. | list(string) | ["10.0.0.0/24"] |
+| `network_subnet_service_endpoints` | The Azure service endpoints that should be enabled for the created network subnet | list(string) | [] |
 | `public_ip_allocation_method` | The allocation method for the public ip associated with the cluster | string | Static |
 | `public_ip_sku` | The sku for the public ip associated with the cluster | string | Standard |
 | `username` | Username for CI box | string | ci |

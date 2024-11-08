@@ -163,3 +163,9 @@ variable "network_subnet_address_prefixes" {
   description = "The address prefixes of the CI boxes subnet."
   default     = ["10.0.0.0/24"]
 }
+
+variable "network_subnet_service_endpoints" {
+  type        = list(string)
+  description = "The Azure service endpoints that should be enabled for the created network subnet"
+  default     = []
+}
