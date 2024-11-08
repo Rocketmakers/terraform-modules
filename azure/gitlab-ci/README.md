@@ -28,6 +28,8 @@ This module creates one or more VMs within Azure acting as gitlab-runners. Each 
 | `gitlab_runner_version` | The version of gitlab-runner to install (see https://docs.gitlab.com/runner/install/bleeding-edge.html#download-any-other-tagged-release) | string | latest |
 | `image_config` | The details of the OS image used on the instance | object({<br />    publisher = string<br />    offer     = string<br />    sku       = string<br />    version   = string<br />  }) | {"offer":"0001-com-ubuntu-server-focal","publisher":"Canonical","sku":"20_04-lts","version":"latest"} |
 | `instance_count` | The number of VM instances to create | number | 1 |
+| `key_vault_key_permissions` | The collection of key permissions that should be applied for the CI box for the specified key vault | list(string) | ["Get","Decrypt","List"] |
+| `key_vault_secret_permissions` | The collection of secret permissions that should be applied for the CI box for the specified key vault | list(string) | ["Get","List"] |
 | `name` | Main name of resources created | string | ci |
 | `network_address_space` | The address space that is used the virtual network. You can supply more than one address space. | list(string) | ["10.0.0.0/16"] |
 | `network_subnet_address_prefixes` | The address prefixes of the CI boxes subnet. | list(string) | ["10.0.0.0/24"] |

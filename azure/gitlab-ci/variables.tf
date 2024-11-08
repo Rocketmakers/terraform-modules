@@ -144,6 +144,25 @@ variable "key_vault_name" {
   description = "Azure key vault id that jobs on the runner will need to access."
 }
 
+variable "key_vault_key_permissions" {
+  type        = list(string)
+  description = "The collection of key permissions that should be applied for the CI box for the specified key vault"
+  default = [
+    "Get",
+    "Decrypt",
+    "List",
+  ]
+}
+
+variable "key_vault_secret_permissions" {
+  type        = list(string)
+  description = "The collection of secret permissions that should be applied for the CI box for the specified key vault"
+  default = [
+    "Get",
+    "List",
+  ]
+}
+
 variable "public_ip_allocation_method" {
   type        = string
   description = "The allocation method for the public ip associated with the cluster"

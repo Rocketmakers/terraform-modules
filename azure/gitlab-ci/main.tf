@@ -152,16 +152,8 @@ resource "azurerm_key_vault_access_policy" "ci" {
   tenant_id = data.azurerm_client_config.current.tenant_id
   object_id = azurerm_linux_virtual_machine.ci_box[count.index].identity[0].principal_id
 
-  key_permissions = [
-    "Get",
-    "Decrypt",
-    "List",
-  ]
-
-  secret_permissions = [
-    "Get",
-    "List",
-  ]
+  key_permissions    = var.key_vault_key_permissions
+  secret_permissions = var.key_vault_secret_permissions
 }
 
 resource "azurerm_role_assignment" "ci" {
