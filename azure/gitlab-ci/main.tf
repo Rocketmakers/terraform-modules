@@ -98,10 +98,11 @@ resource "azurerm_linux_virtual_machine" "ci_box" {
   computer_name  = "${var.project_prefix}-${var.name}-${count.index + 1}"
   admin_username = var.username
 
-  resource_group_name   = data.azurerm_resource_group.core.name
-  location              = azurerm_network_interface.ci[count.index].location
-  network_interface_ids = [azurerm_network_interface.ci[count.index].id]
-  size                  = var.vm_size
+  resource_group_name        = data.azurerm_resource_group.core.name
+  location                   = azurerm_network_interface.ci[count.index].location
+  network_interface_ids      = [azurerm_network_interface.ci[count.index].id]
+  size                       = var.vm_size
+  encryption_at_host_enabled = var.encryption_at_host_enabled
 
   source_image_reference {
     publisher = var.image_config.publisher

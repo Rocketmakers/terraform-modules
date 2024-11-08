@@ -124,6 +124,12 @@ variable "disk_size" {
   default     = 50
 }
 
+variable "encryption_at_host_enabled" {
+  type        = bool
+  description = "Determines if encryption at host is enabled for the machine"
+  default     = false
+}
+
 ###################
 # Other resources #
 ###################
