@@ -26,7 +26,7 @@ output "orchestrator_internal_ip_address" {
 
 output "runner_client_id" {
   description = "The client id for the runner"
-  value       = azuread_application.runner.application_id
+  value       = azuread_application.runner.client_id
 }
 
 output "runner_client_secret" {
