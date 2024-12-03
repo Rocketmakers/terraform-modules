@@ -21,15 +21,19 @@ This module creates one or more VMs within Azure acting as gitlab-runners. Each 
 | ------- | -------------------- | ------ | --------------- |
 | `disk_size` | Size of disk in GB | number | 50 |
 | `docker_prune_cron_schedule` | The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC. | string | 0 4 * * * |
+| `encryption_at_host_enabled` | Determines if encryption at host is enabled for the machine | bool | false |
 | `gitlab_runner_concurrency` | The maximum number of jobs that the runner will run concurrently | number | 3 |
 | `gitlab_runner_docker_image` | The value passed to --docker-image when registering the runner (see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker) | string | docker:stable |
 | `gitlab_runner_locked` | Setting true will limit the runner to the project that provided the registration token. Setting false will allow other projects to enable the runner. | bool | true |
 | `gitlab_runner_version` | The version of gitlab-runner to install (see https://docs.gitlab.com/runner/install/bleeding-edge.html#download-any-other-tagged-release) | string | latest |
 | `image_config` | The details of the OS image used on the instance | object({<br />    publisher = string<br />    offer     = string<br />    sku       = string<br />    version   = string<br />  }) | {"offer":"0001-com-ubuntu-server-focal","publisher":"Canonical","sku":"20_04-lts","version":"latest"} |
 | `instance_count` | The number of VM instances to create | number | 1 |
+| `key_vault_key_permissions` | The collection of key permissions that should be applied for the CI box for the specified key vault | list(string) | ["Get","Decrypt","List"] |
+| `key_vault_secret_permissions` | The collection of secret permissions that should be applied for the CI box for the specified key vault | list(string) | ["Get","List"] |
 | `name` | Main name of resources created | string | ci |
 | `network_address_space` | The address space that is used the virtual network. You can supply more than one address space. | list(string) | ["10.0.0.0/16"] |
 | `network_subnet_address_prefixes` | The address prefixes of the CI boxes subnet. | list(string) | ["10.0.0.0/24"] |
+| `network_subnet_service_endpoints` | The Azure service endpoints that should be enabled for the created network subnet | list(string) | [] |
 | `public_ip_allocation_method` | The allocation method for the public ip associated with the cluster | string | Static |
 | `public_ip_sku` | The sku for the public ip associated with the cluster | string | Standard |
 | `username` | Username for CI box | string | ci |
@@ -70,7 +74,7 @@ These are the providers used by the module.
 
 ```
 module ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/gitlab-ci?ref=v2.1.3"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/gitlab-ci?ref=v3.0.0"
 
   container_registry_name   = var.container_registry_name
   key_vault_name            = var.key_vault_name

@@ -23,7 +23,7 @@ locals {
 
 module "runner_account" {
   source  = "terraform-google-modules/service-accounts/google"
-  version = "4.1.1"
+  version = "4.4.2"
 
   project_id    = var.project_id
   project_roles = [for role in var.service_account_roles : "${var.project_id}=>${role}"]
@@ -34,7 +34,7 @@ module "runner_account" {
 
 module "orchestrator_account" {
   source  = "terraform-google-modules/service-accounts/google"
-  version = "4.1.1"
+  version = "4.4.2"
 
   project_id = var.project_id
   project_roles = [

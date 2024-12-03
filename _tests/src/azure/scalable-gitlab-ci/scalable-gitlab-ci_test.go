@@ -28,7 +28,7 @@ func TestAzureGitlabCi(t *testing.T) {
 	runnerMachineName := "auto-scale-"
 	primaryLocation := "West Europe"
 	retryInterval := 5 * time.Second
-	retryTimeout := 300 * time.Second
+	retryTimeout := 600 * time.Second
 	numberOfPipelines := 5
 
 	ipAddress, err := rmutils.GetMachineExternalIPAddress()
