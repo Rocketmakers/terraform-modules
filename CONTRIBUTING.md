@@ -1,5 +1,6 @@
 # Contributing to Rocketmakers terraform modules
 
+- [Contributing to Rocketmakers terraform modules](#contributing-to-rocketmakers-terraform-modules)
   - [Getting started](#getting-started)
   - [Running tests](#running-tests)
   - [Documentation](#documentation)
@@ -45,12 +46,16 @@ Get AWS keys from [internal-gitlab-runners/secrets/secrets.yaml](https://gitlab.
 # For all tests
 export GITLAB_TOKEN=_token_with_api_access_
 
+# Optionally prevent resources from being destroyed at the end of tests, so feedback is quicker during development
+export CLEANUP=false
+
 # aws
 export AWS_SECRET_ACCESS_KEY=_key_
 export AWS_ACCESS_KEY_ID=_access_key_
 make test TERRATEST_DIR=aws/gitlab-ci
 
 # azure (you'll need to be added to a group first)
+export ARM_SUBSCRIPTION_ID=68bb123f-6027-4e99-8ab0-a01fb16cdd79
 az login
 make test TERRATEST_DIR=azure/gitlab-ci
 
