@@ -7,7 +7,7 @@ resource "azuread_application" "app" {
 }
 
 resource "azuread_service_principal" "sp" {
-  application_id = azuread_application.app.application_id
+  client_id = azuread_application.app.client_id
 }
 
 resource "azuread_service_principal_password" "pw" {
@@ -23,8 +23,8 @@ resource "azurerm_role_assignment" "owner" {
 data "azuread_application_published_app_ids" "well_known" {}
 
 resource "azuread_service_principal" "msgraph" {
-  application_id = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
-  use_existing   = true
+  client_id    = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
+  use_existing = true
 }
 
 resource "azuread_app_role_assignment" "app_rw" {

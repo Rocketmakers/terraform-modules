@@ -16,12 +16,12 @@ resource "azuread_application" "orchestrator" {
 }
 
 resource "azuread_service_principal" "orchestrator" {
-  application_id = azuread_application.orchestrator.application_id
-  owners         = [data.azurerm_client_config.current.object_id]
+  client_id = azuread_application.orchestrator.client_id
+  owners    = [data.azurerm_client_config.current.object_id]
 }
 
 resource "azuread_service_principal_password" "orchestrator" {
-  service_principal_id = azuread_service_principal.orchestrator.object_id
+  service_principal_id = azuread_service_principal.orchestrator.id
 }
 
 resource "azuread_application" "runner" {
@@ -30,12 +30,12 @@ resource "azuread_application" "runner" {
 }
 
 resource "azuread_service_principal" "runner" {
-  application_id = azuread_application.runner.application_id
-  owners         = [data.azurerm_client_config.current.object_id]
+  client_id = azuread_application.runner.client_id
+  owners    = [data.azurerm_client_config.current.object_id]
 }
 
 resource "azuread_service_principal_password" "runner" {
-  service_principal_id = azuread_service_principal.runner.object_id
+  service_principal_id = azuread_service_principal.runner.id
 }
 
 resource "azurerm_role_assignment" "orchestrator_subscription_reader" {
@@ -61,7 +61,7 @@ resource "azurerm_storage_account" "sa" {
 
 resource "azurerm_storage_container" "sc" {
   name                  = "${var.project_prefix}-ci-cache"
-  storage_account_name  = azurerm_storage_account.sa.name
+  storage_account_id    = azurerm_storage_account.sa.id
   container_access_type = "private"
 }
 
@@ -239,7 +239,7 @@ resource "null_resource" "orchestrator_provisioner" {
         "azure-vnet=${azurerm_virtual_network.ci.name}",
         "azure-subnet=${azurerm_subnet.ci.name}",
         "azure-use-private-ip",
-        "azure-client-id=${azuread_application.orchestrator.application_id}",
+        "azure-client-id=${azuread_application.orchestrator.client_id}",
         "azure-client-secret=${nonsensitive(azuread_service_principal_password.orchestrator.value)}",
         "engine-install-url=${var.engine_install_url}"
       ]
@@ -269,7 +269,7 @@ EOF
       module.shared_ci.init_docker,
       module.shared_ci.init_docker_machine,
       [
-        nonsensitive("sudo -i docker-machine create --driver azure --azure-subscription-id ${data.azurerm_subscription.current.subscription_id} --azure-client-id ${azuread_application.orchestrator.application_id} --azure-client-secret ${azuread_service_principal_password.orchestrator.value} --azure-location ${data.azurerm_resource_group.ci.location} --azure-image ${local.runner_image} --azure-size ${var.runner_vm_size} --azure-ssh-user gitlab --azure-resource-group ${data.azurerm_resource_group.ci.name} --azure-vnet ${azurerm_virtual_network.ci.name} --azure-subnet ${azurerm_subnet.ci.name} --azure-use-private-ip --azure-no-public-ip --engine-install-url ${var.engine_install_url} test-runner"),
+        nonsensitive("sudo -i docker-machine create --driver azure --azure-subscription-id ${data.azurerm_subscription.current.subscription_id} --azure-client-id ${azuread_application.orchestrator.client_id} --azure-client-secret ${azuread_service_principal_password.orchestrator.value} --azure-location ${data.azurerm_resource_group.ci.location} --azure-image ${local.runner_image} --azure-size ${var.runner_vm_size} --azure-ssh-user gitlab --azure-resource-group ${data.azurerm_resource_group.ci.name} --azure-vnet ${azurerm_virtual_network.ci.name} --azure-subnet ${azurerm_subnet.ci.name} --azure-use-private-ip --azure-no-public-ip --engine-install-url ${var.engine_install_url} test-runner"),
         "sudo -i docker-machine rm -y test-runner"
       ],
       module.shared_ci.init_gitlab_runner,

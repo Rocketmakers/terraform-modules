@@ -27,10 +27,12 @@ resource "azurerm_virtual_network" "ci" {
 }
 
 resource "azurerm_subnet" "ci" {
-  name                 = "${data.azurerm_resource_group.core.name}-subnet"
-  resource_group_name  = data.azurerm_resource_group.core.name
-  virtual_network_name = azurerm_virtual_network.ci.name
-  address_prefixes     = var.network_subnet_address_prefixes
+  name                              = "${data.azurerm_resource_group.core.name}-subnet"
+  resource_group_name               = data.azurerm_resource_group.core.name
+  virtual_network_name              = azurerm_virtual_network.ci.name
+  address_prefixes                  = var.network_subnet_address_prefixes
+  private_endpoint_network_policies = "Enabled"
+  service_endpoints                 = var.network_subnet_service_endpoints
 }
 
 resource "azurerm_network_security_group" "ci" {
@@ -96,10 +98,11 @@ resource "azurerm_linux_virtual_machine" "ci_box" {
   computer_name  = "${var.project_prefix}-${var.name}-${count.index + 1}"
   admin_username = var.username
 
-  resource_group_name   = data.azurerm_resource_group.core.name
-  location              = azurerm_network_interface.ci[count.index].location
-  network_interface_ids = [azurerm_network_interface.ci[count.index].id]
-  size                  = var.vm_size
+  resource_group_name        = data.azurerm_resource_group.core.name
+  location                   = azurerm_network_interface.ci[count.index].location
+  network_interface_ids      = [azurerm_network_interface.ci[count.index].id]
+  size                       = var.vm_size
+  encryption_at_host_enabled = var.encryption_at_host_enabled
 
   source_image_reference {
     publisher = var.image_config.publisher
@@ -149,16 +152,8 @@ resource "azurerm_key_vault_access_policy" "ci" {
   tenant_id = data.azurerm_client_config.current.tenant_id
   object_id = azurerm_linux_virtual_machine.ci_box[count.index].identity[0].principal_id
 
-  key_permissions = [
-    "Get",
-    "Decrypt",
-    "List",
-  ]
-
-  secret_permissions = [
-    "Get",
-    "List",
-  ]
+  key_permissions    = var.key_vault_key_permissions
+  secret_permissions = var.key_vault_secret_permissions
 }
 
 resource "azurerm_role_assignment" "ci" {

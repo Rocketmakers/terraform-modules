@@ -124,6 +124,12 @@ variable "disk_size" {
   default     = 50
 }
 
+variable "encryption_at_host_enabled" {
+  type        = bool
+  description = "Determines if encryption at host is enabled for the machine"
+  default     = false
+}
+
 ###################
 # Other resources #
 ###################
@@ -136,6 +142,25 @@ variable "container_registry_name" {
 variable "key_vault_name" {
   type        = string
   description = "Azure key vault id that jobs on the runner will need to access."
+}
+
+variable "key_vault_key_permissions" {
+  type        = list(string)
+  description = "The collection of key permissions that should be applied for the CI box for the specified key vault"
+  default = [
+    "Get",
+    "Decrypt",
+    "List",
+  ]
+}
+
+variable "key_vault_secret_permissions" {
+  type        = list(string)
+  description = "The collection of secret permissions that should be applied for the CI box for the specified key vault"
+  default = [
+    "Get",
+    "List",
+  ]
 }
 
 variable "public_ip_allocation_method" {
@@ -162,4 +187,10 @@ variable "network_subnet_address_prefixes" {
   type        = list(string)
   description = "The address prefixes of the CI boxes subnet."
   default     = ["10.0.0.0/24"]
+}
+
+variable "network_subnet_service_endpoints" {
+  type        = list(string)
+  description = "The Azure service endpoints that should be enabled for the created network subnet"
+  default     = []
 }
