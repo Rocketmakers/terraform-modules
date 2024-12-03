@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v2.1.3...v3.0.0) (2024-12-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* **azure-gitlab-ci:** Upgraded azurerm from 2.97.0 to 4.9.0
+* **azure-gitlab-ci:** Upgraded azuread from 2.x.x to 3.0.2
+
+### Features
+
+* **azure-gitlab-ci:** Added new config option available in newer versions of azure provider ([e6dbf14](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/e6dbf141218082bbeecbff55e778e09387b58519))
+* **azure-gitlab-ci:** Added suport for encryption at host ([3558e25](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/3558e251b6569e52fdf3bd18b925d97921a5d4fa))
+* **azure-gitlab-ci:** Updated key vault key and secret permissions to be configurable ([be73728](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/be7372829536bbe406c5dd52d36c237e2175520b))
+
+
+### Tests
+
+* **azure-gitlab-ci:** Increase test timeout from 5 to 10 minutes ([b83655e](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/b83655ee31a465a73e07aad86739c55386bd25a0))
+
+
+### Other Changes
+
+* **azure-gitlab-ci:** Added ability to specify ci network service endpoints ([b3a0b6f](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/b3a0b6f89662d4a12001bba6b88aae071eebc153))
+* **gcp-gitlab-ci:** Upgrade the google service-accounts module to latest 4.4.2 ([aa0e21d](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/aa0e21d178b89679dc47ba8f592547b06d958655))
+
 ### [2.1.3](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v2.1.2...v2.1.3) (2023-08-21)
 
 
