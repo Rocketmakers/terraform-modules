@@ -41,13 +41,13 @@ resource "azuread_service_principal_password" "runner" {
 resource "azurerm_role_assignment" "orchestrator_subscription_reader" {
   scope                = data.azurerm_subscription.current.id
   role_definition_name = "Reader"
-  principal_id         = azuread_service_principal.orchestrator.id
+  principal_id         = azuread_service_principal.orchestrator.object_id
 }
 
 resource "azurerm_role_assignment" "orchestrator_resource_group_contributor" {
   scope                = data.azurerm_resource_group.ci.id
   role_definition_name = "Contributor"
-  principal_id         = azuread_service_principal.orchestrator.id
+  principal_id         = azuread_service_principal.orchestrator.object_id
 }
 
 resource "azurerm_storage_account" "sa" {
@@ -178,7 +178,7 @@ resource "azurerm_linux_virtual_machine" "orchestrator" {
 resource "azurerm_role_assignment" "runner_subscription_contributor" {
   scope                = data.azurerm_subscription.current.id
   role_definition_name = "Contributor"
-  principal_id         = azuread_service_principal.runner.id
+  principal_id         = azuread_service_principal.runner.object_id
 }
 
 ##################################
@@ -196,7 +196,7 @@ data "azurerm_container_registry" "core" {
 resource "azurerm_role_assignment" "runner_acr_push" {
   scope                = data.azurerm_container_registry.core.id
   role_definition_name = "AcrPush"
-  principal_id         = azuread_service_principal.runner.id
+  principal_id         = azuread_service_principal.runner.object_id
 }
 
 # We want to run this separately so that the instance is created and the internal ip is attached to azurerm_virtual_network.ci
