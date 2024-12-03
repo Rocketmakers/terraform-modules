@@ -62,7 +62,7 @@ These are the providers used by the module.
 
 ```
 module ci-box {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//aws/gitlab-ci?ref=v2.1.3"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//aws/gitlab-ci?ref=v3.0.0"
 
   availability_zones         = var.availability_zone
   project_prefix             = local.project_prefix
