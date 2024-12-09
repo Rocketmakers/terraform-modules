@@ -8,7 +8,6 @@
 
 .terratest:
   stage: test
-  resource_group: 'terratest-$TEST_NAME'
   extends:
     - .defaults
   script:
@@ -70,6 +69,7 @@ scalable-runner-test.az:
 non-scalable-runner-test.gcp:
   extends:
     - .terratest.gcp
+  resource_group: gcp-runner-test
   variables:
     TERRATEST_DIR: gcp/gitlab-ci
     TEST_NAME: gcp-gitlab-ci
@@ -77,6 +77,7 @@ non-scalable-runner-test.gcp:
 scalable-runner-test.gcp:
   extends:
     - .terratest.gcp
+  resource_group: gcp-runner-test
   variables:
     TERRATEST_DIR: gcp/scalable-gitlab-ci
     TEST_NAME: gcp-scalable-gitlab-ci
