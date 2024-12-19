@@ -148,5 +148,5 @@ resource "google_compute_instance_group_manager" "main" {
   }
 
   target_pools       = [google_compute_target_pool.main.id]
-  base_instance_name = "foobar"
+  base_instance_name = local.name
 }
