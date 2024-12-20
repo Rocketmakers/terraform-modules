@@ -64,6 +64,11 @@ variable "max_instance_count" {
   default     = 1
 }
 
+variable "subnetwork_ip_cidr" {
+  description = "The IP CIDR for the subnetwork. The default supports 14 addresses"
+  default     = "10.128.0.0/28"
+}
+
 variable "docker_prune_cron_schedule" {
   type        = string
   description = "The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC."

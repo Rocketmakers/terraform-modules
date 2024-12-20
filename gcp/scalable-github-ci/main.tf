@@ -51,7 +51,7 @@ resource "google_compute_network" "ci_network" {
 
 resource "google_compute_subnetwork" "ci_subnet" {
   name          = "${google_compute_network.ci_network.name}-${var.region}"
-  ip_cidr_range = "10.128.0.0/20"
+  ip_cidr_range = var.subnetwork_ip_cidr
   region        = var.region
   network       = google_compute_network.ci_network.name
   project       = google_compute_network.ci_network.project
