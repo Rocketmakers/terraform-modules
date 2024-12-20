@@ -86,13 +86,8 @@ module "account" {
   source  = "terraform-google-modules/service-accounts/google"
   version = "4.4.2"
 
-  project_id = var.project_id
-  project_roles = [
-    "${var.project_id}=>roles/compute.admin",
-    "${var.project_id}=>roles/iam.serviceAccountUser",
-    "${var.project_id}=>roles/monitoring.metricWriter",
-    "${var.project_id}=>roles/logging.logWriter"
-  ]
+  project_id    = var.project_id
+  project_roles = [for role in var.service_account_roles : "${var.project_id}=>${role}"]
   generate_keys = true
   names         = ["${var.project_prefix}-ci"]
   descriptions  = ["GitHub CI service account"]
