@@ -18,17 +18,12 @@ variable "project_prefix" {
   description = "A prefix given to resource names related to the runner instance"
 }
 
-variable "gcr_bucket_names" {
-  type        = list(string)
-  description = "Names of google container registry buckets that the runner instance has permission to access e.g. [\"eu.artifacts.my-cool-project.appspot.com\"]"
-}
-
 variable "machine_type" {
   type        = string
   description = "Machine type of the runner vm"
 }
 
-variable "cidr_ranges" {
+variable "ssh_cidr_ranges" {
   type        = list(string)
   description = "CIDR ranges allowed to access the runner instance"
 }
@@ -48,7 +43,7 @@ variable "image_project" {
 variable "image_name" {
   type        = string
   description = "Google image name to base CI on"
-  default     = "ubuntu-2004-focal-v20230302"
+  default     = "ubuntu-2004-focal-v20241115"
 }
 
 variable "tags" {
@@ -89,10 +84,10 @@ variable "github_runner_version" {
 
 variable "github_api_token" {
   type        = string
-  description = "The Github API token to support retrieving a runner registeration token"
+  description = "The Github API token to support retrieving a runner registeration token. This must be against a user and have access to runners for a repository."
 }
 
 variable "github_organisation" {
   type        = string
-  description = "The Github organisation to use"
+  description = "The name of the Github organisation to use (e.g. Rocketmakers), if registering against an organisation, or the name of the repository (e.g. Rocketmakers/terraform-modules), if registering against a single repository"
 }

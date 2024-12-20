@@ -3,27 +3,28 @@ locals {
 
   # Adapted from https://brendanthompson.com/posts/2021/09/github-actions-self-hosted-runner-on-azure
   install_github_runner_data = <<EOF
+#! /bin/bash
 echo "Installing Docker"
 curl -sSL https://get.docker.com/ | sh
-[su, ${var.username}, -c, 'usermod -aG docker ${var.username}']
+su root -c 'usermod -aG docker root'
 echo "Setting up Docker prune"
 (crontab -l 2>/dev/null; echo '${var.docker_prune_cron_schedule} docker system prune -f -a --volumes') | crontab -
 echo "Downloading GitHub runner installer"
-[mkdir, '/actions-runner']
+mkdir '/actions-runner'
 cd /actions-runner
-[curl, -o, 'actions-runner.tar.gz', -L, 'https://github.com/actions/runner/releases/download/v${var.github_runner_version}/actions-runner-linux-x64-${var.github_runner_version}.tar.gz']
-[tar, -xzf, 'actions-runner.tar.gz']
-[chmod, -R, 777, '/actions-runner']
+curl -o 'actions-runner.tar.gz' -L 'https://github.com/actions/runner/releases/download/v${var.github_runner_version}/actions-runner-linux-x64-${var.github_runner_version}.tar.gz'
+tar -xzf 'actions-runner.tar.gz'
+chmod -R 777 '/actions-runner'
 echo "Retrieving GitHub runner token"
-"curl -s -X POST -H 'Accept: application/vnd.github+json' -H 'Authorization: Bearer ${var.github_api_token}' -H 'X-GitHub-Api-Version: 2022-11-28' 'https://api.github.com/repos/${var.github_organisation}/actions/runners/registration-token' > .runner_token_output"
-|
-  cat .runner_token_output | sed -n 's/.*"token": "\([^"]*\)".*/\1/p' > .runner_token
+curl -s -X POST -H 'Accept: application/vnd.github+json' -H 'Authorization: Bearer ${var.github_api_token}' -H 'X-GitHub-Api-Version: 2022-11-28' 'https://api.github.com/repos/${var.github_organisation}/actions/runners/registration-token' > .runner_token_output
+cat .runner_token_output | sed -n 's/.*"token": "\([^"]*\)".*/\1/p' > .runner_token
 echo "Registering GitHub runner"
 export ACTIONS_RUNNER_INPUT_REPLACE=true
-[su, ${var.username}, -c, '/actions-runner/config.sh --url https://github.com/${var.github_organisation} --token $(cat /actions-runner/.runner_token)']
+export RUNNER_ALLOW_RUNASROOT="1"
+su root -c '/actions-runner/config.sh --url https://github.com/${var.github_organisation} --token $(cat /actions-runner/.runner_token)'
 ./svc.sh install
 ./svc.sh start
-[rm, '/actions-runner/actions-runner.tar.gz']
+rm '/actions-runner/actions-runner.tar.gz'
 EOF
 }
 
@@ -38,20 +39,8 @@ resource "google_compute_firewall" "ci_firewall" {
     ports    = ["22"]
   }
 
-  source_ranges = var.cidr_ranges
+  source_ranges = var.ssh_cidr_ranges
   target_tags   = var.tags
-}
-
-resource "google_compute_firewall" "all_on_network" {
-  project = google_compute_network.ci_network.project
-
-  name    = "${google_compute_network.ci_network.name}-all-on-network"
-  network = google_compute_network.ci_network.self_link
-
-  allow {
-    protocol = "all"
-  }
-  source_ranges = ["${google_compute_instance.orchestrator.network_interface[0].network_ip}/32"]
 }
 
 resource "google_compute_network" "ci_network" {
@@ -101,7 +90,8 @@ module "account" {
   project_roles = [
     "${var.project_id}=>roles/compute.admin",
     "${var.project_id}=>roles/iam.serviceAccountUser",
-    "${var.project_id}=>roles/monitoring.metricWriter"
+    "${var.project_id}=>roles/monitoring.metricWriter",
+    "${var.project_id}=>roles/logging.logWriter"
   ]
   generate_keys = true
   names         = ["${var.project_prefix}-ci"]
@@ -120,6 +110,9 @@ resource "google_compute_instance_template" "main" {
 
   network_interface {
     subnetwork = google_compute_subnetwork.ci_subnet.self_link
+    access_config {
+      // Required to assign an external IP address
+    }
   }
 
   metadata = {
@@ -128,14 +121,15 @@ resource "google_compute_instance_template" "main" {
 
   service_account {
     email  = module.account.email
-    scopes = ["userinfo-email", "compute-ro", "storage-ro"]
+    scopes = ["userinfo-email", "compute-ro", "storage-ro", "cloud-platform"]
   }
 
   metadata_startup_script = local.install_github_runner_data
 }
 
 resource "google_compute_target_pool" "main" {
-  name = "${local.name}-pool"
+  name   = "${local.name}-pool"
+  region = var.region
 }
 
 resource "google_compute_instance_group_manager" "main" {
