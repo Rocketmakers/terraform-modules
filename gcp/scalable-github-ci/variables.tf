@@ -87,6 +87,12 @@ variable "username" {
   default     = "ci"
 }
 
+variable "disk_size_gb" {
+  type        = number
+  description = "The size of the disk in GB"
+  default     = 50
+}
+
 variable "github_runner_version" {
   type        = string
   description = "The version of github-runner to install"

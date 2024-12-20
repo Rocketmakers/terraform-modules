@@ -19,6 +19,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 
 | name    | description          | type   | default value   |
 | ------- | -------------------- | ------ | --------------- |
+| `disk_size_gb` | The size of the disk in GB | number | 50 |
 | `docker_prune_cron_schedule` | The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC. | string | 0 4 * * * |
 | `github_runner_version` | The version of github-runner to install | string | 2.317.0 |
 | `image_name` | Google image name to base CI on | string | ubuntu-2004-focal-v20241115 |

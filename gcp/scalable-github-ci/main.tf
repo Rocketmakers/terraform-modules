@@ -101,6 +101,7 @@ resource "google_compute_instance_template" "main" {
 
   disk {
     source_image = data.google_compute_image.image.id
+    disk_size_gb = var.disk_size_gb
   }
 
   network_interface {
