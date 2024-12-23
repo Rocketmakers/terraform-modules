@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.0.0...v3.1.0) (2024-12-23)
+
+
+### Features
+
+* **azure-github-ci:** Added initial scalable GitHub runner ([5d2ee39](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/5d2ee391aae44c2764a9551e332bf2d1b9de11b9))
+* **gcp-github-ci:** Added initial scalable runner for GitHub ([5f751c1](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/5f751c1d92e8424c4466f28e559db22925077e6c))
+
+
+
+### Tests
+
+* **gcp-gitlab-ci:** Use the same resource group name to prevent the GCP tests clashing ([a8ee594](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/a8ee594c5e9bf5460a840352e75617580fd9aafe))
+
+
 ## [3.0.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v2.1.3...v3.0.0) (2024-12-03)
 
 

@@ -99,6 +99,8 @@ const czCustomizable = {
     { name: 'aws-gitlab-ci' },
     { name: 'azure-gitlab-ci' },
     { name: 'gcp-gitlab-ci' },
+    { name: 'azure-github-ci' },
+    { name: 'gcp-github-ci' },
     { name: 'shared-ci' },
     { name: 'terratest' },
     { name: 'config' },
