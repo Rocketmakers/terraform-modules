@@ -37,7 +37,7 @@ variable "name" {
 variable "service_account_roles" {
   type        = list(string)
   description = "The roles that should be assigned to the service account running the CI box"
-  default     = ["roles/monitoring.metricWriter", "roles/container.admin", "roles/secretmanager.secretAccessor"]
+  default     = ["roles/monitoring.metricWriter"]
 }
 
 variable "image_project" {

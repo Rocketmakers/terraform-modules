@@ -27,7 +27,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `max_instance_count` | The maximum number of VM instances to create | number | 1 |
 | `min_instance_count` | The minimum number of VM instances to create | number | 1 |
 | `name` | Main name of resources created | string | ci |
-| `service_account_roles` | The roles that should be assigned to the service account running the CI box | list(string) | ["roles/monitoring.metricWriter","roles/container.admin","roles/secretmanager.secretAccessor"] |
+| `service_account_roles` | The roles that should be assigned to the service account running the CI box | list(string) | ["roles/monitoring.metricWriter"] |
 | `subnetwork_ip_cidr` | The IP CIDR for the subnetwork. The default supports 14 addresses | string | 10.128.0.0/28 |
 | `tags` | List of tags to enable ssh access | list(string) | ["ci","externalssh"] |
 | `username` | Username for CI box | string | ci |
