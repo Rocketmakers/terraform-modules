@@ -9,22 +9,13 @@ All notable changes to this project will be documented in this file. See [standa
 
 * **azure-github-ci:** Added initial scalable GitHub runner ([5d2ee39](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/5d2ee391aae44c2764a9551e332bf2d1b9de11b9))
 * **gcp-github-ci:** Added initial scalable runner for GitHub ([5f751c1](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/5f751c1d92e8424c4466f28e559db22925077e6c))
-* **gcp-github-ci:** Fixed registration issues with GCP runner ([458a773](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/458a7737dd05313a2d11eb3ffb30846fb6ccdee1))
-* **gcp-github-ci:** Updated to make subnetwork IP CIDR configurable ([4801af9](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/4801af9b165c1c9913221990edb3b3c665eac214))
-* **scalabale-github-ci:** Added ability to configure disk size ([58a6ceb](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/58a6ceb36568f19c35ecafb750140c30950eaca4))
-* **scalable-github-ci:** Removed a lot of default roles ([fa24837](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/fa2483793bdf4704f4fd846964d57fcfab380af9))
-* **scalable-github-ci:** Updated to have service account roles configurable ([2237887](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/22378873e089615c5b8947b12f9ffe54dac20c06))
+
 
 
 ### Tests
 
 * **gcp-gitlab-ci:** Use the same resource group name to prevent the GCP tests clashing ([a8ee594](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/a8ee594c5e9bf5460a840352e75617580fd9aafe))
 
-
-### Other Changes
-
-* Fixed required version ([6fa4e58](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/6fa4e5876c84d53137626391d7f843af8b4a3c04))
-* Updated base instance name ([833f478](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/833f478479c89eba78428824222b64775cdbf287))
 
 ## [3.0.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v2.1.3...v3.0.0) (2024-12-03)
 
