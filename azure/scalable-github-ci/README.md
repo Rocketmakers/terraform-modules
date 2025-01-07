@@ -23,8 +23,8 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `disk_size` | Size of disk in GB | number | 50 |
 | `docker_prune_cron_schedule` | The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC. | string | 0 4 * * * |
 | `github_runner_concurrency` | The maximum number of jobs that the runner will run concurrently | number | 3 |
-| `github_runner_version` | The version of github-runner to install | string | 2.317.0 |
-| `image_config` | The details of the OS image used on the instance | object({<br />    publisher = string<br />    offer     = string<br />    sku       = string<br />    version   = string<br />  }) | {"offer":"0001-com-ubuntu-server-focal","publisher":"Canonical","sku":"20_04-lts","version":"latest"} |
+| `github_runner_version` | The version of github-runner to install | string | 2.321.0 |
+| `image_config` | The details of the OS image used on the instance | object({<br />    publisher = string<br />    offer     = string<br />    sku       = string<br />    version   = string<br />  }) | {"offer":"0001-com-ubuntu-server-jammy","publisher":"Canonical","sku":"22_04-lts","version":"latest"} |
 | `max_instance_count` | The maximum number of VM instances to create | number | 1 |
 | `min_instance_count` | The minimum number of VM instances to create | number | 1 |
 | `name` | Main name of resources created | string | ci |
