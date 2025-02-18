@@ -21,6 +21,16 @@ output "service_principal_ids" {
   ]
 }
 
+output "virtual_network_id" {
+  description = "The id of the virtual network associated with the CI runner"
+  value       = azurerm_virtual_network.ci.id
+}
+
+output "virtual_network_name" {
+  description = "The name of the virtual network associated with the CI runner"
+  value       = azurerm_virtual_network.ci.name
+}
+
 output "subnet_id" {
   description = "The id of the subnet the CI runner is assigned to"
   value       = azurerm_subnet.ci.id
