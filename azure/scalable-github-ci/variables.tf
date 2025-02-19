@@ -69,15 +69,15 @@ variable "max_instance_count" {
 }
 
 variable "autoscale_up_cpu_percentage" {
-  type = number
+  type        = number
   description = "The minimum CPU percentage which must be achieved before scaling up to the max_instance_count"
-  default = 10
+  default     = 10
 }
 
 variable "autoscale_down_cpu_percentage" {
-  type = number
+  type        = number
   description = "The maximum CPU percentage which must be achieved before scaling down to the min_instance_count"
-  default = 5
+  default     = 5
 }
 
 variable "resource_group_name" {
