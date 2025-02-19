@@ -166,7 +166,7 @@ resource "azurerm_monitor_autoscale_setting" "ci" {
         time_window              = "PT5M"
         time_aggregation         = "Average"
         operator                 = "GreaterThan"
-        threshold                = 10
+        threshold                = var.autoscale_up_cpu_percentage
         metric_namespace         = "microsoft.compute/virtualmachinescalesets"
         divide_by_instance_count = true
       }
@@ -188,7 +188,7 @@ resource "azurerm_monitor_autoscale_setting" "ci" {
         time_window              = "PT15M"
         time_aggregation         = "Average"
         operator                 = "LessThan"
-        threshold                = 5
+        threshold                = var.autoscale_down_cpu_percentage
         divide_by_instance_count = true
       }
 

@@ -20,6 +20,8 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 
 | name    | description          | type   | default value   |
 | ------- | -------------------- | ------ | --------------- |
+| `autoscale_down_cpu_percentage` | The maximum CPU percentage which must be achieved before scaling down to the min_instance_count | number | 5 |
+| `autoscale_up_cpu_percentage` | The minimum CPU percentage which must be achieved before scaling up to the max_instance_count | number | 10 |
 | `disk_size` | Size of disk in GB | number | 50 |
 | `docker_prune_cron_schedule` | The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC. | string | 0 4 * * * |
 | `github_runner_concurrency` | The maximum number of jobs that the runner will run concurrently | number | 3 |
