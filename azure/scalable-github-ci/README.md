@@ -20,6 +20,10 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 
 | name    | description          | type   | default value   |
 | ------- | -------------------- | ------ | --------------- |
+| `autoscale_max_cooldown` | The cooldown mode for autoscaling to the maximum instances | string | PT1M |
+| `autoscale_max_cpu_percentage` | The minimum CPU percentage which must be achieved before scaling up to the max_instance_count | number | 10 |
+| `autoscale_min_cooldown` | The cooldown mode for autoscaling to the minimum instances | string | PT1M |
+| `autoscale_min_cpu_percentage` | The maximum CPU percentage which must be achieved before scaling down to the min_instance_count | number | 5 |
 | `disk_size` | Size of disk in GB | number | 50 |
 | `docker_prune_cron_schedule` | The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC. | string | 0 4 * * * |
 | `github_runner_concurrency` | The maximum number of jobs that the runner will run concurrently | number | 3 |
@@ -41,6 +45,8 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `service_principal_ids` | The ids of the underlying service principal accounts |
 | `subnet_id` | The id of the subnet the CI runner is assigned to |
 | `username` | Username for CI box |
+| `virtual_network_id` | The id of the virtual network associated with the CI runner |
+| `virtual_network_name` | The name of the virtual network associated with the CI runner |
 
 ## Requirements
 

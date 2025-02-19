@@ -68,6 +68,30 @@ variable "max_instance_count" {
   default     = 1
 }
 
+variable "autoscale_max_cpu_percentage" {
+  type        = number
+  description = "The minimum CPU percentage which must be achieved before scaling up to the max_instance_count"
+  default     = 10
+}
+
+variable "autoscale_max_cooldown" {
+  type        = string
+  description = "The cooldown mode for autoscaling to the maximum instances"
+  default     = "PT1M"
+}
+
+variable "autoscale_min_cpu_percentage" {
+  type        = number
+  description = "The maximum CPU percentage which must be achieved before scaling down to the min_instance_count"
+  default     = 5
+}
+
+variable "autoscale_min_cooldown" {
+  type        = string
+  description = "The cooldown mode for autoscaling to the minimum instances"
+  default     = "PT1M"
+}
+
 variable "resource_group_name" {
   type        = string
   description = "The name of the resource group in which to place resources"

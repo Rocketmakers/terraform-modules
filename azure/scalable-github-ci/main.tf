@@ -166,7 +166,7 @@ resource "azurerm_monitor_autoscale_setting" "ci" {
         time_window              = "PT5M"
         time_aggregation         = "Average"
         operator                 = "GreaterThan"
-        threshold                = 10
+        threshold                = var.autoscale_max_cpu_percentage
         metric_namespace         = "microsoft.compute/virtualmachinescalesets"
         divide_by_instance_count = true
       }
@@ -175,7 +175,7 @@ resource "azurerm_monitor_autoscale_setting" "ci" {
         direction = "Increase"
         type      = "ExactCount"
         value     = var.max_instance_count
-        cooldown  = "PT1M"
+        cooldown  = var.autoscale_max_cooldown
       }
     }
 
@@ -188,7 +188,7 @@ resource "azurerm_monitor_autoscale_setting" "ci" {
         time_window              = "PT15M"
         time_aggregation         = "Average"
         operator                 = "LessThan"
-        threshold                = 5
+        threshold                = var.autoscale_min_cpu_percentage
         divide_by_instance_count = true
       }
 
@@ -196,7 +196,7 @@ resource "azurerm_monitor_autoscale_setting" "ci" {
         direction = "Decrease"
         type      = "ExactCount"
         value     = var.min_instance_count
-        cooldown  = "PT1M"
+        cooldown  = var.autoscale_min_cooldown
       }
     }
   }
