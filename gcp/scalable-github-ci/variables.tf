@@ -70,6 +70,12 @@ variable "max_instance_count" {
   default     = 1
 }
 
+variable "cpu_percentage_target_utilization" {
+  type = number
+  description = "The target CPU percentage (0-1) that is used to determine if instances are scaled up or down"
+  default = 0.1
+}
+
 variable "subnetwork_ip_cidr" {
   description = "The IP CIDR for the subnetwork. The default supports 14 addresses"
   default     = "10.128.0.0/28"

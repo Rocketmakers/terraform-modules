@@ -19,6 +19,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 
 | name    | description          | type   | default value   |
 | ------- | -------------------- | ------ | --------------- |
+| `cpu_percentage_target_utilization` | The target CPU percentage (0-1) that is used to determine if instances are scaled up or down | number | 0.1 |
 | `disk_size_gb` | The size of the disk in GB | number | 50 |
 | `docker_prune_cron_schedule` | The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC. | string | 0 4 * * * |
 | `github_runner_version` | The version of github-runner to install | string | 2.317.0 |
