@@ -72,8 +72,14 @@ variable "max_instance_count" {
 
 variable "cpu_percentage_target_utilization" {
   type        = number
-  description = "The target CPU percentage (0-1) that is used to determine if instances are scaled up or down"
+  description = "The target CPU utilization that the autoscaler should maintain. Must be a float value in the range (0, 1]. If the CPU level is below the target utilization, the autoscaler scales down the number of instances until it reaches the minimum number of instances you specified or until the average CPU of your instances reaches the target utilization. If the average CPU is above the target utilization, the autoscaler scales up until it reaches the maximum number of instances you specified or until the average utilization reaches the target utilization."
   default     = 0.1
+}
+
+variable "autoscaling_cooldown_period_in_seconds" {
+  type        = number
+  description = "The number of seconds that the autoscaler should wait before it starts collecting information from a new instance. This prevents the autoscaler from collecting information when the instance is initializing, during which the collected usage would not be reliable."
+  default     = 60
 }
 
 variable "subnetwork_ip_cidr" {

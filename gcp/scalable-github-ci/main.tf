@@ -65,7 +65,7 @@ resource "google_compute_autoscaler" "main" {
   autoscaling_policy {
     max_replicas    = var.max_instance_count
     min_replicas    = var.min_instance_count
-    cooldown_period = 60
+    cooldown_period = var.autoscaling_cooldown_period_in_seconds
 
     cpu_utilization {
       target = var.cpu_percentage_target_utilization
