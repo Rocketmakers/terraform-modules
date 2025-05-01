@@ -13,7 +13,7 @@ TERRATEST_LOG_PARSER_VERSION ?= v0.40.24
 ARCHITECTURE                 ?= linux_amd64
 
 # Set false to leave resources in place after testing (speed up feedback loops)
-CLEANUP ?= true
+CLEANUP_AFTER_TESTS ?= true
 
 # To allow terraform init to work without having to hardcode an AWS region into a provider block
 AWS_DEFAULT_REGION	?= eu-west-1
