@@ -17,14 +17,6 @@ module "project-factory_project_services" {
   disable_dependent_services  = false
 }
 
-resource "google_container_registry" "registry" {
-  depends_on = [
-    module.project-factory_project_services
-  ]
-  project  = var.project_id
-  location = "EU"
-}
-
 data "gitlab_project" "runner_token" {
   id = "33153506"
 }
@@ -47,7 +39,7 @@ module "ci" {
   runner_machine_type       = "n2d-standard-2"
   runner_machine_name       = var.runner_machine_name
   gitlab_token              = data.gitlab_project.runner_token.runners_token
-  gcr_bucket_names          = [google_container_registry.registry.id]
+  gcr_bucket_names          = []
   gitlab_max_runners        = var.gitlab_max_runners
   cache_location            = "EUROPE-WEST1"
 }

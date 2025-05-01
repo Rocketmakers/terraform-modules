@@ -20,7 +20,7 @@ Returns the string list for provisioning a gitlab runner. This module is intende
 | name    | description          | type   | default value   |
 | ------- | -------------------- | ------ | --------------- |
 | `config_template_path` |  | string | /tmp/test-config.template.toml |
-| `docker_machine_version` | Docker machine version for runner | string | v0.16.2-gitlab.21 |
+| `docker_machine_version` | Docker machine version for runner | string | v0.16.2-gitlab.35 |
 
 ## Outputs
 
