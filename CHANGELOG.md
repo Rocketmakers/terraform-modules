@@ -11,11 +11,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* **azure-github-ci:** Added initial scalable GitHub runner ([5d2ee39](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/5d2ee391aae44c2764a9551e332bf2d1b9de11b9))
 * **azure-github-ci:** Exposed cooldown mode for autoscaling minimum/maximum instances ([b522a30](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/b522a3022f39f08cf71582ae83536faaa85572c0))
 * **azure-github-ci:** Exposed CPU autoscaling thresholds ([c3297da](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/c3297da8bb326744a9db7d4036fddbf707f1514e))
 * **azure-gitlab-ci:** Updated static CI runner to expose subnet id ([3472ba5](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/3472ba566fa320a5213322af76b1a127043aa3b3))
-* **gcp-github-ci:** Added initial scalable runner for GitHub ([5f751c1](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/5f751c1d92e8424c4466f28e559db22925077e6c))
 * **gcp-github-ci:** Exposed autoscaling threshold as a variable ([a6ee152](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/a6ee152b9647170323c09bafcfe525bcb2f87a34))
 * **gcp-github-ci:** Exposed cooldown mode for autoscaling instances ([25c498e](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/25c498e89146953799abcab4845e7e91ce111268))
 * **gcp-github-ci:** Fixed registration issues with GCP runner ([458a773](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/458a7737dd05313a2d11eb3ffb30846fb6ccdee1))
@@ -32,11 +30,6 @@ All notable changes to this project will be documented in this file. See [standa
 * **azure-gitlab-ci:** Upgrade terraform, docker-machine and gitlab-runner versions ([4c50edc](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/4c50edc21567bb70be226e8656d464798e1bc49a))
 
 
-### Tests
-
-* **gcp-gitlab-ci:** Use the same resource group name to prevent the GCP tests clashing ([a8ee594](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/a8ee594c5e9bf5460a840352e75617580fd9aafe))
-
-
 ### Other Changes
 
 * **config:** Use the CI docker image from github rather than dockerhub ([fd8a21a](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/fd8a21a1b4897a6bf409c8b8fd59a9cc74eaf5eb))
@@ -44,6 +37,23 @@ All notable changes to this project will be documented in this file. See [standa
 * Bump ubuntu from 20 to 22, 20 end of life april 2025 ([b8d4b70](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/b8d4b70d39955c89b41a994dd0c443d2b6b18691))
 * Fixed required version ([6fa4e58](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/6fa4e5876c84d53137626391d7f843af8b4a3c04))
 * Updated base instance name ([833f478](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/833f478479c89eba78428824222b64775cdbf287))
+
+
+## [3.1.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.0.0...v3.1.0) (2024-12-23)
+
+
+### Features
+
+* **azure-github-ci:** Added initial scalable GitHub runner ([5d2ee39](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/5d2ee391aae44c2764a9551e332bf2d1b9de11b9))
+* **gcp-github-ci:** Added initial scalable runner for GitHub ([5f751c1](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/5f751c1d92e8424c4466f28e559db22925077e6c))
+
+
+
+### Tests
+
+* **gcp-gitlab-ci:** Use the same resource group name to prevent the GCP tests clashing ([a8ee594](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/a8ee594c5e9bf5460a840352e75617580fd9aafe))
+
+
 
 ## [3.0.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v2.1.3...v3.0.0) (2024-12-03)
 
