@@ -199,18 +199,22 @@ resource "azurerm_role_assignment" "runner_acr_push" {
   principal_id         = azuread_service_principal.runner.object_id
 }
 
+locals {
+  provisioner_timeout = "500s"
+}
+
 # We want to run this separately so that the instance is created and the internal ip is attached to azurerm_virtual_network.ci
 # This allows us to run docker-machine create within our provisioning so that the ssh keys are created before multiple jobs try to start up instances
-resource "null_resource" "orchestrator_provisioner" {
-  triggers = {
-    instance_id = azurerm_linux_virtual_machine.orchestrator.id
-  }
+resource "terraform_data" "orchestrator_provisioner" {
+  triggers_replace = [
+    azurerm_linux_virtual_machine.orchestrator.id
+  ]
 
   provisioner "file" {
     connection {
       type        = "ssh"
       user        = var.username
-      timeout     = "500s"
+      timeout     = local.provisioner_timeout
       private_key = tls_private_key.orchestrator_ssh.private_key_pem
       host        = azurerm_public_ip.ci.ip_address
     }
@@ -260,7 +264,7 @@ EOF
     connection {
       type        = "ssh"
       user        = var.username
-      timeout     = "500s"
+      timeout     = local.provisioner_timeout
       private_key = tls_private_key.orchestrator_ssh.private_key_pem
       host        = azurerm_public_ip.ci.ip_address
     }

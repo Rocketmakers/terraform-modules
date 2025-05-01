@@ -36,7 +36,7 @@ func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions, assertions func (t
 	runnerTag := opt.RunnerTag
 	instanceCount := opt.InstanceCount
 	terraformOptions := opt.TerraformOptions
-	cleanUp := os.Getenv("CLEANUP") != "false"
+	cleanUp := os.Getenv("CLEANUP_AFTER_TESTS") != "false"
 
 	// Create the gitlab AP client early to catch errors
 	client, err := createGitlabApiClient()

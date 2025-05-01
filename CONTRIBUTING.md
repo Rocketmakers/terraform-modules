@@ -47,7 +47,7 @@ Get AWS keys from [internal-gitlab-runners/secrets/secrets.yaml](https://gitlab.
 export GITLAB_TOKEN=_token_with_api_access_
 
 # Optionally prevent resources from being destroyed at the end of tests, so feedback is quicker during development
-export CLEANUP=false
+export CLEANUP_AFTER_TESTS=false
 
 # aws
 export AWS_SECRET_ACCESS_KEY=_key_

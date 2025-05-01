@@ -163,5 +163,5 @@ variable "cache_location" {
 variable "engine_install_url" {
   type        = string
   description = "URL to use for engine installation through docker-machine"
-  default     = "https://releases.rancher.com/install-docker/19.03.9.sh"
+  default     = "https://get.docker.com"
 }
