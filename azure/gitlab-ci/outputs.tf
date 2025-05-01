@@ -32,3 +32,8 @@ output "service_principal_ids" {
     for instance in azurerm_linux_virtual_machine.ci_box : instance.identity[0].principal_id
   ]
 }
+
+output "subnet_id" {
+  description = "The id of the subnet where the CI box is deployed"
+  value       = azurerm_subnet.ci.id
+}

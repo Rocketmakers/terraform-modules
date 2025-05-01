@@ -48,6 +48,7 @@ This module creates one or more VMs within Azure acting as gitlab-runners. Each 
 | `private_key` | CI Box private key - used for SSH |
 | `public_key` | Public SSH key |
 | `service_principal_ids` | The ids of the underlying service principal accounts |
+| `subnet_id` | The id of the subnet where the CI box is deployed |
 | `username` | Username for CI box |
 
 ## Requirements
