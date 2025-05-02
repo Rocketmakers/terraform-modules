@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.0.0...v3.2.0) (2025-05-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* **azure-gitlab-ci:** Minimum terraform version is now 1.4
+
+### Features
+
+* **azure-github-ci:** Exposed cooldown mode for autoscaling minimum/maximum instances ([b522a30](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/b522a3022f39f08cf71582ae83536faaa85572c0))
+* **azure-github-ci:** Exposed CPU autoscaling thresholds ([c3297da](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/c3297da8bb326744a9db7d4036fddbf707f1514e))
+* **azure-gitlab-ci:** Updated static CI runner to expose subnet id ([3472ba5](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/3472ba566fa320a5213322af76b1a127043aa3b3))
+* **gcp-github-ci:** Exposed autoscaling threshold as a variable ([a6ee152](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/a6ee152b9647170323c09bafcfe525bcb2f87a34))
+* **gcp-github-ci:** Exposed cooldown mode for autoscaling instances ([25c498e](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/25c498e89146953799abcab4845e7e91ce111268))
+* **gcp-github-ci:** Fixed registration issues with GCP runner ([458a773](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/458a7737dd05313a2d11eb3ffb30846fb6ccdee1))
+* **gcp-github-ci:** Updated to make subnetwork IP CIDR configurable ([4801af9](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/4801af9b165c1c9913221990edb3b3c665eac214))
+* **gcp-gitlab-ci:** Support not cleaning up after tests and don't use deprecated container registry resource ([46bd869](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/46bd869cf856ff52a23a1ceba6e113e16c90777f))
+* **scalabale-github-ci:** Added ability to configure disk size ([58a6ceb](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/58a6ceb36568f19c35ecafb750140c30950eaca4))
+* **scalable-github-ci:** Removed a lot of default roles ([fa24837](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/fa2483793bdf4704f4fd846964d57fcfab380af9))
+* **scalable-github-ci:** Updated to have service account roles configurable ([2237887](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/22378873e089615c5b8947b12f9ffe54dac20c06))
+
+
+### Bug Fixes
+
+* **azure-github-ci:** Added missing outputs required to lock down resources ([240cc55](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/240cc55472f88b7c1554b0738ccf83c999872a8c))
+* **azure-gitlab-ci:** Upgrade terraform, docker-machine and gitlab-runner versions ([4c50edc](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/4c50edc21567bb70be226e8656d464798e1bc49a))
+
+
+### Other Changes
+
+* **config:** Use the CI docker image from github rather than dockerhub ([fd8a21a](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/fd8a21a1b4897a6bf409c8b8fd59a9cc74eaf5eb))
+* **scripts:** Rename CLEANUP to CLEANUP_AFTER_TESTS in Makefile ([2d44ce1](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/2d44ce144f3e1f7069d83035f1cf6e0ce0dd11ef))
+* Bump ubuntu from 20 to 22, 20 end of life april 2025 ([b8d4b70](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/b8d4b70d39955c89b41a994dd0c443d2b6b18691))
+* Fixed required version ([6fa4e58](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/6fa4e5876c84d53137626391d7f843af8b4a3c04))
+* Updated base instance name ([833f478](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/833f478479c89eba78428824222b64775cdbf287))
+
+
 ## [3.1.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.0.0...v3.1.0) (2024-12-23)
 
 
@@ -15,6 +52,7 @@ All notable changes to this project will be documented in this file. See [standa
 ### Tests
 
 * **gcp-gitlab-ci:** Use the same resource group name to prevent the GCP tests clashing ([a8ee594](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/a8ee594c5e9bf5460a840352e75617580fd9aafe))
+
 
 
 ## [3.0.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v2.1.3...v3.0.0) (2024-12-03)

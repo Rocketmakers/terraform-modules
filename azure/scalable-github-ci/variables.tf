@@ -33,7 +33,7 @@ variable "github_runner_concurrency" {
 variable "github_runner_version" {
   type        = string
   description = "The version of github-runner to install"
-  default     = "2.317.0"
+  default     = "2.321.0"
 }
 
 variable "github_api_token" {
@@ -68,6 +68,30 @@ variable "max_instance_count" {
   default     = 1
 }
 
+variable "autoscale_max_cpu_percentage" {
+  type        = number
+  description = "The minimum CPU percentage which must be achieved before scaling up to the max_instance_count"
+  default     = 10
+}
+
+variable "autoscale_max_cooldown" {
+  type        = string
+  description = "The cooldown mode for autoscaling to the maximum instances"
+  default     = "PT1M"
+}
+
+variable "autoscale_min_cpu_percentage" {
+  type        = number
+  description = "The maximum CPU percentage which must be achieved before scaling down to the min_instance_count"
+  default     = 5
+}
+
+variable "autoscale_min_cooldown" {
+  type        = string
+  description = "The cooldown mode for autoscaling to the minimum instances"
+  default     = "PT1M"
+}
+
 variable "resource_group_name" {
   type        = string
   description = "The name of the resource group in which to place resources"
@@ -90,8 +114,8 @@ variable "image_config" {
 
   default = {
     publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-focal"
-    sku       = "20_04-lts"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts"
     version   = "latest"
   }
 }

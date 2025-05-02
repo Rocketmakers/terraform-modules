@@ -83,8 +83,8 @@ variable "image_config" {
 
   default = {
     publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-focal"
-    sku       = "20_04-lts"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts"
     version   = "latest"
   }
 }
@@ -171,7 +171,7 @@ variable "runner_vm_size" {
 variable "engine_install_url" {
   type        = string
   description = "URL to use for engine installation through docker-machine"
-  default     = "https://releases.rancher.com/install-docker/19.03.9.sh"
+  default     = "https://get.docker.com"
 }
 
 ###################

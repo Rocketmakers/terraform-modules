@@ -57,7 +57,7 @@ include:
   retry:
     max: 2
     when: runner_system_failure
-  image: rocketmakers/ci-terraform-gcp:3.7.0
+  image: ghcr.io/rocketmakers/ci-terraform-gcp:7.0.0
   before_script:
     - make install
   rules:

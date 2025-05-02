@@ -58,6 +58,8 @@ func TestGcpGitlabCi(t *testing.T) {
 		},
 	})
 
+	cleanUp := os.Getenv("CLEANUP_AFTER_TESTS") != "false"
+
 	// Get the token from Environment Variables
 	gitlabToken, err := rmgitlab.GetGitlabTokenFromEnvironmentVariables()
 	require.NoError(t, err)
@@ -66,14 +68,16 @@ func TestGcpGitlabCi(t *testing.T) {
 	client, err := rmgitlab.CreateGitlabApiClient(gitlabToken)
 	require.NoError(t, err)
 
-	defer rmgitlab.RemoveGitlabTestRunners(client, t, gitlabProjectId, projectPrefix+"-ci")
-
+	
 	// Remove the lock file so we get the latest providers each time
 	lockFilePath := filepath.Join(terraformOptions.TerraformDir, ".terraform.lock.hcl")
 	os.Remove(lockFilePath)
-
-	// This has to occur before the init stage https://github.com/gruntwork-io/terratest/issues/511#issuecomment-619873137
-	defer terraform.Destroy(t, terraformOptions)
+	
+	if (cleanUp) {
+		defer rmgitlab.RemoveGitlabTestRunners(client, t, gitlabProjectId, projectPrefix+"-ci")
+		// This has to occur before the init stage https://github.com/gruntwork-io/terratest/issues/511#issuecomment-619873137
+		defer terraform.Destroy(t, terraformOptions)
+	}
 
 	// Create resources
 	// Run "terraform init" and "terraform apply". Fail the test if there are any errors.

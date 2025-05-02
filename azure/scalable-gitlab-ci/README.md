@@ -25,13 +25,13 @@ This module creates an orchestrator VM inside Azure which is used to receive the
 | `cache_storage_min_tls_version` | The minimum supported TLS version for the storage account used by runners as a shared cache. | string | TLS1_2 |
 | `cache_storage_replication_type` | The replication type of the storage account used by runners as a shared cache. | string | LRS |
 | `cache_storage_tier` | The tier of the storage account used by runners as a shared cache. | string | Standard |
-| `engine_install_url` | URL to use for engine installation through docker-machine | string | https://releases.rancher.com/install-docker/19.03.9.sh |
+| `engine_install_url` | URL to use for engine installation through docker-machine | string | https://get.docker.com |
 | `gitlab_max_runners` | The maximum number of VMs that will be created (one VM will run one job at a time). | number | 3 |
 | `gitlab_runner_docker_image` | The value passed to --docker-image when registering the runner (see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker) | string | docker:stable |
 | `gitlab_runner_locked` | Setting true will limit the runner to the project that provided the registration token. Setting false will allow other projects to enable the runner. | bool | true |
 | `gitlab_runner_version` | The version of gitlab-runner to install (see https://docs.gitlab.com/runner/install/bleeding-edge.html#download-any-other-tagged-release) | string | latest |
 | `idle_count` | The minimum number of runner machines that should be in place when there is no demand for jobs. | number | 0 |
-| `image_config` | The details of the OS image used on the instance | object({<br />    publisher = string<br />    offer     = string<br />    sku       = string<br />    version   = string<br />  }) | {"offer":"0001-com-ubuntu-server-focal","publisher":"Canonical","sku":"20_04-lts","version":"latest"} |
+| `image_config` | The details of the OS image used on the instance | object({<br />    publisher = string<br />    offer     = string<br />    sku       = string<br />    version   = string<br />  }) | {"offer":"0001-com-ubuntu-server-jammy","publisher":"Canonical","sku":"22_04-lts","version":"latest"} |
 | `name` | Main name of resources created | string | ci |
 | `network_address_space` | The address space that is used the virtual network. You can supply more than one address space. | list(string) | ["10.0.0.0/16"] |
 | `network_subnet_address_prefixes` | The address prefixes of the CI boxes subnet. | list(string) | ["10.0.0.0/24"] |
@@ -78,7 +78,7 @@ These are the providers used by the module.
 | ---- | ------- |
 | `azuread` | >= 3.0.2 |
 | `azurerm` | >= 4.9.0 |
-| `null` |  |
+| `terraform` |  |
 | `tls` | >= 3.1.0 |
 
 
@@ -86,7 +86,7 @@ These are the providers used by the module.
 
 ```
 module ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/scalable-gitlab-ci?ref=v3.1.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/scalable-gitlab-ci?ref=v3.2.0"
 
   project_prefix = "project"
   runner_tags    = ["project"]

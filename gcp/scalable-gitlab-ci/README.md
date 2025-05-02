@@ -40,7 +40,7 @@ Follow the GCR [Quickstart](https: //cloud.google.com/container-registry/docs/qu
 | name    | description          | type   | default value   |
 | ------- | -------------------- | ------ | --------------- |
 | `allow_stopping_for_update` | Allow the instance to stop when being updated | bool | true |
-| `engine_install_url` | URL to use for engine installation through docker-machine | string | https://releases.rancher.com/install-docker/19.03.9.sh |
+| `engine_install_url` | URL to use for engine installation through docker-machine | string | https://get.docker.com |
 | `gitlab_max_runners` | The maximum number of VMs that will be created (one VM will run one job at a time). | number | 3 |
 | `gitlab_runner_docker_image` | The value passed to --docker-image when registering the runner (see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker) | string | docker:stable |
 | `gitlab_runner_locked` | Setting true will limit the runner to the project that provided the registration token. Setting false will allow other projects to enable the runner. | bool | true |
@@ -85,7 +85,7 @@ These are required by the module.
 | name | version |
 | ---- | ------- |
 | `google` | >= 4.27.0 |
-| `terraform` | >= 1.1.6 |
+| `terraform` | >= 1.4 |
 | `tls` | >= 3.4.0 |
 
 ## Providers
@@ -169,7 +169,7 @@ resource "google_container_registry" "registry" {
 }
 
 module "ci" {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-gitlab-ci?ref=v3.1.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-gitlab-ci?ref=v3.2.0"
 
   project_id                = var.project_id
   zone                     = "europe-west1-b"

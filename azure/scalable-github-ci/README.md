@@ -20,11 +20,15 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 
 | name    | description          | type   | default value   |
 | ------- | -------------------- | ------ | --------------- |
+| `autoscale_max_cooldown` | The cooldown mode for autoscaling to the maximum instances | string | PT1M |
+| `autoscale_max_cpu_percentage` | The minimum CPU percentage which must be achieved before scaling up to the max_instance_count | number | 10 |
+| `autoscale_min_cooldown` | The cooldown mode for autoscaling to the minimum instances | string | PT1M |
+| `autoscale_min_cpu_percentage` | The maximum CPU percentage which must be achieved before scaling down to the min_instance_count | number | 5 |
 | `disk_size` | Size of disk in GB | number | 50 |
 | `docker_prune_cron_schedule` | The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC. | string | 0 4 * * * |
 | `github_runner_concurrency` | The maximum number of jobs that the runner will run concurrently | number | 3 |
-| `github_runner_version` | The version of github-runner to install | string | 2.317.0 |
-| `image_config` | The details of the OS image used on the instance | object({<br />    publisher = string<br />    offer     = string<br />    sku       = string<br />    version   = string<br />  }) | {"offer":"0001-com-ubuntu-server-focal","publisher":"Canonical","sku":"20_04-lts","version":"latest"} |
+| `github_runner_version` | The version of github-runner to install | string | 2.321.0 |
+| `image_config` | The details of the OS image used on the instance | object({<br />    publisher = string<br />    offer     = string<br />    sku       = string<br />    version   = string<br />  }) | {"offer":"0001-com-ubuntu-server-jammy","publisher":"Canonical","sku":"22_04-lts","version":"latest"} |
 | `max_instance_count` | The maximum number of VM instances to create | number | 1 |
 | `min_instance_count` | The minimum number of VM instances to create | number | 1 |
 | `name` | Main name of resources created | string | ci |
@@ -41,6 +45,8 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `service_principal_ids` | The ids of the underlying service principal accounts |
 | `subnet_id` | The id of the subnet the CI runner is assigned to |
 | `username` | Username for CI box |
+| `virtual_network_id` | The id of the virtual network associated with the CI runner |
+| `virtual_network_name` | The name of the virtual network associated with the CI runner |
 
 ## Requirements
 
@@ -66,7 +72,7 @@ These are the providers used by the module.
 
 ```
 module ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/scalable-github-ci?ref=v3.1.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/scalable-github-ci?ref=v3.2.0"
 
   resource_group_name = var.resource_group_name
   primary_location    = var.primary_location
