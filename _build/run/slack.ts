@@ -44,7 +44,11 @@ async function run() {
 
   await Prerequisites.check();
 
-  await Slack.send(args.webhookUrl, {text: `Terratest ${args.jobStatus} for ${args.testName}. See it here ${args.pipelineUrl}`, });
+  if (args.jobStatus !== 'success') {
+    await Slack.send(args.webhookUrl, {
+      text: `Terratest ${args.jobStatus} for ${args.testName}. See it here ${args.pipelineUrl}`,
+    });
+  }
 }
 
 run()
