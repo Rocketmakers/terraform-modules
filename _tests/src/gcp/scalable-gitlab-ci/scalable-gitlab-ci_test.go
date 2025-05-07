@@ -28,7 +28,7 @@ func TestGcpGitlabCi(t *testing.T) {
 	gitlabProjectId := "33153506"
 	gcpProjectId := "terraform-testing-317911"
 	gitlabBranch := "develop"
-	projectPrefix := "testing"
+	projectPrefix := "glabscalableci"
 	gcpProjectZone := "europe-west1-b"
 	gcpProjectRegion := "europe-west1"
 	runnerMachineName := "auto-scale-"
