@@ -15,6 +15,9 @@ ARCHITECTURE                 ?= linux_amd64
 # Set false to leave resources in place after testing (speed up feedback loops)
 CLEANUP_AFTER_TESTS ?= true
 
+# Set true to write inputs.tfvars without running tests
+WRITE_VARS_FILE_AND_EXIT ?= false
+
 # To allow terraform init to work without having to hardcode an AWS region into a provider block
 AWS_DEFAULT_REGION	?= eu-west-1
 
