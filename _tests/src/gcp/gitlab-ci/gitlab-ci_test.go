@@ -3,12 +3,13 @@ package gcpgitlabci
 import (
 	"rmutils"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"backendconfig"
 	"fmt"
 	"gitlabapi"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
@@ -16,7 +17,7 @@ import (
 func TestGcpGitlabCi(t *testing.T) {
 	// Construct the terraform options with default retryable errors to handle the most common
 	// retryable errors in terraform testing.
-	runnerTag := "gcp-d7500544-e29d-451b-bd3f-083065f46b67"
+	runnerTag := "gcp-gitlab-ci-terratest"
 	instanceCount := 2
 
 	backendConfigOptions := backendconfig.GcsBackendConfigOptions{
@@ -33,7 +34,7 @@ func TestGcpGitlabCi(t *testing.T) {
 		Vars: map[string]interface{}{
 			"runner_tag":     runnerTag,
 			"instance_count": instanceCount,
-			"cidr_range": ipAddress.String() + "/32",
+			"cidr_range":     ipAddress.String() + "/32",
 		},
 	})
 

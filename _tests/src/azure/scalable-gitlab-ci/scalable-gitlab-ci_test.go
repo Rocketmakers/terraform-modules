@@ -20,7 +20,7 @@ import (
 )
 
 func TestAzureGitlabCi(t *testing.T) {
-	runnerTag := "azure-3308e4b9-3e83-470e-bb39-9cca0666b0fc"
+	runnerTag := "azure-scalable-gitlab-ci-terratest"
 	gitlabMaxRunners := 3
 	gitlabProjectId := "33153506"
 	gitlabBranch := "develop"

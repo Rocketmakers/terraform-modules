@@ -14,7 +14,7 @@ import (
 func TestAzureGitlabCi(t *testing.T) {
 	// Construct the terraform options with default retryable errors to handle the most common
 	// retryable errors in terraform testing.
-	runnerTag := "azure-1f9044b0-231a-4d92-a4b1-7fddbe19bb0d"
+	runnerTag := "azure-gitlab-ci-terratest"
 	instanceCount := 2
 
 	ipAddress, err := rmutils.GetMachineExternalIPAddress()
