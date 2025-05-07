@@ -38,7 +38,7 @@ func TestAzureGitlabCi(t *testing.T) {
 		Vars:          vars,
 	})
 
-	rmutils.WriteTfvarsFile(vars, "../../../config/azure/gitlab-ci/inputs.tfvars")
+	rmutils.WriteTfvarsFile(t, vars, "../../../config/azure/gitlab-ci/inputs.tfvars")
 
 	gitlabapi.TestGitlabCi(t, &gitlabapi.TestGitlabRunnerOptions{
 		RunnerTag:        runnerTag,

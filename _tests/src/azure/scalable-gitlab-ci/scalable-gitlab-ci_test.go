@@ -51,18 +51,13 @@ func TestAzureGitlabCi(t *testing.T) {
 		"resource_group_name":    resourceGroup,
 	}
 
-	rmutils.WriteTfvarsFile(vars, "../../../config/azure/scalable-gitlab-ci/inputs.tfvars")
+	rmutils.WriteTfvarsFile(t, vars, "../../../config/azure/scalable-gitlab-ci/inputs.tfvars")
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		BackendConfig: backendConfig,
 		TerraformDir:  "../../../config/azure/scalable-gitlab-ci",
 		Vars:          vars,
 	})
-
-	if os.Getenv("WRITE_VARS_FILE_AND_EXIT") == "true" {
-		logger.Log(t, "Written vars file to %s\n", "../../../config/azure/scalable-gitlab-ci/inputs.tfvars")
-		t.Skip("Exiting early after writing vars file")
-	}
 
 	cleanUp := os.Getenv("CLEANUP_AFTER_TESTS") != "false"
 
