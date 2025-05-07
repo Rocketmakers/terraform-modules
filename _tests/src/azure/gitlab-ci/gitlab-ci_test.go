@@ -4,8 +4,8 @@ import (
 	"backendconfig"
 	"fmt"
 	"gitlabapi"
-	"testing"
 	"rmutils"
+	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/require"
@@ -25,16 +25,20 @@ func TestAzureGitlabCi(t *testing.T) {
 	}
 	backendConfig := backendconfig.GetAzureBackendBucketConfig(&backendConfigOptions)
 
+	vars := map[string]interface{}{
+		"runner_tag":          runnerTag,
+		"instance_count":      instanceCount,
+		"resource_group_name": backendConfig["resource_group_name"],
+		"cidr_range":          ipAddress.String() + "/32",
+	}
+
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		BackendConfig: backendConfig,
 		TerraformDir:  "../../../config/azure/gitlab-ci",
-		Vars: map[string]interface{}{
-			"runner_tag":          runnerTag,
-			"instance_count":      instanceCount,
-			"resource_group_name": backendConfig["resource_group_name"],
-			"cidr_range":          ipAddress.String() + "/32",
-		},
+		Vars:          vars,
 	})
+
+	rmutils.WriteTfvarsFile(vars, "../../../config/azure/gitlab-ci/inputs.tfvars")
 
 	gitlabapi.TestGitlabCi(t, &gitlabapi.TestGitlabRunnerOptions{
 		RunnerTag:        runnerTag,

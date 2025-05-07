@@ -9,11 +9,16 @@
     "Kubernetes",
     "Retryable",
     "rmgitlab",
+    "rmutils",
     "rocketmakers",
     "stretchr",
     "Terraform",
     "terratest",
+    "tfvars",
     "xanzy"
   ],
-  "go.useLanguageServer": true
+  "go.useLanguageServer": true,
+  "go.alternateTools": {
+    "go": "${env:HOME}/.asdf/shims/go"
+  }
 }
