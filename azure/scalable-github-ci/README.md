@@ -66,6 +66,7 @@ These are the providers used by the module.
 | name | version |
 | ---- | ------- |
 | `azurerm` | >= 3.108.0 |
+| `terraform` |  |
 | `tls` | >= 4.0.5 |
 
 
