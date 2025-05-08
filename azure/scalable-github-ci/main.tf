@@ -29,6 +29,11 @@ runcmd:
 EOF
 }
 
+# Ensures that the runner scale set is replaced if the provisioning script changes - sha256 to mask sensitive data
+resource "terraform_data" "replace_runner" {
+  input = sha256(local.install_github_runner_data)
+}
+
 data "azurerm_client_config" "current" {}
 
 data "azurerm_subscription" "current" {}
@@ -141,6 +146,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "ci_box" {
 
   lifecycle {
     ignore_changes = [instances]
+
+    replace_triggered_by = [terraform_data.replace_runner]
   }
 }
 
