@@ -120,6 +120,7 @@ variable "github_runner_version" {
 variable "github_api_token" {
   type        = string
   description = "The Github API token to support retrieving a runner registeration token. This must be against a user and have access to runners for a repository."
+  sensitive   = true
 }
 
 variable "github_organisation" {

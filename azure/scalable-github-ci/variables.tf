@@ -39,6 +39,7 @@ variable "github_runner_version" {
 variable "github_api_token" {
   type        = string
   description = "The Github API token to support retrieving a runner registration token"
+  sensitive   = true
 }
 
 variable "github_organisation" {
