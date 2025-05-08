@@ -1,4 +1,6 @@
 locals {
+  labels = length(var.runner_labels) > 0 ? "--labels ${join(",", var.runner_labels)}" : ""
+
   # Adapted from https://brendanthompson.com/posts/2021/09/github-actions-self-hosted-runner-on-azure
   install_github_runner_data = <<EOF
 #cloud-config
@@ -20,11 +22,16 @@ runcmd:
   cat .runner_token_output | sed -n 's/.*"token": "\([^"]*\)".*/\1/p' > .runner_token
 - echo "Registering GitHub runner"
 - export ACTIONS_RUNNER_INPUT_REPLACE=true
-- [su, ${var.username}, -c, '/actions-runner/config.sh --url https://github.com/${var.github_organisation} --token $(cat /actions-runner/.runner_token)']
+- [su, ${var.username}, -c, '/actions-runner/config.sh --url https://github.com/${var.github_organisation} --token $(cat /actions-runner/.runner_token) ${local.labels}']
 - ./svc.sh install
 - ./svc.sh start
 - [rm, '/actions-runner/actions-runner.tar.gz']
 EOF
+}
+
+# Ensures that the runner scale set is replaced if the provisioning script changes - sha256 to mask sensitive data
+resource "terraform_data" "replace_runner" {
+  input = sha256(local.install_github_runner_data)
 }
 
 data "azurerm_client_config" "current" {}
@@ -139,6 +146,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "ci_box" {
 
   lifecycle {
     ignore_changes = [instances]
+
+    replace_triggered_by = [terraform_data.replace_runner]
   }
 }
 

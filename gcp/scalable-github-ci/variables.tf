@@ -93,6 +93,12 @@ variable "docker_prune_cron_schedule" {
   default     = "0 4 * * *"
 }
 
+variable "runner_labels" {
+  type        = list(string)
+  description = "The labels to assign to the runner"
+  default     = []
+}
+
 variable "username" {
   type        = string
   description = "Username for CI box"
@@ -114,6 +120,7 @@ variable "github_runner_version" {
 variable "github_api_token" {
   type        = string
   description = "The Github API token to support retrieving a runner registeration token. This must be against a user and have access to runners for a repository."
+  sensitive   = true
 }
 
 variable "github_organisation" {

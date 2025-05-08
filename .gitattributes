@@ -1,0 +1,5 @@
+# github
+**/go.sum linguist-generated=true
+
+# gitlab
+**/go.sum gitlab-generated
