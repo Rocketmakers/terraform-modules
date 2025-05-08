@@ -38,18 +38,24 @@ variable "github_runner_version" {
 
 variable "github_api_token" {
   type        = string
-  description = "The Github API token to support retrieving a runner registeration token"
+  description = "The Github API token to support retrieving a runner registration token"
 }
 
 variable "github_organisation" {
   type        = string
-  description = "The Github organisation to use"
+  description = "The name of the Github organisation to use (e.g. Rocketmakers), if registering against an organisation, or the name of the repository (e.g. Rocketmakers/terraform-modules), if registering against a single repository"
 }
 
 variable "docker_prune_cron_schedule" {
   type        = string
   description = "The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC."
   default     = "0 4 * * *"
+}
+
+variable "runner_labels" {
+  type        = list(string)
+  description = "The labels to assign to the runner"
+  default     = []
 }
 
 ####################
