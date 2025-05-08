@@ -72,6 +72,11 @@ resource "google_compute_autoscaler" "main" {
       target = var.cpu_percentage_target_utilization
     }
   }
+
+  lifecycle {
+    # Without this then recreating the group manager results in no autoscaler in place
+    replace_triggered_by = [google_compute_instance_group_manager.main]
+  }
 }
 
 data "google_compute_image" "image" {
@@ -140,4 +145,9 @@ resource "google_compute_instance_group_manager" "main" {
 
   target_pools       = [google_compute_target_pool.main.id]
   base_instance_name = local.name
+
+  lifecycle {
+    # This allows changes to the instance template to be applied - without this the google_compute_instance_template fails to recreate because it's in use
+    replace_triggered_by = [google_compute_instance_template.main]
+  }
 }
