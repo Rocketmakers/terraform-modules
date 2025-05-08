@@ -2,6 +2,18 @@ locals {
   name = "ghubscalableci"
 }
 
+resource "azurerm_resource_group" "rg" {
+  name     = var.resource_group_name
+  location = var.primary_location
+}
+
+resource "azurerm_container_registry" "acr" {
+  name                = "rocketmakers${local.name}"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = var.primary_location
+  sku                 = "Basic"
+}
+
 module "scalable_gitlab_ci" {
   source = "../../../../azure/scalable-github-ci"
 
@@ -22,16 +34,4 @@ module "scalable_gitlab_ci" {
   depends_on = [
     azurerm_container_registry.acr
   ]
-}
-
-resource "azurerm_resource_group" "rg" {
-  name     = var.resource_group_name
-  location = var.primary_location
-}
-
-resource "azurerm_container_registry" "acr" {
-  name                = "rocketmakers${local.name}"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = var.primary_location
-  sku                 = "Basic"
 }
