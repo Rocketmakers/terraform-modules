@@ -56,7 +56,7 @@ export CLEANUP_AFTER_TESTS=false
 # e.g. _tests/config/gcp/scalable-gitlab-ci/inputs.tfvars
 # This file is very useful for debugging using the terraform CLI
 # If you just want this file to be written without running the test then you can use WRITE_VARS_FILE_AND_EXIT
-export WRITE_VARS_FILE_AND_EXIT=true=true
+export WRITE_VARS_FILE_AND_EXIT=true
 
 # aws
 export AWS_SECRET_ACCESS_KEY=_key_
