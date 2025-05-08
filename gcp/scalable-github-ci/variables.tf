@@ -93,6 +93,12 @@ variable "docker_prune_cron_schedule" {
   default     = "0 4 * * *"
 }
 
+variable "runner_labels" {
+  type        = list(string)
+  description = "The labels to assign to the runner"
+  default     = []
+}
+
 variable "username" {
   type        = string
   description = "Username for CI box"

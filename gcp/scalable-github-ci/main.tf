@@ -1,5 +1,6 @@
 locals {
-  name = "${var.project_prefix}-${var.name}"
+  name   = "${var.project_prefix}-${var.name}"
+  labels = length(var.runner_labels) > 0 ? "--labels ${join(",", var.runner_labels)}" : ""
 
   # Adapted from https://brendanthompson.com/posts/2021/09/github-actions-self-hosted-runner-on-azure
   install_github_runner_data = <<EOF
@@ -21,7 +22,7 @@ cat .runner_token_output | sed -n 's/.*"token": "\([^"]*\)".*/\1/p' > .runner_to
 echo "Registering GitHub runner"
 export ACTIONS_RUNNER_INPUT_REPLACE=true
 export RUNNER_ALLOW_RUNASROOT="1"
-su root -c '/actions-runner/config.sh --url https://github.com/${var.github_organisation} --token $(cat /actions-runner/.runner_token)'
+su root -c '/actions-runner/config.sh --url https://github.com/${var.github_organisation} --token $(cat /actions-runner/.runner_token) ${local.labels}'
 ./svc.sh install
 ./svc.sh start
 rm '/actions-runner/actions-runner.tar.gz'
