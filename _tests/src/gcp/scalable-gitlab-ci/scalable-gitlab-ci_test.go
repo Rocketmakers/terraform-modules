@@ -23,12 +23,12 @@ import (
 func TestGcpGitlabCi(t *testing.T) {
 	// Construct the terraform options with default retryable errors to handle the most common
 	// retryable errors in terraform testing.
-	runnerTag := "gcp-6faab9c3-9d73-4d51-ad84-d777b2d0cef0"
+	runnerTag := "gcp-scalable-gitlab-ci-terratest"
 	gitlabMaxRunners := 3
 	gitlabProjectId := "33153506"
 	gcpProjectId := "terraform-testing-317911"
 	gitlabBranch := "develop"
-	projectPrefix := "testing"
+	projectPrefix := "glabscalableci"
 	gcpProjectZone := "europe-west1-b"
 	gcpProjectRegion := "europe-west1"
 	runnerMachineName := "auto-scale-"
@@ -44,18 +44,22 @@ func TestGcpGitlabCi(t *testing.T) {
 	}
 	backendConfig := backendconfig.GetGcsBackendBucketConfig(&backendConfigOptions)
 
+	vars := map[string]interface{}{
+		"project_prefix":      projectPrefix,
+		"runner_tag":          runnerTag,
+		"gcp_project_region":  gcpProjectRegion,
+		"gcp_project_zone":    gcpProjectZone,
+		"gitlab_max_runners":  gitlabMaxRunners,
+		"runner_machine_name": runnerMachineName + "%s",
+		"cidr_range":          ipAddress.String() + "/32",
+	}
+
+	rmutils.WriteTfvarsFile(t, vars, "../../../config/gcp/scalable-gitlab-ci/inputs.tfvars")
+
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		BackendConfig: backendConfig,
 		TerraformDir:  "../../../config/gcp/scalable-gitlab-ci",
-		Vars: map[string]interface{}{
-			"project_prefix":      projectPrefix,
-			"runner_tag":          runnerTag,
-			"gcp_project_region":  gcpProjectRegion,
-			"gcp_project_zone":    gcpProjectZone,
-			"gitlab_max_runners":  gitlabMaxRunners,
-			"runner_machine_name": runnerMachineName + "%s",
-			"cidr_range":          ipAddress.String() + "/32",
-		},
+		Vars:          vars,
 	})
 
 	cleanUp := os.Getenv("CLEANUP_AFTER_TESTS") != "false"
@@ -68,12 +72,11 @@ func TestGcpGitlabCi(t *testing.T) {
 	client, err := rmgitlab.CreateGitlabApiClient(gitlabToken)
 	require.NoError(t, err)
 
-	
 	// Remove the lock file so we get the latest providers each time
 	lockFilePath := filepath.Join(terraformOptions.TerraformDir, ".terraform.lock.hcl")
 	os.Remove(lockFilePath)
-	
-	if (cleanUp) {
+
+	if cleanUp {
 		defer rmgitlab.RemoveGitlabTestRunners(client, t, gitlabProjectId, projectPrefix+"-ci")
 		// This has to occur before the init stage https://github.com/gruntwork-io/terratest/issues/511#issuecomment-619873137
 		defer terraform.Destroy(t, terraformOptions)
@@ -98,7 +101,7 @@ func TestGcpGitlabCi(t *testing.T) {
 		Ref:   gitlab.String(gitlabBranch),
 		Token: gitlab.String(trigger.Token),
 		Variables: map[string]string{
-			"GCP":"true",
+			"GCP": "true",
 		},
 	}
 

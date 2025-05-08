@@ -161,7 +161,7 @@ gcp-scalable-runner-test:
     - *not-on-tags
   tags:
     # Check the GITLAB Scalable Runner test
-    - gcp-6faab9c3-9d73-4d51-ad84-d777b2d0cef0
+    - gcp-scalable-gitlab-ci-terratest
 
 azure-scalable-runner-test:
   extends: .scalable-runner-test
@@ -173,4 +173,4 @@ azure-scalable-runner-test:
     - *not-on-tags
   tags:
     # Check the GITLAB Scalable Runner test
-    - azure-3308e4b9-3e83-470e-bb39-9cca0666b0fc
+    - azure-scalable-gitlab-ci-terratest

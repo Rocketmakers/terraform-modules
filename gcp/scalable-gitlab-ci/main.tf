@@ -61,6 +61,8 @@ resource "google_storage_bucket_iam_member" "cache" {
   bucket = module.ci_cache.name
   role   = "roles/storage.admin"
   member = "serviceAccount:${module.runner_account.email}"
+
+  depends_on = [module.runner_account]
 }
 
 resource "google_storage_bucket_iam_member" "gcr" {
@@ -68,6 +70,8 @@ resource "google_storage_bucket_iam_member" "gcr" {
   bucket = var.gcr_bucket_names[count.index]
   role   = "roles/storage.admin"
   member = "serviceAccount:${module.runner_account.email}"
+
+  depends_on = [module.runner_account]
 }
 
 resource "tls_private_key" "orchestrator_ssh" {

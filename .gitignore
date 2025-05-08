@@ -164,6 +164,9 @@ temp/
 # Local .terraform directories
 **/.terraform/*
 
+# input variables files
+*.tfvars
+
 # .tfstate files
 *.tfstate
 *.tfstate.*

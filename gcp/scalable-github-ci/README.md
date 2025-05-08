@@ -29,6 +29,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `max_instance_count` | The maximum number of VM instances to create | number | 1 |
 | `min_instance_count` | The minimum number of VM instances to create | number | 1 |
 | `name` | Main name of resources created | string | ci |
+| `runner_labels` | The labels to assign to the runner | list(string) | [] |
 | `service_account_roles` | The roles that should be assigned to the service account running the CI box | list(string) | ["roles/monitoring.metricWriter"] |
 | `subnetwork_ip_cidr` | The IP CIDR for the subnetwork. The default supports 14 addresses | string | 10.128.0.0/28 |
 | `tags` | List of tags to enable ssh access | list(string) | ["ci","externalssh"] |
@@ -66,7 +67,7 @@ These are the providers used by the module.
 
 ```
 module ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-github-ci?ref=v3.2.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-github-ci?ref=v3.3.0"
 
   ssh_cidr_ranges     = var.trusted_cidr_ranges
   gcr_bucket_names    = var.gcr_bucket_names

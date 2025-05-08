@@ -1,5 +1,5 @@
 locals {
-  project_name = "terratest"
+  project_name = "gitlabci"
   location     = "West Europe"
 }
 

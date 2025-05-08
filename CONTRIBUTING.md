@@ -43,11 +43,20 @@ You will need to be on the VPN or in the Rocketmakers office.
 Get AWS keys from [internal-gitlab-runners/secrets/secrets.yaml](https://gitlab.com/rocketmakers/internal-gitlab-runners/-/blob/master/secrets/secrets.yaml)
 
 ```bash
-# For all tests
+# For gitlab tests
 export GITLAB_TOKEN=_token_with_api_access_
+
+# For github tests
+export GH_RUNNER_API_TOKEN=_classic_token_with_repo_and_admin:repo_hook_access_
 
 # Optionally prevent resources from being destroyed at the end of tests, so feedback is quicker during development
 export CLEANUP_AFTER_TESTS=false
+
+# A file named inputs.tfvars will be written to the config directory for the test being run
+# e.g. _tests/config/gcp/scalable-gitlab-ci/inputs.tfvars
+# This file is very useful for debugging using the terraform CLI
+# If you just want this file to be written without running the test then you can use WRITE_VARS_FILE_AND_EXIT
+export WRITE_VARS_FILE_AND_EXIT=true
 
 # aws
 export AWS_SECRET_ACCESS_KEY=_key_

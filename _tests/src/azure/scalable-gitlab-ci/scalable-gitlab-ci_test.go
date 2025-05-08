@@ -10,26 +10,27 @@ import (
 	"rmgitlab"
 	"rmutils"
 
+	"github.com/gruntwork-io/terratest/modules/azure"
+	"github.com/gruntwork-io/terratest/modules/logger"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/xanzy/go-gitlab"
 	"k8s.io/apimachinery/pkg/util/wait"
-	"github.com/gruntwork-io/terratest/modules/azure"
-	"github.com/gruntwork-io/terratest/modules/logger"
-	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
 func TestAzureGitlabCi(t *testing.T) {
-	runnerTag := "azure-3308e4b9-3e83-470e-bb39-9cca0666b0fc"
+	runnerTag := "azure-scalable-gitlab-ci-terratest"
 	gitlabMaxRunners := 3
 	gitlabProjectId := "33153506"
 	gitlabBranch := "develop"
-	projectPrefix := "testing"
+	projectPrefix := "gitlabscalableci"
 	runnerMachineName := "auto-scale-"
 	primaryLocation := "West Europe"
 	retryInterval := 5 * time.Second
 	retryTimeout := 600 * time.Second
 	numberOfPipelines := 5
+	resourceGroup := "Terratest-Gitlab-Scalable-CI"
 
 	ipAddress, err := rmutils.GetMachineExternalIPAddress()
 	require.NoError(t, err)
@@ -39,19 +40,23 @@ func TestAzureGitlabCi(t *testing.T) {
 	}
 	backendConfig := backendconfig.GetAzureBackendBucketConfig(&backendConfigOptions)
 
+	vars := map[string]interface{}{
+		"project_prefix":         projectPrefix,
+		"runner_tag":             runnerTag,
+		"gitlab_max_runners":     gitlabMaxRunners,
+		"runner_machine_name":    runnerMachineName + "%s",
+		"cidr_range":             ipAddress.String() + "/32",
+		"max_builds_per_machine": 3,
+		"primary_location":       primaryLocation,
+		"resource_group_name":    resourceGroup,
+	}
+
+	rmutils.WriteTfvarsFile(t, vars, "../../../config/azure/scalable-gitlab-ci/inputs.tfvars")
+
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		BackendConfig: backendConfig,
 		TerraformDir:  "../../../config/azure/scalable-gitlab-ci",
-		Vars: map[string]interface{}{
-			"project_prefix":      projectPrefix,
-			"runner_tag":          runnerTag,
-			"gitlab_max_runners":  gitlabMaxRunners,
-			"runner_machine_name": runnerMachineName + "%s",
-			"cidr_range":          ipAddress.String() + "/32",
-			"max_builds_per_machine": 3,
-			"resource_group_name": backendConfig["resource_group_name"],
-			"primary_location": primaryLocation,
-		},
+		Vars:          vars,
 	})
 
 	cleanUp := os.Getenv("CLEANUP_AFTER_TESTS") != "false"
@@ -67,8 +72,8 @@ func TestAzureGitlabCi(t *testing.T) {
 	// Remove the lock file so we get the latest providers each time
 	lockFilePath := filepath.Join(terraformOptions.TerraformDir, ".terraform.lock.hcl")
 	os.Remove(lockFilePath)
-	
-	if (cleanUp) {
+
+	if cleanUp {
 		defer rmgitlab.RemoveGitlabTestRunners(client, t, gitlabProjectId, projectPrefix+"-ci")
 		// This has to occur before the init stage https://github.com/gruntwork-io/terratest/issues/511#issuecomment-619873137
 		defer terraform.Destroy(t, terraformOptions)
@@ -93,7 +98,7 @@ func TestAzureGitlabCi(t *testing.T) {
 		Ref:   gitlab.String(gitlabBranch),
 		Token: gitlab.String(trigger.Token),
 		Variables: map[string]string{
-			"AZURE":"true",
+			"AZURE": "true",
 		},
 	}
 
@@ -108,7 +113,7 @@ func TestAzureGitlabCi(t *testing.T) {
 	defer client.PipelineTriggers.DeletePipelineTrigger(gitlabProjectId, trigger.ID)
 
 	instancePollErr := wait.PollImmediate(retryInterval, retryTimeout, func() (bool, error) {
-		list := azure.GetVirtualMachinesForResourceGroup(t, backendConfig["resource_group_name"].(string), backendConfig["subscription_id"].(string))
+		list := azure.GetVirtualMachinesForResourceGroup(t, resourceGroup, backendConfig["subscription_id"].(string))
 		if len(list) == 0 {
 			logger.Logf(t, "Currently no VM instances in Azure which include name %s\n", runnerMachineName)
 		}

@@ -8,8 +8,8 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | ------- | -------------------- | ------ |
 | `container_registry_name` | Container registry name to enable access to | string |
 | `container_registry_resource_group_name` | The name of the resource group the container registry can be found in | string |
-| `github_api_token` | The Github API token to support retrieving a runner registeration token | string |
-| `github_organisation` | The Github organisation to use | string |
+| `github_api_token` | The Github API token to support retrieving a runner registration token | string |
+| `github_organisation` | The name of the Github organisation to use (e.g. Rocketmakers), if registering against an organisation, or the name of the repository (e.g. Rocketmakers/terraform-modules), if registering against a single repository | string |
 | `primary_location` | Main location to store everything (e.g. westeurope) | string |
 | `resource_group_name` | The name of the resource group in which to place resources | string |
 | `ssh_cidr_ranges` | CIDR ranges allowed to access CI instances via ssh | list(string) |
@@ -34,6 +34,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `name` | Main name of resources created | string | ci |
 | `network_address_space` | The address space that is used the virtual network. You can supply more than one address space. | list(string) | ["10.0.0.0/16"] |
 | `network_subnet_address_prefixes` | The address prefixes of the CI boxes subnet. | list(string) | ["10.0.0.0/24"] |
+| `runner_labels` | The labels to assign to the runner | list(string) | [] |
 | `username` | Username for CI box | string | ci |
 
 ## Outputs
@@ -65,6 +66,7 @@ These are the providers used by the module.
 | name | version |
 | ---- | ------- |
 | `azurerm` | >= 3.108.0 |
+| `terraform` |  |
 | `tls` | >= 4.0.5 |
 
 
@@ -72,7 +74,7 @@ These are the providers used by the module.
 
 ```
 module ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/scalable-github-ci?ref=v3.2.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/scalable-github-ci?ref=v3.3.0"
 
   resource_group_name = var.resource_group_name
   primary_location    = var.primary_location

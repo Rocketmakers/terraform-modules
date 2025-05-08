@@ -19,7 +19,9 @@ type TestGitlabRunnerOptions struct {
 	TerraformOptions *terraform.Options
 }
 
-/**
+/*
+*
+
 	Creates a Gitlab Api Client
 	Retrieves token from Environment variables
 */
@@ -32,7 +34,7 @@ func createGitlabApiClient() (*gitlab.Client, error) {
 	return gitlab.NewClient(gitlabApiToken)
 }
 
-func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions, assertions func (t *testing.T, terraformOptions *terraform.Options)) {
+func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions, assertions func(t *testing.T, terraformOptions *terraform.Options)) {
 	runnerTag := opt.RunnerTag
 	instanceCount := opt.InstanceCount
 	terraformOptions := opt.TerraformOptions
@@ -42,7 +44,7 @@ func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions, assertions func (t
 	client, err := createGitlabApiClient()
 	require.NoError(t, err)
 
-	if (cleanUp) {
+	if cleanUp {
 		// Clean up resources at the end of the test.
 		defer terraform.Destroy(t, terraformOptions)
 	}
@@ -88,12 +90,12 @@ func TestGitlabCi(t *testing.T, opt *TestGitlabRunnerOptions, assertions func (t
 		assert.Equal(t, "online", runner.Status, "Expecting runner status to be online")
 	}
 
-	if (cleanUp) {
-		fmt.Println("Deleting regsitered runners...")
+	if cleanUp {
+		fmt.Println("Deleting registered runners...")
 		for _, runnerId := range runnerIds {
 			fmt.Printf("Deleting runner: %v\n", runnerId)
 			_, err := client.Runners.DeleteRegisteredRunnerByID(runnerId, nil)
-	
+
 			if err != nil {
 				fmt.Printf("Failed to delete runner: %v\n", runnerId)
 				fmt.Println(err)
