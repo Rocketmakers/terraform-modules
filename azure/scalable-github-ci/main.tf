@@ -144,6 +144,10 @@ resource "azurerm_linux_virtual_machine_scale_set" "ci_box" {
     }
   }
 
+  scale_in {
+    rule = var.scale_in_rule
+  }
+
   lifecycle {
     ignore_changes = [instances]
 
