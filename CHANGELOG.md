@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.2.0...v3.3.0) (2025-05-08)
+
+
+### Features
+
+* **azure-github-ci:** Add support for custom labels when registering runners ([f25d8dd](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/f25d8dd93d2d7faae69969ce36c932f9d936c661))
+* **azure-github-ci:** Replace the runner scale set if the provisioning script changes ([7d572df](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/7d572df37ad6f3196b79206e9132581ae79a7d78))
+* **gcp-github-ci:** Add support for custom labels when registering runners ([94e9b9c](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/94e9b9c97e5c7761557a36a5b2781271ad74de59))
+* **gcp-github-ci:** Ensure runner VMs are recreated when the provisioning script changes ([4f2e5bf](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/4f2e5bfbc8e41bc4e29c2cdf8371bd7a6fda4995))
+* Mark variable "github_api_token" as sensitive ([bbfa1e0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/bbfa1e02dc9b40562e1912e75b358c55724d4415))
+
+
+### Bug Fixes
+
+* **gcp-gitlab-ci:** Allow google_storage_bucket_iam_member resources to be created after service accounts ([9d5a9c4](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/9d5a9c4003a54b9c818ce6f2b47b30335de9ae61))
+
+
+### Tests
+
+* **azure-github-ci:** Start of tests - just applies and destroys - no verification steps yet ([69e1883](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/69e18838fae6e56c9e7414e751af7a40e636f85a))
+* **azure-gitlab-ci:** Support WRITE_VARS_FILE_AND_EXIT in non-scalable gitlab runner tests ([30e1f4a](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/30e1f4a937128cd9c75e3b246842433b17cd2eb5))
+* **azure-gitlab-ci:** Use a dedicated resource group and project name for azure scalable CI tests ([ce62c3d](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/ce62c3da95e790fe8681bb752950cec808734a41))
+* **gcp-github-ci:** Start of tests - just applies and destroys - no verification steps yet ([95e3d3e](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/95e3d3e45e77b7036b56d73721e057bb80f13250))
+* **gcp-gitlab-ci:** Use a different project_prefix for scalable and non-scalable runner tests ([6b71b03](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/6b71b03d49146f56effa5ba6a29ffe0da0448f0f))
+* Use descriptive tags for gitlab CI tests ([6f07770](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/6f077709b1ca1259bafdc37265b549389d842df0))
+* **scripts:** Don't notify slack when tests pass ([9ec1ce3](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/9ec1ce3b697b37a85813300e7a18a6bf8b1ca995))
+
+
 ## [3.2.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.0.0...v3.2.0) (2025-05-01)
 
 
