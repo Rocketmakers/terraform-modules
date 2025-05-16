@@ -35,6 +35,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `network_address_space` | The address space that is used the virtual network. You can supply more than one address space. | list(string) | ["10.0.0.0/16"] |
 | `network_subnet_address_prefixes` | The address prefixes of the CI boxes subnet. | list(string) | ["10.0.0.0/24"] |
 | `runner_labels` | The labels to assign to the runner | list(string) | [] |
+| `scale_in_rule` | The rule to use for scaling in | string | OldestVM |
 | `username` | Username for CI box | string | ci |
 
 ## Outputs
@@ -74,7 +75,7 @@ These are the providers used by the module.
 
 ```
 module ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/scalable-github-ci?ref=v3.3.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/scalable-github-ci?ref=v3.4.0"
 
   resource_group_name = var.resource_group_name
   primary_location    = var.primary_location

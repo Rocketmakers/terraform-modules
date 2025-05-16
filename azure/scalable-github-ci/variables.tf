@@ -75,6 +75,12 @@ variable "max_instance_count" {
   default     = 1
 }
 
+variable "scale_in_rule" {
+  type        = string
+  description = "The rule to use for scaling in"
+  default     = "OldestVM"
+}
+
 variable "autoscale_max_cpu_percentage" {
   type        = number
   description = "The minimum CPU percentage which must be achieved before scaling up to the max_instance_count"
