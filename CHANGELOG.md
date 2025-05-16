@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.4.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.3.0...v3.4.0) (2025-05-16)
+
+
+### Features
+
+* **azure-github-ci:** Remove the oldest VM when scaling in ([5c9f30e](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/5c9f30e7530fd850406c4050d6bf6564546c7f08))
+
 ## [3.3.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.2.0...v3.3.0) (2025-05-08)
 
 
