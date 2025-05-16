@@ -67,7 +67,7 @@ These are the providers used by the module.
 
 ```
 module ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-github-ci?ref=v3.3.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-github-ci?ref=v3.4.0"
 
   ssh_cidr_ranges     = var.trusted_cidr_ranges
   gcr_bucket_names    = var.gcr_bucket_names
