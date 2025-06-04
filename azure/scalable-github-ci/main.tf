@@ -104,6 +104,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "ci_box" {
 
   sku = var.vm_size
 
+  encryption_at_host_enabled = var.encryption_at_host_enabled
+
   source_image_reference {
     publisher = var.image_config.publisher
     offer     = var.image_config.offer

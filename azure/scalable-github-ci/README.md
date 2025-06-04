@@ -26,6 +26,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `autoscale_min_cpu_percentage` | The maximum CPU percentage which must be achieved before scaling down to the min_instance_count | number | 5 |
 | `disk_size` | Size of disk in GB | number | 50 |
 | `docker_prune_cron_schedule` | The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC. | string | 0 4 * * * |
+| `encryption_at_host_enabled` | Determines if encryption at host is enabled for the machine | bool | true |
 | `github_runner_concurrency` | The maximum number of jobs that the runner will run concurrently | number | 3 |
 | `github_runner_version` | The version of github-runner to install | string | 2.321.0 |
 | `image_config` | The details of the OS image used on the instance | object({<br />    publisher = string<br />    offer     = string<br />    sku       = string<br />    version   = string<br />  }) | {"offer":"0001-com-ubuntu-server-jammy","publisher":"Canonical","sku":"22_04-lts","version":"latest"} |
