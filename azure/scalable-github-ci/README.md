@@ -23,7 +23,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `autoscale_max_cooldown` | The cooldown mode for autoscaling to the maximum instances | string | PT1M |
 | `autoscale_max_cpu_percentage` | The minimum CPU percentage which must be achieved before scaling up to the max_instance_count | number | 10 |
 | `autoscale_min_cooldown` | The cooldown mode for autoscaling to the minimum instances | string | PT1M |
-| `autoscale_min_cpu_percentage` | The maximum CPU percentage which must be achieved before scaling down to the min_instance_count | number | 2 |
+| `autoscale_min_cpu_percentage` | The minimum CPU percentage which must be achieved before scaling down to the min_instance_count | number | 0.5 |
 | `disk_size` | Size of disk in GB | number | 50 |
 | `docker_prune_cron_schedule` | The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC. | string | 0 4 * * * |
 | `encryption_at_host_enabled` | Determines if encryption at host is enabled for the machine | bool | true |

@@ -95,8 +95,8 @@ variable "autoscale_max_cooldown" {
 
 variable "autoscale_min_cpu_percentage" {
   type        = number
-  description = "The maximum CPU percentage which must be achieved before scaling down to the min_instance_count"
-  default     = 2
+  description = "The minimum CPU percentage which must be achieved before scaling down to the min_instance_count"
+  default     = 0.5
 }
 
 variable "autoscale_min_cooldown" {
