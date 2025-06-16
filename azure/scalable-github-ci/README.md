@@ -48,6 +48,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `service_principal_ids` | The ids of the underlying service principal accounts |
 | `subnet_id` | The id of the subnet the CI runner is assigned to |
 | `username` | Username for CI box |
+| `virtual_machine_scale_set_id` | The id of the virtual machine scale set for the CI runner |
 | `virtual_network_id` | The id of the virtual network associated with the CI runner |
 | `virtual_network_name` | The name of the virtual network associated with the CI runner |
 
