@@ -35,3 +35,9 @@ output "subnet_id" {
   description = "The id of the subnet the CI runner is assigned to"
   value       = azurerm_subnet.ci.id
 }
+
+output "virtual_machine_scale_set_id" {
+  description = "The id of the virtual machine scale set for the CI runner"
+  value       = azurerm_linux_virtual_machine_scale_set.ci_box.id
+
+}
