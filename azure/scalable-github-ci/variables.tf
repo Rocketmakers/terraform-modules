@@ -24,12 +24,6 @@ variable "username" {
   default     = "ci"
 }
 
-variable "github_runner_concurrency" {
-  type        = number
-  description = "The maximum number of jobs that the runner will run concurrently"
-  default     = 3
-}
-
 variable "github_runner_version" {
   type        = string
   description = "The version of github-runner to install"
@@ -47,27 +41,67 @@ variable "github_organisation" {
   description = "The name of the Github organisation to use (e.g. Rocketmakers), if registering against an organisation, or the name of the repository (e.g. Rocketmakers/terraform-modules), if registering against a single repository"
 }
 
-variable "docker_prune_cron_schedule" {
-  type        = string
-  description = "The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC."
-  default     = "0 4 * * *"
-}
-
 variable "runner_labels" {
   type        = list(string)
   description = "The labels to assign to the runner"
   default     = []
 }
 
+######################
+# Autoscaler details #
+######################
+
+variable "autoscaler_version" {
+  description = "The version of the autoscaler to use"
+  type        = string
+  default     = "0.0.1"
+}
+
+variable "autoscaler_log_workspace_sku" {
+  type        = string
+  description = "The SKU of the Log Analytics workspace to use for the autoscaler"
+  default     = "PerGB2018"
+}
+
+variable "autoscaler_log_workspace_retention_in_days" {
+  type        = number
+  description = "The retention period in days for the Log Analytics workspace used by the autoscaler"
+  default     = 30
+}
+
+variable "autoscaler_workload_profile_type" {
+  type        = string
+  description = "The workload profile type for the autoscaler"
+  default     = "Consumption"
+}
+
+variable "autoscaler_revision_mode" {
+  type        = string
+  description = "The revision mode for the autoscaler"
+  default     = "Single"
+}
+
+variable "autoscaler_workload_profile_name" {
+  type        = string
+  description = "The name of the workload profile for the autoscaler"
+  default     = "Consumption"
+}
+
+variable "autoscaler_cpu" {
+  type        = number
+  description = "The amount of CPU to allocate to the autoscaler container"
+  default     = 0.25
+}
+
+variable "autoscaler_memory" {
+  type        = string
+  description = "The amount of memory to allocate to the autoscaler container in GB"
+  default     = "0.5Gi"
+}
+
 ####################
 # Instance details #
 ####################
-
-variable "min_instance_count" {
-  type        = number
-  description = "The minimum number of VM instances to create"
-  default     = 1
-}
 
 variable "max_instance_count" {
   type        = number
@@ -79,30 +113,6 @@ variable "scale_in_rule" {
   type        = string
   description = "The rule to use for scaling in"
   default     = "OldestVM"
-}
-
-variable "autoscale_max_cpu_percentage" {
-  type        = number
-  description = "The minimum CPU percentage which must be achieved before scaling up to the max_instance_count"
-  default     = 10
-}
-
-variable "autoscale_max_cooldown" {
-  type        = string
-  description = "The cooldown mode for autoscaling to the maximum instances"
-  default     = "PT1M"
-}
-
-variable "autoscale_min_cpu_percentage" {
-  type        = number
-  description = "The minimum CPU percentage which must be achieved before scaling down to the min_instance_count"
-  default     = 0.5
-}
-
-variable "autoscale_min_cooldown" {
-  type        = string
-  description = "The cooldown mode for autoscaling to the minimum instances"
-  default     = "PT1M"
 }
 
 variable "resource_group_name" {
