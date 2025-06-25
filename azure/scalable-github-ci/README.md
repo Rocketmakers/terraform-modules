@@ -20,18 +20,19 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 
 | name    | description          | type   | default value   |
 | ------- | -------------------- | ------ | --------------- |
-| `autoscale_max_cooldown` | The cooldown mode for autoscaling to the maximum instances | string | PT1M |
-| `autoscale_max_cpu_percentage` | The minimum CPU percentage which must be achieved before scaling up to the max_instance_count | number | 10 |
-| `autoscale_min_cooldown` | The cooldown mode for autoscaling to the minimum instances | string | PT1M |
-| `autoscale_min_cpu_percentage` | The minimum CPU percentage which must be achieved before scaling down to the min_instance_count | number | 0.5 |
+| `autoscaler_cpu` | The amount of CPU to allocate to the autoscaler container | number | 0.25 |
+| `autoscaler_log_workspace_retention_in_days` | The retention period in days for the Log Analytics workspace used by the autoscaler | number | 30 |
+| `autoscaler_log_workspace_sku` | The SKU of the Log Analytics workspace to use for the autoscaler | string | PerGB2018 |
+| `autoscaler_memory` | The amount of memory to allocate to the autoscaler container in GB | string | 0.5Gi |
+| `autoscaler_revision_mode` | The revision mode for the autoscaler | string | Single |
+| `autoscaler_version` | The version of the autoscaler to use | string | 0.0.1 |
+| `autoscaler_workload_profile_name` | The name of the workload profile for the autoscaler | string | Consumption |
+| `autoscaler_workload_profile_type` | The workload profile type for the autoscaler | string | Consumption |
 | `disk_size` | Size of disk in GB | number | 50 |
-| `docker_prune_cron_schedule` | The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC. | string | 0 4 * * * |
 | `encryption_at_host_enabled` | Determines if encryption at host is enabled for the machine | bool | true |
-| `github_runner_concurrency` | The maximum number of jobs that the runner will run concurrently | number | 3 |
 | `github_runner_version` | The version of github-runner to install | string | 2.321.0 |
 | `image_config` | The details of the OS image used on the instance | object({<br />    publisher = string<br />    offer     = string<br />    sku       = string<br />    version   = string<br />  }) | {"offer":"0001-com-ubuntu-server-jammy","publisher":"Canonical","sku":"22_04-lts","version":"latest"} |
 | `max_instance_count` | The maximum number of VM instances to create | number | 1 |
-| `min_instance_count` | The minimum number of VM instances to create | number | 1 |
 | `name` | Main name of resources created | string | ci |
 | `network_address_space` | The address space that is used the virtual network. You can supply more than one address space. | list(string) | ["10.0.0.0/16"] |
 | `network_subnet_address_prefixes` | The address prefixes of the CI boxes subnet. | list(string) | ["10.0.0.0/24"] |
@@ -69,6 +70,7 @@ These are the providers used by the module.
 | name | version |
 | ---- | ------- |
 | `azurerm` | >= 3.108.0 |
+| `random` |  |
 | `terraform` |  |
 | `tls` | >= 4.0.5 |
 
