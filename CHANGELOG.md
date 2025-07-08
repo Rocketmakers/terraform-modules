@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.5.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.4.0...v3.5.0) (2025-07-08)
+
+
+### Features
+
+* **azure-github-ci:** Added support for auto scaler via container app ([9340ebc](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/9340ebc4a6ea1653295840c8b02ccc8ad081f56d))
+* **azure-github-ci:** Added support for encryption at host for github scalable runners ([c23382a](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/c23382a081fd1578e0b27d749fb28496d174a554))
+* **azure-github-ci:** Exposed virtual machine scale set id as output ([9fd8780](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/9fd87809009a97fb808017cf08197e071e7cce4b))
+
+
+
 ## [3.4.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.3.0...v3.4.0) (2025-05-16)
 
 
