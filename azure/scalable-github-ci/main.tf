@@ -8,8 +8,6 @@ runcmd:
 - echo "Installing Docker"
 - curl -sSL https://get.docker.com/ | sh
 - [su, ${var.username}, -c, 'usermod -aG docker ${var.username}']
-- echo "Setting up Docker prune"
-- (crontab -l 2>/dev/null; echo '${var.docker_prune_cron_schedule} docker system prune -f -a --volumes') | crontab -
 - echo "Downloading GitHub runner installer"
 - [mkdir, '/actions-runner']
 - cd /actions-runner
@@ -96,13 +94,15 @@ resource "azurerm_storage_account" "this" {
 
 resource "azurerm_linux_virtual_machine_scale_set" "ci_box" {
   name           = "${var.name}-vm"
-  instances      = 1
+  instances      = 0
   admin_username = var.username
 
   resource_group_name = data.azurerm_resource_group.this.name
   location            = data.azurerm_resource_group.this.location
 
   sku = var.vm_size
+
+  encryption_at_host_enabled = var.encryption_at_host_enabled
 
   source_image_reference {
     publisher = var.image_config.publisher
@@ -155,65 +155,115 @@ resource "azurerm_linux_virtual_machine_scale_set" "ci_box" {
   }
 }
 
-resource "azurerm_monitor_autoscale_setting" "ci" {
-  name                = "${var.name}-vm-autoscale"
+##################################
+# Azure AutoScaler Container App #
+##################################
+
+resource "azurerm_log_analytics_workspace" "ci" {
+  name                = "${var.name}-ci-logs"
   resource_group_name = data.azurerm_resource_group.this.name
   location            = data.azurerm_resource_group.this.location
-  target_resource_id  = azurerm_linux_virtual_machine_scale_set.ci_box.id
+  sku                 = var.autoscaler_log_workspace_sku
+  retention_in_days   = var.autoscaler_log_workspace_retention_in_days
+}
 
-  profile {
-    name = "default"
+resource "azurerm_container_app_environment" "ci" {
+  name                       = "${var.name}-ci"
+  resource_group_name        = data.azurerm_resource_group.this.name
+  location                   = data.azurerm_resource_group.this.location
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.ci.id
+  workload_profile {
+    name                  = var.autoscaler_workload_profile_type
+    workload_profile_type = var.autoscaler_workload_profile_type
+  }
+}
 
-    capacity {
-      default = 1
-      minimum = var.min_instance_count
-      maximum = var.max_instance_count
+resource "random_string" "github_secret" {
+  length  = 32
+  special = false
+}
+
+locals {
+  secrets = [
+    { name = "registry-password", value = sensitive(data.azurerm_container_registry.core.admin_password) },
+    { name = "github-secret", value = random_string.github_secret.result },
+    { name = "github-api-token", value = var.github_api_token },
+    { name = "github-subscription-id", value = data.azurerm_subscription.current.subscription_id },
+  ]
+  envs = [
+    { name = "GITHUB_SECRET", secret_name = "github-secret" },
+    { name = "GITHUB_API_TOKEN", secret_name = "github-api-token" },
+    { name = "AZURE_SUBSCRIPTION_ID", secret_name = "github-subscription-id" },
+    { name = "AZURE_RESOURCE_GROUP_NAME", value = data.azurerm_resource_group.this.name },
+    { name = "AZURE_VM_SCALE_SET_NAME", value = azurerm_linux_virtual_machine_scale_set.ci_box.name },
+    { name = "MAX_RUNNERS", value = var.max_instance_count },
+    { name = "SCALE_DOWN_RUNNERS", value = "true" },
+    { name = "GITHUB_REPO", value = var.github_organisation },
+  ]
+}
+
+resource "azurerm_container_app" "autoscaler" {
+  name                         = "${var.name}-ci-autoscaler"
+  container_app_environment_id = azurerm_container_app_environment.ci.id
+  resource_group_name          = data.azurerm_resource_group.this.name
+  revision_mode                = var.autoscaler_revision_mode
+  workload_profile_name        = var.autoscaler_workload_profile_name
+
+  template {
+    container {
+      name   = "main"
+      image  = "ghcr.io/rocketmakers/github-autoscaler:${var.autoscaler_version}"
+      cpu    = var.autoscaler_cpu
+      memory = var.autoscaler_memory
+
+      dynamic "env" {
+        for_each = local.envs
+        content {
+          name        = env.value["name"]
+          secret_name = try(env.value["secret_name"], null)
+          value       = try(env.value["value"], null)
+        }
+      }
     }
 
-    rule {
-      metric_trigger {
-        metric_name              = "Percentage CPU"
-        metric_resource_id       = azurerm_linux_virtual_machine_scale_set.ci_box.id
-        time_grain               = "PT1M"
-        statistic                = "Average"
-        time_window              = "PT5M"
-        time_aggregation         = "Average"
-        operator                 = "GreaterThan"
-        threshold                = var.autoscale_max_cpu_percentage
-        metric_namespace         = "microsoft.compute/virtualmachinescalesets"
-        divide_by_instance_count = true
-      }
+    # We need min replicas otherwise GitHub will cancel the request while starting up
+    min_replicas = 1
+  }
 
-      scale_action {
-        direction = "Increase"
-        type      = "ExactCount"
-        value     = var.max_instance_count
-        cooldown  = var.autoscale_max_cooldown
-      }
+  identity {
+    type = "SystemAssigned"
+  }
+
+  dynamic "secret" {
+    for_each = local.secrets
+    content {
+      name  = secret.value["name"]
+      value = secret.value["value"]
     }
+  }
 
-    rule {
-      metric_trigger {
-        metric_name              = "Percentage CPU"
-        metric_resource_id       = azurerm_linux_virtual_machine_scale_set.ci_box.id
-        time_grain               = "PT1M"
-        statistic                = "Average"
-        time_window              = "PT15M"
-        time_aggregation         = "Average"
-        operator                 = "LessThan"
-        threshold                = var.autoscale_min_cpu_percentage
-        divide_by_instance_count = true
-      }
-
-      scale_action {
-        direction = "Decrease"
-        type      = "ExactCount"
-        value     = var.min_instance_count
-        cooldown  = var.autoscale_min_cooldown
-      }
+  ingress {
+    target_port      = 3000
+    external_enabled = true
+    traffic_weight {
+      percentage      = 100
+      latest_revision = true
     }
   }
 }
+
+resource "azurerm_role_assignment" "autoscaler_resource_group" {
+  scope                = data.azurerm_resource_group.this.id
+  role_definition_name = "Reader"
+  principal_id         = azurerm_container_app.autoscaler.identity[0].principal_id
+}
+
+resource "azurerm_role_assignment" "autoscaler_resource_groupvmss" {
+  scope                = azurerm_linux_virtual_machine_scale_set.ci_box.id
+  role_definition_name = "Contributor"
+  principal_id         = azurerm_container_app.autoscaler.identity[0].principal_id
+}
+
 
 ##################################
 # Azure Container Registry access

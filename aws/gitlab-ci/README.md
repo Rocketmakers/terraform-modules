@@ -44,7 +44,7 @@ These are required by the module.
 
 | name | version |
 | ---- | ------- |
-| `aws` | >= 4.1.0 |
+| `aws` | >= 4.1.0, < 6.0.0 |
 | `terraform` | >= 1.1.6 |
 | `tls` | >= 3.1.0 |
 
@@ -54,7 +54,7 @@ These are the providers used by the module.
 
 | name | version |
 | ---- | ------- |
-| `aws` | >= 4.1.0 |
+| `aws` | >= 4.1.0, < 6.0.0 |
 | `tls` | >= 3.1.0 |
 
 
@@ -62,7 +62,7 @@ These are the providers used by the module.
 
 ```
 module ci-box {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//aws/gitlab-ci?ref=v3.4.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//aws/gitlab-ci?ref=v3.5.0"
 
   availability_zones         = var.availability_zone
   project_prefix             = local.project_prefix
