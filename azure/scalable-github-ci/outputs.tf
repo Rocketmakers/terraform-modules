@@ -45,3 +45,9 @@ output "github_webhook_secret" {
   description = "The secret supplied in all GitHub webhook requests"
   value       = random_string.github_secret.result
 }
+
+output "autoscaler_public_url" {
+  description = "The public URL of the autoscaler"
+  value       = azurerm_container_app.autoscaler.ingress[0].fqdn
+  
+}

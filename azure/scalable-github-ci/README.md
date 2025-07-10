@@ -43,6 +43,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 
 | name      | description                 |
 | --------- | --------------------------- |
+| `autoscaler_public_url` | The public URL of the autoscaler |
 | `github_webhook_secret` | The secret supplied in all GitHub webhook requests |
 | `private_key` | CI Box private key - used for SSH |
 | `public_key` | Public SSH key |
