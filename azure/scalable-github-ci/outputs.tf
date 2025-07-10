@@ -49,5 +49,5 @@ output "github_webhook_secret" {
 output "autoscaler_public_url" {
   description = "The public URL of the autoscaler"
   value       = azurerm_container_app.autoscaler.ingress[0].fqdn
-  
+
 }
