@@ -39,5 +39,9 @@ output "subnet_id" {
 output "virtual_machine_scale_set_id" {
   description = "The id of the virtual machine scale set for the CI runner"
   value       = azurerm_linux_virtual_machine_scale_set.ci_box.id
+}
 
+output "github_webhook_secret" {
+  description = "The secret supplied in all GitHub webhook requests"
+  value       = random_string.github_secret.result
 }
