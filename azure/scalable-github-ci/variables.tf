@@ -81,12 +81,6 @@ variable "autoscaler_revision_mode" {
   default     = "Single"
 }
 
-variable "autoscaler_workload_profile_name" {
-  type        = string
-  description = "The name of the workload profile for the autoscaler"
-  default     = "Consumption"
-}
-
 variable "autoscaler_cpu" {
   type        = number
   description = "The amount of CPU to allocate to the autoscaler container"

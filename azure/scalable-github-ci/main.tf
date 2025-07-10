@@ -203,7 +203,6 @@ resource "azurerm_container_app" "autoscaler" {
   container_app_environment_id = azurerm_container_app_environment.ci.id
   resource_group_name          = data.azurerm_resource_group.this.name
   revision_mode                = var.autoscaler_revision_mode
-  workload_profile_name        = var.autoscaler_workload_profile_name
 
   template {
     container {
