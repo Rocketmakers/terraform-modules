@@ -172,10 +172,6 @@ resource "azurerm_container_app_environment" "ci" {
   resource_group_name        = data.azurerm_resource_group.this.name
   location                   = data.azurerm_resource_group.this.location
   log_analytics_workspace_id = azurerm_log_analytics_workspace.ci.id
-  workload_profile {
-    name                  = var.autoscaler_workload_profile_type
-    workload_profile_type = var.autoscaler_workload_profile_type
-  }
 }
 
 resource "random_string" "github_secret" {
