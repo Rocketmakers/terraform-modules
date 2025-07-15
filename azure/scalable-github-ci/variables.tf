@@ -54,7 +54,7 @@ variable "runner_labels" {
 variable "autoscaler_version" {
   description = "The version of the autoscaler to use"
   type        = string
-  default     = "0.0.1"
+  default     = "1.0.0"
 }
 
 variable "autoscaler_log_workspace_sku" {

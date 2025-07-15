@@ -25,7 +25,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `autoscaler_log_workspace_sku` | The SKU of the Log Analytics workspace to use for the autoscaler | string | PerGB2018 |
 | `autoscaler_memory` | The amount of memory to allocate to the autoscaler container in GB | string | 0.5Gi |
 | `autoscaler_revision_mode` | The revision mode for the autoscaler | string | Single |
-| `autoscaler_version` | The version of the autoscaler to use | string | 0.0.1 |
+| `autoscaler_version` | The version of the autoscaler to use | string | 1.0.0 |
 | `autoscaler_workload_profile_name` | The name of the workload profile for the autoscaler | string | Consumption |
 | `autoscaler_workload_profile_type` | The workload profile type for the autoscaler | string | Consumption |
 | `disk_size` | Size of disk in GB | number | 50 |
@@ -79,7 +79,7 @@ These are the providers used by the module.
 
 ```
 module ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/scalable-github-ci?ref=v3.4.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/scalable-github-ci?ref=v3.5.0"
 
   resource_group_name = var.resource_group_name
   primary_location    = var.primary_location
