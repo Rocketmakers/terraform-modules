@@ -25,7 +25,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `autoscaler_log_workspace_sku` | The SKU of the Log Analytics workspace to use for the autoscaler | string | PerGB2018 |
 | `autoscaler_memory` | The amount of memory to allocate to the autoscaler container in GB | string | 0.5Gi |
 | `autoscaler_revision_mode` | The revision mode for the autoscaler | string | Single |
-| `autoscaler_version` | The version of the autoscaler to use | string | 1.0.0 |
+| `autoscaler_version` | The version of the autoscaler to use | string | 1.0.1 |
 | `autoscaler_workload_profile_type` | The workload profile type for the autoscaler | string | Consumption |
 | `disk_size` | Size of disk in GB | number | 50 |
 | `encryption_at_host_enabled` | Determines if encryption at host is enabled for the machine | bool | true |
