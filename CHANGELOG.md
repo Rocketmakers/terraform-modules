@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.6.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.5.0...v3.6.0) (2025-07-30)
+
+
+### Features
+
+* **azure-github-ci:** Updated to include public url for autoscaler ([a86c5c8](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/a86c5c8cc5922f2ba353fd5b5a763465bd4bace1))
+
+
+### Bug Fixes
+
+* **azure-github-ci:** Removed app environment profile as not required and causing issues in later version of provider ([7bd74ba](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/7bd74baa070654fe51acb5fd80ce3b5bbb730c3e))
+* **azure-github-ci:** Removed workload profile for autoscaler as not needed ([36aa991](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/36aa991f733d080ae2fecdb7361046ec8cb0ab76))
+* **azure-github-ci:** Updated to output webhook secret ([4540097](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/4540097a4f6ed2833325cc15c607c13593ba8059))
+* **gcp-gitlab-ci:** Updated image name to latest version ([192355d](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/192355d01418ec6db2128dc1367553cbbbf1837e))
+
+
+### Other Changes
+
+* **azure-github-ci:** Updated scalable runner version ([87b3feb](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/87b3febb9165b6da24c84ab35f6090967ea61e9a))
+
 ## [3.5.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.4.0...v3.5.0) (2025-07-08)
 
 
