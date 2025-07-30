@@ -45,7 +45,7 @@ Follow the GCR [Quickstart](https: //cloud.google.com/container-registry/docs/qu
 | `gitlab_runner_docker_image` | The value passed to --docker-image when registering the runner (see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker) | string | docker:stable |
 | `gitlab_runner_locked` | Setting true will limit the runner to the project that provided the registration token. Setting false will allow other projects to enable the runner. | bool | true |
 | `gitlab_runner_version` | The version of gitlab-runner to install (see https://docs.gitlab.com/runner/install/bleeding-edge.html#download-any-other-tagged-release) | string | latest |
-| `image_name` | Google image name to base CI on | string | ubuntu-2004-focal-v20230302 |
+| `image_name` | Google image name to base CI on | string | ubuntu-2204-jammy-v20250701 |
 | `image_project` | Google image project to base CI on | string | ubuntu-os-cloud |
 | `name` | Main name of resources created | string | ci |
 | `orchestrator_disk_size` | Size of orchestrator disk in GB | number | 50 |

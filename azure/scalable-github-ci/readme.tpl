@@ -33,3 +33,12 @@ module ci {
   ]
 }
 ```
+
+## Setting up Github Webhook
+
+Follow the [main guide](https://docs.github.com/en/webhooks/using-webhooks/creating-webhooks#creating-a-repository-webhook) for setting up a GitHub webhook. You will need to focus on the following information
+
+Payload - This should be equal to `autoscaler_public_url` with `https://` at the start and `/webhook` at the end
+Content Type - This should equal `application/json`
+Secret - This should equal the value of `github_webhook_secret`
+Events - This should just focus on `Workflow jobs`.
