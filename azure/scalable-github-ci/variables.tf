@@ -54,7 +54,7 @@ variable "runner_labels" {
 variable "autoscaler_version" {
   description = "The version of the autoscaler to use"
   type        = string
-  default     = "1.0.0"
+  default     = "1.0.1"
 }
 
 variable "autoscaler_log_workspace_sku" {
@@ -79,12 +79,6 @@ variable "autoscaler_revision_mode" {
   type        = string
   description = "The revision mode for the autoscaler"
   default     = "Single"
-}
-
-variable "autoscaler_workload_profile_name" {
-  type        = string
-  description = "The name of the workload profile for the autoscaler"
-  default     = "Consumption"
 }
 
 variable "autoscaler_cpu" {

@@ -25,8 +25,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `autoscaler_log_workspace_sku` | The SKU of the Log Analytics workspace to use for the autoscaler | string | PerGB2018 |
 | `autoscaler_memory` | The amount of memory to allocate to the autoscaler container in GB | string | 0.5Gi |
 | `autoscaler_revision_mode` | The revision mode for the autoscaler | string | Single |
-| `autoscaler_version` | The version of the autoscaler to use | string | 1.0.0 |
-| `autoscaler_workload_profile_name` | The name of the workload profile for the autoscaler | string | Consumption |
+| `autoscaler_version` | The version of the autoscaler to use | string | 1.0.1 |
 | `autoscaler_workload_profile_type` | The workload profile type for the autoscaler | string | Consumption |
 | `disk_size` | Size of disk in GB | number | 50 |
 | `encryption_at_host_enabled` | Determines if encryption at host is enabled for the machine | bool | true |
@@ -44,6 +43,8 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 
 | name      | description                 |
 | --------- | --------------------------- |
+| `autoscaler_public_url` | The public URL of the autoscaler |
+| `github_webhook_secret` | The secret supplied in all GitHub webhook requests |
 | `private_key` | CI Box private key - used for SSH |
 | `public_key` | Public SSH key |
 | `service_principal_ids` | The ids of the underlying service principal accounts |
@@ -79,7 +80,7 @@ These are the providers used by the module.
 
 ```
 module ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/scalable-github-ci?ref=v3.5.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/scalable-github-ci?ref=v3.6.0"
 
   resource_group_name = var.resource_group_name
   primary_location    = var.primary_location
@@ -104,3 +105,12 @@ module ci {
   ]
 }
 ```
+
+## Setting up Github Webhook
+
+Follow the [main guide](https://docs.github.com/en/webhooks/using-webhooks/creating-webhooks#creating-a-repository-webhook) for setting up a GitHub webhook. You will need to focus on the following information
+
+Payload - This should be equal to `autoscaler_public_url` with `https://` at the start and `/webhook` at the end
+Content Type - This should equal `application/json`
+Secret - This should equal the value of `github_webhook_secret`
+Events - This should just focus on `Workflow jobs`.
