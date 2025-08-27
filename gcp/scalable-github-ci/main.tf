@@ -5,6 +5,7 @@ locals {
   # Adapted from https://brendanthompson.com/posts/2021/09/github-actions-self-hosted-runner-on-azure
   install_github_runner_data = <<EOF
 #! /bin/bash
+su apt-get update
 echo "Installing Docker"
 curl -sSL https://get.docker.com/ | sh
 su root -c 'usermod -aG docker root'
