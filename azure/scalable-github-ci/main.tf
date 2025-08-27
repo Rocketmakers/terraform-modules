@@ -6,7 +6,7 @@ locals {
 #cloud-config
 runcmd:
 - echo "Installing Docker"
-- curl -sSL https://get.docker.com/ | sh
+- curl -sSL ${var.docker_install_script_url} | sh
 - [su, ${var.username}, -c, 'usermod -aG docker ${var.username}']
 - echo "Downloading GitHub runner installer"
 - [mkdir, '/actions-runner']
