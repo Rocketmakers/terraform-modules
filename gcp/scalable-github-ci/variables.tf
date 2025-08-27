@@ -49,7 +49,7 @@ variable "image_project" {
 variable "image_name" {
   type        = string
   description = "Google image name to base CI on"
-  default     = "ubuntu-2004-focal-v20241115"
+  default     = "ubuntu-2504-plucky-amd64-v20250815"
 }
 
 variable "tags" {
@@ -85,6 +85,12 @@ variable "autoscaling_cooldown_period_in_seconds" {
 variable "subnetwork_ip_cidr" {
   description = "The IP CIDR for the subnetwork. The default supports 14 addresses"
   default     = "10.128.0.0/28"
+}
+
+variable "docker_install_script_url" {
+  type        = string
+  description = "The URL to the Docker installation script"
+  default     = "https://get.docker.com/"
 }
 
 variable "docker_prune_cron_schedule" {
