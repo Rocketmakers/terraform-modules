@@ -28,6 +28,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `autoscaler_version` | The version of the autoscaler to use | string | 1.0.1 |
 | `autoscaler_workload_profile_type` | The workload profile type for the autoscaler | string | Consumption |
 | `disk_size` | Size of disk in GB | number | 50 |
+| `docker_install_script_url` | The URL to the Docker installation script | string | https://get.docker.com/ |
 | `encryption_at_host_enabled` | Determines if encryption at host is enabled for the machine | bool | true |
 | `github_runner_version` | The version of github-runner to install | string | 2.321.0 |
 | `image_config` | The details of the OS image used on the instance | object({<br />    publisher = string<br />    offer     = string<br />    sku       = string<br />    version   = string<br />  }) | {"offer":"0001-com-ubuntu-server-jammy","publisher":"Canonical","sku":"22_04-lts","version":"latest"} |

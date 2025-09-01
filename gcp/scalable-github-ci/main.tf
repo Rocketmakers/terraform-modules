@@ -6,7 +6,7 @@ locals {
   install_github_runner_data = <<EOF
 #! /bin/bash
 echo "Installing Docker"
-curl -sSL https://get.docker.com/ | sh
+curl -sSL ${var.docker_install_script_url} | sh
 su root -c 'usermod -aG docker root'
 echo "Setting up Docker prune"
 (crontab -l 2>/dev/null; echo '${var.docker_prune_cron_schedule} docker system prune -f -a --volumes') | crontab -

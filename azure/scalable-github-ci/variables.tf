@@ -47,6 +47,12 @@ variable "runner_labels" {
   default     = []
 }
 
+variable "docker_install_script_url" {
+  type        = string
+  description = "The URL to the Docker installation script"
+  default     = "https://get.docker.com/"
+}
+
 ######################
 # Autoscaler details #
 ######################
