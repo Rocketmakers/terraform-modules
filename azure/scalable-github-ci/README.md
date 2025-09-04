@@ -26,6 +26,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `autoscaler_log_workspace_retention_in_days` | The retention period in days for the Log Analytics workspace used by the autoscaler | number | 30 |
 | `autoscaler_log_workspace_sku` | The SKU of the Log Analytics workspace to use for the autoscaler | string | PerGB2018 |
 | `autoscaler_memory` | The amount of memory to allocate to the autoscaler container in GB | string | 0.5Gi |
+| `autoscaler_ms_delay_before_handling_webhook` | The delay in milliseconds before handling a relevant github action webhook event | number | 2000 |
 | `autoscaler_revision_mode` | The revision mode for the autoscaler | string | Single |
 | `autoscaler_structured_logs` | Whether to enable structured logging in the autoscaler | bool | true |
 | `autoscaler_version` | The version of the autoscaler to use | string | 1.0.1 |

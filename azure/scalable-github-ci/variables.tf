@@ -115,6 +115,12 @@ variable "autoscaler_structured_logs" {
   default     = true
 }
 
+variable "autoscaler_ms_delay_before_handling_webhook" {
+  type        = number
+  description = "The delay in milliseconds before handling a relevant github action webhook event"
+  default     = 2000
+}
+
 variable "autoscaler_webhook_enabled" {
   type        = bool
   description = "Whether to enable the GitHub webhook for the autoscaler"

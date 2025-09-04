@@ -197,6 +197,7 @@ locals {
     { name = "GITHUB_REPO", value = var.github_organisation },
     { name = "LOG_LEVEL", value = var.autoscaler_log_level },
     { name = "STRUCTURED_LOGS", value = var.autoscaler_structured_logs },
+    { name = "MS_DELAY_BEFORE_HANDLING_WEBHOOK", value = var.autoscaler_ms_delay_before_handling_webhook },
   ]
 }
 
