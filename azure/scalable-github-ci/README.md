@@ -21,11 +21,16 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | name    | description          | type   | default value   |
 | ------- | -------------------- | ------ | --------------- |
 | `autoscaler_cpu` | The amount of CPU to allocate to the autoscaler container | number | 0.25 |
+| `autoscaler_log_level` | The log level to use | string | Information |
 | `autoscaler_log_workspace_retention_in_days` | The retention period in days for the Log Analytics workspace used by the autoscaler | number | 30 |
 | `autoscaler_log_workspace_sku` | The SKU of the Log Analytics workspace to use for the autoscaler | string | PerGB2018 |
 | `autoscaler_memory` | The amount of memory to allocate to the autoscaler container in GB | string | 0.5Gi |
 | `autoscaler_revision_mode` | The revision mode for the autoscaler | string | Single |
+| `autoscaler_structured_logs` | Whether to enable structured logging in the autoscaler | bool | true |
 | `autoscaler_version` | The version of the autoscaler to use | string | 1.0.1 |
+| `autoscaler_webhook_enabled` | Whether to enable the GitHub webhook for the autoscaler | bool | true |
+| `autoscaler_webhook_events` | The list of GitHub events that should trigger the webhook | list(string) | ["workflow_job"] |
+| `autoscaler_webhook_path` | The path to use for the GitHub webhook endpoint | string | /webhook |
 | `autoscaler_workload_profile_type` | The workload profile type for the autoscaler | string | Consumption |
 | `disk_size` | Size of disk in GB | number | 50 |
 | `docker_install_script_url` | The URL to the Docker installation script | string | https://get.docker.com/ |
@@ -62,6 +67,7 @@ These are required by the module.
 | name | version |
 | ---- | ------- |
 | `azurerm` | >= 3.108.0 |
+| `github` | >= 6.6.0 |
 | `terraform` | >= 1.1.6 |
 | `tls` | >= 4.0.5 |
 
@@ -72,6 +78,7 @@ These are the providers used by the module.
 | name | version |
 | ---- | ------- |
 | `azurerm` | >= 3.108.0 |
+| `github` | >= 6.6.0 |
 | `random` |  |
 | `terraform` |  |
 | `tls` | >= 4.0.5 |

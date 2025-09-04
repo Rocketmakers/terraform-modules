@@ -99,6 +99,45 @@ variable "autoscaler_memory" {
   default     = "0.5Gi"
 }
 
+variable "autoscaler_log_level" {
+  type        = string
+  description = "The log level to use"
+  default     = "Information"
+  validation {
+    condition     = contains(["Trace", "Debug", "Information", "Warning", "Error", "Critical"], var.autoscaler_log_level)
+    error_message = "The log_level value must be one of: Trace, Debug, Information, Warning, Error, Critical."
+  }
+}
+
+variable "autoscaler_structured_logs" {
+  type        = bool
+  description = "Whether to enable structured logging in the autoscaler"
+  default     = true
+}
+
+variable "autoscaler_webhook_enabled" {
+  type        = bool
+  description = "Whether to enable the GitHub webhook for the autoscaler"
+  default     = true
+}
+
+variable "autoscaler_webhook_repo_name" {
+  type        = string
+  description = "The name of the repository to register the webhook against"
+}
+
+variable "autoscaler_webhook_path" {
+  type        = string
+  description = "The path to use for the GitHub webhook endpoint"
+  default     = "/webhook"
+}
+
+variable "autoscaler_webhook_events" {
+  type        = list(string)
+  description = "The list of GitHub events that should trigger the webhook"
+  default     = ["workflow_job"]
+}
+
 ####################
 # Instance details #
 ####################

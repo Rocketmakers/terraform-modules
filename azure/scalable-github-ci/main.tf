@@ -195,6 +195,8 @@ locals {
     { name = "MAX_RUNNERS", value = var.max_instance_count },
     { name = "SCALE_DOWN_RUNNERS", value = "true" },
     { name = "GITHUB_REPO", value = var.github_organisation },
+    { name = "LOG_LEVEL", value = var.autoscaler_log_level },
+    { name = "STRUCTURED_LOGS", value = var.autoscaler_structured_logs },
   ]
 }
 
@@ -272,4 +274,23 @@ resource "azurerm_role_assignment" "acr" {
   scope                = data.azurerm_container_registry.core.id
   role_definition_name = "AcrPush"
   principal_id         = azurerm_linux_virtual_machine_scale_set.ci_box.identity[0].principal_id
+}
+
+##############################
+# Github webhook registration
+##############################
+
+resource "github_repository_webhook" "this" {
+  repository = var.autoscaler_webhook_repo_name
+
+  configuration {
+    url          = "https://${azurerm_container_app.autoscaler.ingress[0].fqdn}${var.autoscaler_webhook_path}"
+    secret       = random_string.github_secret.result
+    content_type = "json"
+    insecure_ssl = false
+  }
+
+  active = var.autoscaler_webhook_enabled
+
+  events = var.autoscaler_webhook_events
 }
