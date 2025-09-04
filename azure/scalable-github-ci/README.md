@@ -6,6 +6,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 
 | name    | description          | type   |
 | ------- | -------------------- | ------ |
+| `autoscaler_webhook_repo_name` | The name of the repository to register the webhook against | string |
 | `container_registry_name` | Container registry name to enable access to | string |
 | `container_registry_resource_group_name` | The name of the resource group the container registry can be found in | string |
 | `github_api_token` | The Github API token to support retrieving a runner registration token | string |
@@ -113,12 +114,3 @@ module ci {
   ]
 }
 ```
-
-## Setting up Github Webhook
-
-Follow the [main guide](https://docs.github.com/en/webhooks/using-webhooks/creating-webhooks#creating-a-repository-webhook) for setting up a GitHub webhook. You will need to focus on the following information
-
-Payload - This should be equal to `autoscaler_public_url` with `https://` at the start and `/webhook` at the end
-Content Type - This should equal `application/json`
-Secret - This should equal the value of `github_webhook_secret`
-Events - This should just focus on `Workflow jobs`.
