@@ -6,6 +6,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 
 | name    | description          | type   |
 | ------- | -------------------- | ------ |
+| `autoscaler_webhook_repo_name` | The name of the repository to register the webhook against | string |
 | `container_registry_name` | Container registry name to enable access to | string |
 | `container_registry_resource_group_name` | The name of the resource group the container registry can be found in | string |
 | `github_api_token` | The Github API token to support retrieving a runner registration token | string |
@@ -21,11 +22,17 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | name    | description          | type   | default value   |
 | ------- | -------------------- | ------ | --------------- |
 | `autoscaler_cpu` | The amount of CPU to allocate to the autoscaler container | number | 0.25 |
+| `autoscaler_log_level` | The log level to use | string | Information |
 | `autoscaler_log_workspace_retention_in_days` | The retention period in days for the Log Analytics workspace used by the autoscaler | number | 30 |
 | `autoscaler_log_workspace_sku` | The SKU of the Log Analytics workspace to use for the autoscaler | string | PerGB2018 |
 | `autoscaler_memory` | The amount of memory to allocate to the autoscaler container in GB | string | 0.5Gi |
+| `autoscaler_ms_delay_before_handling_webhook` | The delay in milliseconds before handling a relevant github action webhook event | number | 2000 |
 | `autoscaler_revision_mode` | The revision mode for the autoscaler | string | Single |
-| `autoscaler_version` | The version of the autoscaler to use | string | 1.0.1 |
+| `autoscaler_structured_logs` | Whether to enable structured logging in the autoscaler | bool | true |
+| `autoscaler_version` | The version of the autoscaler to use | string | 1.0.3 |
+| `autoscaler_webhook_enabled` | Whether to enable the GitHub webhook for the autoscaler | bool | true |
+| `autoscaler_webhook_events` | The list of GitHub events that should trigger the webhook | list(string) | ["workflow_job"] |
+| `autoscaler_webhook_path` | The path to use for the GitHub webhook endpoint | string | /webhook |
 | `autoscaler_workload_profile_type` | The workload profile type for the autoscaler | string | Consumption |
 | `disk_size` | Size of disk in GB | number | 50 |
 | `docker_install_script_url` | The URL to the Docker installation script | string | https://get.docker.com/ |
@@ -62,6 +69,7 @@ These are required by the module.
 | name | version |
 | ---- | ------- |
 | `azurerm` | >= 3.108.0 |
+| `github` | >= 6.6.0 |
 | `terraform` | >= 1.1.6 |
 | `tls` | >= 4.0.5 |
 
@@ -72,6 +80,7 @@ These are the providers used by the module.
 | name | version |
 | ---- | ------- |
 | `azurerm` | >= 3.108.0 |
+| `github` | >= 6.6.0 |
 | `random` |  |
 | `terraform` |  |
 | `tls` | >= 4.0.5 |
@@ -106,12 +115,3 @@ module ci {
   ]
 }
 ```
-
-## Setting up Github Webhook
-
-Follow the [main guide](https://docs.github.com/en/webhooks/using-webhooks/creating-webhooks#creating-a-repository-webhook) for setting up a GitHub webhook. You will need to focus on the following information
-
-Payload - This should be equal to `autoscaler_public_url` with `https://` at the start and `/webhook` at the end
-Content Type - This should equal `application/json`
-Secret - This should equal the value of `github_webhook_secret`
-Events - This should just focus on `Workflow jobs`.

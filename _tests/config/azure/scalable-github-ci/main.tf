@@ -19,7 +19,8 @@ module "scalable_gitlab_ci" {
 
   container_registry_name                = azurerm_container_registry.acr.name
   container_registry_resource_group_name = azurerm_resource_group.rg.name
-  github_organisation                    = "TODO: Set this once we are in GitHub"
+  github_organisation                    = "rocketmakers"
+  autoscaler_webhook_repo_name           = "terraform-modules"
   subnet_service_endpoints               = ["Microsoft.KeyVault"]
   resource_group_name                    = azurerm_resource_group.rg.name
   vm_size                                = "Standard_B2ms"
