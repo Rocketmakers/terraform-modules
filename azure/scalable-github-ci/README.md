@@ -29,7 +29,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `autoscaler_ms_delay_before_handling_webhook` | The delay in milliseconds before handling a relevant github action webhook event | number | 2000 |
 | `autoscaler_revision_mode` | The revision mode for the autoscaler | string | Single |
 | `autoscaler_structured_logs` | Whether to enable structured logging in the autoscaler | bool | true |
-| `autoscaler_version` | The version of the autoscaler to use | string | 1.0.1 |
+| `autoscaler_version` | The version of the autoscaler to use | string | 1.0.3 |
 | `autoscaler_webhook_enabled` | Whether to enable the GitHub webhook for the autoscaler | bool | true |
 | `autoscaler_webhook_events` | The list of GitHub events that should trigger the webhook | list(string) | ["workflow_job"] |
 | `autoscaler_webhook_path` | The path to use for the GitHub webhook endpoint | string | /webhook |
