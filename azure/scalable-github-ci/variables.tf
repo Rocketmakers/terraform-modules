@@ -47,6 +47,12 @@ variable "runner_labels" {
   default     = []
 }
 
+variable "docker_install_script_url" {
+  type        = string
+  description = "The URL to the Docker installation script"
+  default     = "https://get.docker.com/"
+}
+
 ######################
 # Autoscaler details #
 ######################
@@ -54,7 +60,7 @@ variable "runner_labels" {
 variable "autoscaler_version" {
   description = "The version of the autoscaler to use"
   type        = string
-  default     = "1.0.1"
+  default     = "1.0.3"
 }
 
 variable "autoscaler_log_workspace_sku" {
@@ -91,6 +97,51 @@ variable "autoscaler_memory" {
   type        = string
   description = "The amount of memory to allocate to the autoscaler container in GB"
   default     = "0.5Gi"
+}
+
+variable "autoscaler_log_level" {
+  type        = string
+  description = "The log level to use"
+  default     = "Information"
+  validation {
+    condition     = contains(["Trace", "Debug", "Information", "Warning", "Error", "Critical"], var.autoscaler_log_level)
+    error_message = "The log_level value must be one of: Trace, Debug, Information, Warning, Error, Critical."
+  }
+}
+
+variable "autoscaler_structured_logs" {
+  type        = bool
+  description = "Whether to enable structured logging in the autoscaler"
+  default     = true
+}
+
+variable "autoscaler_ms_delay_before_handling_webhook" {
+  type        = number
+  description = "The delay in milliseconds before handling a relevant github action webhook event"
+  default     = 2000
+}
+
+variable "autoscaler_webhook_enabled" {
+  type        = bool
+  description = "Whether to enable the GitHub webhook for the autoscaler"
+  default     = true
+}
+
+variable "autoscaler_webhook_repo_name" {
+  type        = string
+  description = "The name of the repository to register the webhook against"
+}
+
+variable "autoscaler_webhook_path" {
+  type        = string
+  description = "The path to use for the GitHub webhook endpoint"
+  default     = "/webhook"
+}
+
+variable "autoscaler_webhook_events" {
+  type        = list(string)
+  description = "The list of GitHub events that should trigger the webhook"
+  default     = ["workflow_job"]
 }
 
 ####################

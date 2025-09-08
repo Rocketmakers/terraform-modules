@@ -22,9 +22,10 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `autoscaling_cooldown_period_in_seconds` | The number of seconds that the autoscaler should wait before it starts collecting information from a new instance. This prevents the autoscaler from collecting information when the instance is initializing, during which the collected usage would not be reliable. | number | 60 |
 | `cpu_percentage_target_utilization` | The target CPU utilization that the autoscaler should maintain. Must be a float value in the range (0, 1]. If the CPU level is below the target utilization, the autoscaler scales down the number of instances until it reaches the minimum number of instances you specified or until the average CPU of your instances reaches the target utilization. If the average CPU is above the target utilization, the autoscaler scales up until it reaches the maximum number of instances you specified or until the average utilization reaches the target utilization. | number | 0.1 |
 | `disk_size_gb` | The size of the disk in GB | number | 50 |
+| `docker_install_script_url` | The URL to the Docker installation script | string | https://get.docker.com/ |
 | `docker_prune_cron_schedule` | The schedule to use for pruning docker images to prevent disk space filling up. Default value is daily at 0400 UTC. | string | 0 4 * * * |
 | `github_runner_version` | The version of github-runner to install | string | 2.317.0 |
-| `image_name` | Google image name to base CI on | string | ubuntu-2004-focal-v20241115 |
+| `image_name` | Google image name to base CI on | string | ubuntu-2504-plucky-amd64-v20250815 |
 | `image_project` | Google image project to base CI on | string | ubuntu-os-cloud |
 | `max_instance_count` | The maximum number of VM instances to create | number | 1 |
 | `min_instance_count` | The minimum number of VM instances to create | number | 1 |
@@ -67,7 +68,7 @@ These are the providers used by the module.
 
 ```
 module ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-github-ci?ref=v3.6.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//gcp/scalable-github-ci?ref=v3.7.0"
 
   ssh_cidr_ranges     = var.trusted_cidr_ranges
   gcr_bucket_names    = var.gcr_bucket_names

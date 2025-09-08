@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.7.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.6.0...v3.7.0) (2025-09-08)
+
+
+### Features
+
+* **azure-github-ci:** Add variable for configuring the autoscaler webhook delay ([ab8e2cb](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/ab8e2cba37969cfbb75fba502fb20b874f644a7d))
+* **azure-github-ci:** Create CI autoscaler webhook via terraform ([fcbb62f](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/fcbb62f738580b445a583ca169f2e282d9869d3f))
+* **azure-github-ci:** Use version 1.0.3 of the autoscaler app by default for structured logs ([aa035d9](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/aa035d9cd9e37528fc118714a9446c5acc6f330a))
+
+
+### Bug Fixes
+
+* **azure-github-ci:** Updated to expose docker install script url ([9ae2337](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/9ae23379a96c5c45b70de0b09534fd02ed51a8a7))
+* **gcp-github-ci:** Added apt-get update to fix docker failing to install ([dcff95c](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/dcff95c7a9902638cbfeedc7889d3e50be23df64))
+
+
+### Other Changes
+
+* Updated apt-get command ([e803d89](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/e803d890b29d9611f348269c8362e70176fc6f5a))
+* Updated base image for runner ([9bd4664](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/9bd46645e29d732fcd45369e3c68725740c05976))
+* Updated update command ([f566bb1](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/f566bb18784d1499d4d5221b75c454d5b5e86097))
+
+
+### Tests
+
+* **azure-github-ci:** Add new variables to test config ([f132bd1](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/f132bd1862b11d47a4e9772943a2fcd20ed258eb))
+
 ## [3.6.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.5.0...v3.6.0) (2025-07-30)
 
 
