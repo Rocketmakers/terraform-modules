@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.8.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.7.0...v3.8.0) (2025-09-10)
+
+
+### Features
+
+* **azure-github-ci:** Add disk_storage_account_type variable and default to StandardSSD_LRS ([cd66551](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/cd665514c179b61e034e5b96b7c4abf83d166b65))
+
 ## [3.7.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.6.0...v3.7.0) (2025-09-08)
 
 
