@@ -199,6 +199,17 @@ variable "disk_size" {
   default     = 50
 }
 
+variable "disk_storage_account_type" {
+  type        = string
+  description = "The storage account type to use for the OS disk (Standard_LRS, StandardSSD_LRS, StandardSSD_ZRS, Premium_LRS, Premium_ZRS)"
+  default     = "StandardSSD_LRS"
+
+  validation {
+    condition     = contains(["Standard_LRS", "StandardSSD_LRS", "StandardSSD_ZRS", "Premium_LRS", "Premium_ZRS"], var.disk_storage_account_type)
+    error_message = "The disk_storage_account_type value must be one of: Standard_LRS, StandardSSD_LRS, StandardSSD_ZRS, Premium_LRS, Premium_ZRS."
+  }
+}
+
 variable "encryption_at_host_enabled" {
   type        = bool
   description = "Determines if encryption at host is enabled for the machine"

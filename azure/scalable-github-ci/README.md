@@ -35,6 +35,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `autoscaler_webhook_path` | The path to use for the GitHub webhook endpoint | string | /webhook |
 | `autoscaler_workload_profile_type` | The workload profile type for the autoscaler | string | Consumption |
 | `disk_size` | Size of disk in GB | number | 50 |
+| `disk_storage_account_type` | The storage account type to use for the OS disk (Standard_LRS, StandardSSD_LRS, StandardSSD_ZRS, Premium_LRS, Premium_ZRS) | string | StandardSSD_LRS |
 | `docker_install_script_url` | The URL to the Docker installation script | string | https://get.docker.com/ |
 | `encryption_at_host_enabled` | Determines if encryption at host is enabled for the machine | bool | true |
 | `github_runner_version` | The version of github-runner to install | string | 2.321.0 |
@@ -90,7 +91,7 @@ These are the providers used by the module.
 
 ```
 module ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/scalable-github-ci?ref=v3.7.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/scalable-github-ci?ref=v3.8.0"
 
   resource_group_name = var.resource_group_name
   primary_location    = var.primary_location
