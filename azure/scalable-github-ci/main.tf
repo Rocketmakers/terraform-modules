@@ -114,7 +114,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "ci_box" {
   os_disk {
     caching              = "ReadWrite"
     disk_size_gb         = var.disk_size
-    storage_account_type = "Standard_LRS"
+    storage_account_type = var.disk_storage_account_type
   }
 
   disable_password_authentication = true
