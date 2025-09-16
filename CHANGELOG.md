@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.8.1](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.8.0...v3.8.1) (2025-09-16)
+
+
+### Bug Fixes
+
+* **azure-github-ci:** Don't overprovision VM scale set instances - it causes jobs to be cancelled ([ca8088c](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/ca8088c3526d517e1e275480d28980ad6d33721f))
+
 ## [3.8.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.7.0...v3.8.0) (2025-09-10)
 
 
