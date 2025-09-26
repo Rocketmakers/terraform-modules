@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.8.2](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.8.1...v3.8.2) (2025-09-26)
+
+
+### Bug Fixes
+
+* **azure-github-ci:** Use latest autoscaler version 1.0.4 for stabilitly improvements ([7959f46](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/7959f46d3f4bb2281755d69cf7d3e77c6ff92c12))
+
 ### [3.8.1](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.8.0...v3.8.1) (2025-09-16)
 
 
