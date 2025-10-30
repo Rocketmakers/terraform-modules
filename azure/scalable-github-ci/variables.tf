@@ -60,7 +60,7 @@ variable "docker_install_script_url" {
 variable "autoscaler_version" {
   description = "The version of the autoscaler to use"
   type        = string
-  default     = "1.0.4"
+  default     = "1.0.5"
 }
 
 variable "autoscaler_log_workspace_sku" {
