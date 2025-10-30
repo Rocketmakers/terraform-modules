@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.8.3](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.8.2...v3.8.3) (2025-10-30)
+
+
+### Other Changes
+
+* **azure-github-ci:** Increase default autoscaler version for .NET security patch CVE-2025-55315 ([cf57822](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/cf57822b58eb72677435c5cdaba352fd3518eb7b))
+
 ### [3.8.2](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.8.1...v3.8.2) (2025-09-26)
 
 
