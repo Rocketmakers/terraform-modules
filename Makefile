@@ -59,7 +59,7 @@ node-setup:
 .PHONY: setup-terraform
 setup-terraform:
 	$(info $(M) Setting up terraform)
-	asdf plugin add terraform https://github.com/Banno/asdf-hashicorp.git || true
+	asdf plugin add terraform https://github.com/asdf-community/asdf-hashicorp.git  || true
 	asdf plugin add terraform-docs https://github.com/looztra/asdf-terraform-docs || true
 	asdf install terraform
 	asdf install terraform-docs
