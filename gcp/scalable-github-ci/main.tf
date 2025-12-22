@@ -90,7 +90,7 @@ resource "tls_private_key" "ssh" {
 
 module "account" {
   source  = "terraform-google-modules/service-accounts/google"
-  version = "4.4.2"
+  version = "4.6.0"
 
   project_id    = var.project_id
   project_roles = [for role in var.service_account_roles : "${var.project_id}=>${role}"]
