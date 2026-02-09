@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.9.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.8.3...v3.9.0) (2026-02-09)
+
+
+### Features
+
+* **azure-github-ci:** Updated github runner version to 2.331.0 ([a07ed9b](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/a07ed9ba02668c8720a8adf8a28686ce83bc315c))
+* **gcp-github-ci:** Updated github runner version to 2.331.0 ([97c9ad4](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/97c9ad458daf67e56329ab80682687cc32ccf987))
+
+
+### Bug Fixes
+
+* **gcp-github-ci:** Updated module versions to support v7 google providers ([6a268ee](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/6a268eed700449ae3415e95263d9d23f4786d411))
+* **gcp-gitlab-ci:** Updated module versions to support v7 google providers ([e8ed024](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/e8ed02489f9000b594d38b0d4bd1628efec827c7))
+
+
+### Other Changes
+
+* Updated lock file ([6eeaee4](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/6eeaee43274213a20f1e4463f33f25e651a368a1))
+* Updated tool versions to latest ([502dda0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/502dda06b291c6c626536384d146aaeff60b5f7e))
+
 ### [3.8.3](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.8.2...v3.8.3) (2025-10-30)
 
 
