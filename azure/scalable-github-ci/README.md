@@ -38,7 +38,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `disk_storage_account_type` | The storage account type to use for the OS disk (Standard_LRS, StandardSSD_LRS, StandardSSD_ZRS, Premium_LRS, Premium_ZRS) | string | StandardSSD_LRS |
 | `docker_install_script_url` | The URL to the Docker installation script | string | https://get.docker.com/ |
 | `encryption_at_host_enabled` | Determines if encryption at host is enabled for the machine | bool | true |
-| `github_runner_version` | The version of github-runner to install | string | 2.321.0 |
+| `github_runner_version` | The version of github-runner to install | string | 2.331.0 |
 | `image_config` | The details of the OS image used on the instance | object({<br />    publisher = string<br />    offer     = string<br />    sku       = string<br />    version   = string<br />  }) | {"offer":"0001-com-ubuntu-server-jammy","publisher":"Canonical","sku":"22_04-lts","version":"latest"} |
 | `max_instance_count` | The maximum number of VM instances to create | number | 1 |
 | `name` | Main name of resources created | string | ci |
@@ -91,7 +91,7 @@ These are the providers used by the module.
 
 ```
 module ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/scalable-github-ci?ref=v3.8.4"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/scalable-github-ci?ref=v3.9.0"
 
   resource_group_name = var.resource_group_name
   primary_location    = var.primary_location
