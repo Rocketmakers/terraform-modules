@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file. See [standa
 * **azure-github-ci:** Updated github runner version to 2.331.0 ([a07ed9b](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/a07ed9ba02668c8720a8adf8a28686ce83bc315c))
 * **gcp-github-ci:** Updated github runner version to 2.331.0 ([97c9ad4](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/97c9ad458daf67e56329ab80682687cc32ccf987))
 
+### [3.8.4](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.8.3...v3.8.4) (2025-12-22)
+
 
 ### Bug Fixes
 
@@ -19,7 +21,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Other Changes
 
-* Updated lock file ([6eeaee4](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/6eeaee43274213a20f1e4463f33f25e651a368a1))
+* Updated package lock ([a12b65e](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/a12b65eeb54d8c46962f2db37e377fa9572af9b0))
 * Updated tool versions to latest ([502dda0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/502dda06b291c6c626536384d146aaeff60b5f7e))
 
 ### [3.8.3](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.8.2...v3.8.3) (2025-10-30)
