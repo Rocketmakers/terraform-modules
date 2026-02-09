@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.8.4](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.8.3...v3.8.4) (2025-12-22)
+
+
+### Bug Fixes
+
+* **gcp-github-ci:** Updated module versions to support v7 google providers ([6a268ee](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/6a268eed700449ae3415e95263d9d23f4786d411))
+* **gcp-gitlab-ci:** Updated module versions to support v7 google providers ([e8ed024](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/e8ed02489f9000b594d38b0d4bd1628efec827c7))
+
+
+### Other Changes
+
+* Updated package lock ([a12b65e](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/a12b65eeb54d8c46962f2db37e377fa9572af9b0))
+* Updated tool versions to latest ([502dda0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/commit/502dda06b291c6c626536384d146aaeff60b5f7e))
+
 ### [3.8.3](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.8.2...v3.8.3) (2025-10-30)
 
 
