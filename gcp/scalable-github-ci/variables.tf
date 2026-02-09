@@ -120,7 +120,7 @@ variable "disk_size_gb" {
 variable "github_runner_version" {
   type        = string
   description = "The version of github-runner to install"
-  default     = "2.317.0"
+  default     = "2.331.0"
 }
 
 variable "github_api_token" {
