@@ -23,7 +23,7 @@ module "scalable_gitlab_ci" {
   autoscaler_webhook_repo_name           = "terraform-modules"
   subnet_service_endpoints               = ["Microsoft.KeyVault"]
   resource_group_name                    = azurerm_resource_group.rg.name
-  vm_size                                = "Standard_B2ms"
+  vm_sizes                               = ["Standard_B2ms"]
   name                                   = local.name
 
   # The following are provided via test code

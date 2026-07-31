@@ -154,12 +154,6 @@ variable "max_instance_count" {
   default     = 1
 }
 
-variable "scale_in_rule" {
-  type        = string
-  description = "The rule to use for scaling in"
-  default     = "OldestVM"
-}
-
 variable "resource_group_name" {
   type        = string
   description = "The name of the resource group in which to place resources"
@@ -188,9 +182,9 @@ variable "image_config" {
   }
 }
 
-variable "vm_size" {
-  type        = string
-  description = "Size of VM to deploy"
+variable "vm_sizes" {
+  type        = list(string)
+  description = "The set of eligible VM sizes for CI box instances; the cheapest available size is used"
 }
 
 variable "disk_size" {

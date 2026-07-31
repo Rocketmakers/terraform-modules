@@ -17,7 +17,7 @@ output "public_key" {
 output "service_principal_ids" {
   description = "The ids of the underlying service principal accounts"
   value = [
-    azurerm_linux_virtual_machine_scale_set.ci_box.identity[0].principal_id
+    azurerm_user_assigned_identity.ci_box.principal_id
   ]
 }
 
@@ -38,7 +38,7 @@ output "subnet_id" {
 
 output "virtual_machine_scale_set_id" {
   description = "The id of the virtual machine scale set for the CI runner"
-  value       = azurerm_linux_virtual_machine_scale_set.ci_box.id
+  value       = azurerm_orchestrated_virtual_machine_scale_set.ci_box.id
 }
 
 output "github_webhook_secret" {

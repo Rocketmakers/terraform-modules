@@ -15,7 +15,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `resource_group_name` | The name of the resource group in which to place resources | string |
 | `ssh_cidr_ranges` | CIDR ranges allowed to access CI instances via ssh | list(string) |
 | `subnet_service_endpoints` | The list of Service endpoints to associate with the subnet. | list(string) |
-| `vm_size` | Size of VM to deploy | string |
+| `vm_sizes` | The set of eligible VM sizes for CI box instances; the cheapest available size is used | list(string) |
 
 ## Optional Inputs
 
@@ -45,7 +45,6 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `network_address_space` | The address space that is used the virtual network. You can supply more than one address space. | list(string) | ["10.0.0.0/16"] |
 | `network_subnet_address_prefixes` | The address prefixes of the CI boxes subnet. | list(string) | ["10.0.0.0/24"] |
 | `runner_labels` | The labels to assign to the runner | list(string) | [] |
-| `scale_in_rule` | The rule to use for scaling in | string | OldestVM |
 | `username` | Username for CI box | string | ci |
 
 ## Outputs
@@ -69,7 +68,7 @@ These are required by the module.
 
 | name | version |
 | ---- | ------- |
-| `azurerm` | >= 3.108.0 |
+| `azurerm` | >= 5.0.0 |
 | `github` | >= 6.6.0 |
 | `terraform` | >= 1.1.6 |
 | `tls` | >= 4.0.5 |
@@ -80,7 +79,7 @@ These are the providers used by the module.
 
 | name | version |
 | ---- | ------- |
-| `azurerm` | >= 3.108.0 |
+| `azurerm` | >= 5.0.0 |
 | `github` | >= 6.6.0 |
 | `random` |  |
 | `terraform` |  |
@@ -99,7 +98,7 @@ module ci {
   name = var.name
 
   ssh_cidr_ranges = var.ssh_cidr_range
-  vm_size         = "Standard_B2s"
+  vm_sizes        = ["Standard_B2s"]
 
   github_api_token = var.github_runner_token
   github_organisation = "Rocketmakers/terraform-modules" # We want to register just for our repository
