@@ -197,6 +197,7 @@ resource "azurerm_container_app_environment" "ci" {
   resource_group_name        = data.azurerm_resource_group.this.name
   location                   = data.azurerm_resource_group.this.location
   log_analytics_workspace_id = azurerm_log_analytics_workspace.ci.id
+  logs_destination = "log-analytics"
 }
 
 resource "random_string" "github_secret" {
