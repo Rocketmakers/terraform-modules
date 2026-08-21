@@ -168,6 +168,10 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "ci_box" {
       name      = "ci"
       primary   = true
       subnet_id = azurerm_subnet.ci.id
+
+      public_ip_address {
+        name = "${data.azurerm_resource_group.this.name}-${var.name}-pip"
+      }
     }
   }
 
