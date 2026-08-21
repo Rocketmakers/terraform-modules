@@ -300,6 +300,7 @@ data "azurerm_container_registry" "core" {
 }
 
 resource "azurerm_role_assignment" "acr" {
+  count = var.role_assignment_enabled ? 1 : 0
   scope                = data.azurerm_container_registry.core.id
   role_definition_name = "AcrPush"
   principal_id         = azurerm_user_assigned_identity.ci_box.principal_id
