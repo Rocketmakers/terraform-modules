@@ -277,12 +277,14 @@ resource "azurerm_container_app" "autoscaler" {
 }
 
 resource "azurerm_role_assignment" "autoscaler_resource_group" {
+  count = var.role_assignment_enabled ? 1 : 0
   scope                = data.azurerm_resource_group.this.id
   role_definition_name = "Reader"
   principal_id         = azurerm_container_app.autoscaler.identity[0].principal_id
 }
 
 resource "azurerm_role_assignment" "autoscaler_resource_groupvmss" {
+  count = var.role_assignment_enabled ? 1 : 0
   scope                = azurerm_orchestrated_virtual_machine_scale_set.ci_box.id
   role_definition_name = "Contributor"
   principal_id         = azurerm_container_app.autoscaler.identity[0].principal_id

@@ -243,3 +243,8 @@ variable "subnet_service_endpoints" {
   description = "The list of Service endpoints to associate with the subnet."
 }
 
+variable "role_assignment_enabled" {
+  type        = bool
+  description = "Whether to create role assignments for the autoscaler"
+  default     = true
+}
