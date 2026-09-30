@@ -69,7 +69,7 @@ These are required by the module.
 
 | name | version |
 | ---- | ------- |
-| `azurerm` | >= 3.108.0 |
+| `azurerm` | >= 5.0.0 |
 | `github` | >= 6.6.0 |
 | `terraform` | >= 1.1.6 |
 | `tls` | >= 4.0.5 |
@@ -80,7 +80,7 @@ These are the providers used by the module.
 
 | name | version |
 | ---- | ------- |
-| `azurerm` | >= 3.108.0 |
+| `azurerm` | >= 5.0.0 |
 | `github` | >= 6.6.0 |
 | `random` |  |
 | `terraform` |  |

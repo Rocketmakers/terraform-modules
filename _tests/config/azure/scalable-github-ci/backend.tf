@@ -12,6 +12,9 @@ terraform {
     tls = {
       source = "hashicorp/tls"
     }
+    github = {
+      source = "integrations/github"
+    }
   }
 }
 
@@ -21,4 +24,8 @@ provider "azurerm" {
 }
 
 provider "azuread" {
+}
+
+provider "github" {
+  owner = "rocketmakers"
 }

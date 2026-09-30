@@ -89,7 +89,13 @@ resource "azurerm_subnet" "ci" {
   resource_group_name  = data.azurerm_resource_group.ci.name
   virtual_network_name = azurerm_virtual_network.ci.name
   address_prefixes     = var.network_subnet_address_prefixes
-  service_endpoints    = var.subnet_service_endpoints
+
+  dynamic "service_endpoint" {
+    for_each = var.subnet_service_endpoints
+    content {
+      service = service_endpoint.value
+    }
+  }
 }
 
 resource "azurerm_network_security_group" "ci" {

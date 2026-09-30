@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -57,6 +58,11 @@ func TestScalableGithubCI(t *testing.T) {
 	// Create resources
 	// Run "terraform init" and "terraform apply". Fail the test if there are any errors.
 	terraform.InitAndApply(t, terraformOptions)
+
+	// Exit code 2 means there are changes in the plan
+	// Exit code 1 means there was an error in the plan
+	exit_code := terraform.PlanExitCode(t, terraformOptions)
+	assert.Equal(t, 0, exit_code, "Expecting plan with no changes")
 
 	// TODO: Trigger jobs and verify they pass
 }

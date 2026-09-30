@@ -52,7 +52,13 @@ resource "azurerm_subnet" "ci" {
   resource_group_name  = data.azurerm_resource_group.this.name
   virtual_network_name = azurerm_virtual_network.ci.name
   address_prefixes     = var.network_subnet_address_prefixes
-  service_endpoints    = var.subnet_service_endpoints
+
+  dynamic "service_endpoint" {
+    for_each = var.subnet_service_endpoints
+    content {
+      service = service_endpoint.value
+    }
+  }
 }
 
 resource "azurerm_network_security_group" "ci" {
@@ -173,6 +179,7 @@ resource "azurerm_container_app_environment" "ci" {
   name                       = "${var.name}-ci"
   resource_group_name        = data.azurerm_resource_group.this.name
   location                   = data.azurerm_resource_group.this.location
+  logs_destination           = "log-analytics"
   log_analytics_workspace_id = azurerm_log_analytics_workspace.ci.id
 }
 
@@ -183,7 +190,6 @@ resource "random_string" "github_secret" {
 
 locals {
   secrets = [
-    { name = "registry-password", value = sensitive(data.azurerm_container_registry.core.admin_password) },
     { name = "github-secret", value = random_string.github_secret.result },
     { name = "github-api-token", value = var.github_api_token },
     { name = "github-subscription-id", value = data.azurerm_subscription.current.subscription_id },
