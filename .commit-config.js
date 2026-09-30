@@ -112,7 +112,6 @@ const standardVersion = {
   types: types.map(buildStandardVersionConfig),
   skip: {
     tag: true,
-    bump: true,
     commit: true,
   },
 };

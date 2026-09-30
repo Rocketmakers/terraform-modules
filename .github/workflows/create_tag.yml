@@ -1,0 +1,48 @@
+name: Create Tag
+
+on:
+  pull_request_target:
+    types:
+      - closed
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  create_tag:
+    name: Create tag
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        # Required so our created tag activates our tag workflow - https://medium.com/prompt/trigger-another-github-workflow-without-using-a-personal-access-token-f594c21373ef
+        with:
+          ssh-key: ${{ secrets.REPO_COMMIT_KEY }}
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 0
+      - name: Read and check the release version
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::package.json version '$version' is not a release version (x.y.z)"
+            exit 1
+          fi
+          if [[ "$HEAD_REF" != "release/$version" ]]; then
+            echo "::error::Branch '$HEAD_REF' does not match package.json version (expected 'release/$version')"
+            exit 1
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+        shell: bash
+      - name: Create tag
+        run: |
+          git config user.name github-actions
+          git config user.email developers@rocketmakers.com
+          git tag -a "v$VERSION" -m "chore: Tagged version v$VERSION"
+          git push origin "v$VERSION"
+        shell: bash

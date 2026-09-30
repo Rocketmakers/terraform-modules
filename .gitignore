@@ -212,3 +212,6 @@ aws/**/providers.tf
 azure/**/providers.tf
 gcp/**/providers.tf
 .terraform.lock.hcl
+
+# Turbo
+.turbo
