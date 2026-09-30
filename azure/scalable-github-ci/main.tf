@@ -53,6 +53,8 @@ resource "azurerm_subnet" "ci" {
   virtual_network_name = azurerm_virtual_network.ci.name
   address_prefixes     = var.network_subnet_address_prefixes
 
+  private_endpoint_network_policies = var.subnet_private_endpoint_network_policies
+
   dynamic "service_endpoint" {
     for_each = var.subnet_service_endpoints
     content {
@@ -96,6 +98,9 @@ resource "azurerm_storage_account" "this" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
+
+  allow_nested_items_to_be_public  = var.storage_allow_nested_items_to_be_public
+  cross_tenant_replication_enabled = var.storage_cross_tenant_replication_enabled
 }
 
 resource "azurerm_linux_virtual_machine_scale_set" "ci_box" {
@@ -214,6 +219,7 @@ resource "azurerm_container_app" "autoscaler" {
   container_app_environment_id = azurerm_container_app_environment.ci.id
   resource_group_name          = data.azurerm_resource_group.this.name
   revision_mode                = var.autoscaler_revision_mode
+  max_inactive_revisions       = var.autoscaler_max_inactive_revisions
 
   template {
     container {

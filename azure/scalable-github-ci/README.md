@@ -25,6 +25,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `autoscaler_log_level` | The log level to use | string | Information |
 | `autoscaler_log_workspace_retention_in_days` | The retention period in days for the Log Analytics workspace used by the autoscaler | number | 30 |
 | `autoscaler_log_workspace_sku` | The SKU of the Log Analytics workspace to use for the autoscaler | string | PerGB2018 |
+| `autoscaler_max_inactive_revisions` | The maximum number of inactive revisions allowed for the autoscaler. Defaults to the Azure default of 100. | number | 100 |
 | `autoscaler_memory` | The amount of memory to allocate to the autoscaler container in GB | string | 0.5Gi |
 | `autoscaler_ms_delay_before_handling_webhook` | The delay in milliseconds before handling a relevant github action webhook event | number | 2000 |
 | `autoscaler_revision_mode` | The revision mode for the autoscaler | string | Single |
@@ -46,6 +47,9 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `network_subnet_address_prefixes` | The address prefixes of the CI boxes subnet. | list(string) | ["10.0.0.0/24"] |
 | `runner_labels` | The labels to assign to the runner | list(string) | [] |
 | `scale_in_rule` | The rule to use for scaling in | string | OldestVM |
+| `storage_allow_nested_items_to_be_public` | Whether nested items in the storage account can be made public. Set to true to keep storage accounts created with azurerm 3.x unchanged. | bool | false |
+| `storage_cross_tenant_replication_enabled` | Whether cross tenant replication is enabled for the storage account. Set to true to keep storage accounts created with azurerm 3.x unchanged. | bool | false |
+| `subnet_private_endpoint_network_policies` | Network policies for private endpoints on the CI boxes subnet. Defaults to Enabled to match subnets created with azurerm 3.x. | string | Enabled |
 | `username` | Username for CI box | string | ci |
 
 ## Outputs
