@@ -91,6 +91,28 @@ These are the providers used by the module.
 | `tls` | >= 4.0.5 |
 
 
+## Known Issues
+
+### `terraform destroy` fails to delete the container app environment
+
+With azurerm 5.x, `terraform destroy` can fail to delete the container app environment (`<name>-ci`). The provider returns an error and keeps the resource in state even though Azure has deleted it (or is deleting it). See [hashicorp/terraform-provider-azurerm#33433](https://github.com/hashicorp/terraform-provider-azurerm/issues/33433).
+
+If this happens:
+
+1. Delete the container app environment manually, if it still exists, from the Azure portal or with the Azure CLI:
+
+   ```
+   az containerapp env delete --name <name>-ci --resource-group <resource_group_name> --yes
+   ```
+
+2. Remove the container app environment from Terraform state, if it is still there:
+
+   ```
+   terraform state rm 'module.<module_name>.azurerm_container_app_environment.ci'
+   ```
+
+3. Run `terraform destroy` again.
+
 ## Example Use Case
 
 ```
