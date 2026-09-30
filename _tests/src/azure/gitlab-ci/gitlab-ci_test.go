@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -50,4 +51,8 @@ func TestAzureGitlabCi(t *testing.T) {
 }
 
 func assertions(t *testing.T, terraformOptions *terraform.Options) {
+	// Exit code 2 means there are changes in the plan
+	// Exit code 1 means there was an error in the plan
+	exit_code := terraform.PlanExitCode(t, terraformOptions)
+	assert.Equal(t, 0, exit_code, "Expecting plan with no changes")
 }
