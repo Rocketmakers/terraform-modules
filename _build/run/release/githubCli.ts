@@ -5,7 +5,7 @@ const gh = 'gh';
 
 Prerequisites.register({
   command: gh,
-  description: 'Github CLI',
+  description: 'GitHub CLI',
   installInstructions: 'https://cli.github.com',
 });
 
