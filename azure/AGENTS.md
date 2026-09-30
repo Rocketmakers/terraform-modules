@@ -1,8 +1,7 @@
 # `azure/`: notes for agents
 
-Three modules. All use `azurerm >= 5.0.0` on this branch (`main` still has `>= 2.97.0` for
-`gitlab-ci` and `>= 3.108.0` for `scalable-github-ci`; the upgrade is the open `upgrade-azurerm`
-work) and look up an **existing** resource group with `data "azurerm_resource_group"`; the consumer
+Three modules. All use `azurerm >= 5.0.0` (up to v3.9.0 they required `>= 2.97.0` for
+`gitlab-ci`, `>= 4.9.0` for `scalable-gitlab-ci` and `>= 3.108.0` for `scalable-github-ci`) and look up an **existing** resource group with `data "azurerm_resource_group"`; the consumer
 creates it. None of them create a provider block.
 
 | Module | What it builds | Commit scope |
