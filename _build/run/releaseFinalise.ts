@@ -42,8 +42,8 @@ async function run() {
   const { version } = await Npm.loadPackageJson(RepositoryPaths.resolve('package.json'));
 
   const branchName = await Git.getBranchName(cwd);
-  if (!/^release\/\d+\.\d+\.\d+$/.test(branchName)) {
-    throw new Error('You need to be on a release branch (release/x.x.x)');
+  if (branchName !== `release/${version}`) {
+    throw new Error(`You need to be on the release branch for v${version} (release/${version})`);
   }
 
   logger.info('Committing the version, readmes and changelog');

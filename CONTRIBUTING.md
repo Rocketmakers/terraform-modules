@@ -134,6 +134,7 @@ pnpm turbo --filter @repo/typescript-scripts-core release-finalise
 
 This will
 
+- Check you are on `release/<version>` for the version in `package.json`
 - Commit the version bump, READMEs and changelog
 - Push the release branch
 - Create a pull request from the release branch to `main`
