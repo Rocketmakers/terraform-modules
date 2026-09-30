@@ -13,6 +13,8 @@ module "gitlab_ci" {
   runner_registration_token = data.gitlab_project.runner_token.runners_token
   ssh_cidr_ranges           = [var.cidr_range]
 
+  network_subnet_service_endpoints = ["Microsoft.KeyVault"]
+
   # The following are provided via test code
   resource_group_name = var.resource_group_name
   runner_tags         = [var.runner_tag]

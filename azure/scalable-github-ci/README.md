@@ -25,6 +25,7 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `autoscaler_log_level` | The log level to use | string | Information |
 | `autoscaler_log_workspace_retention_in_days` | The retention period in days for the Log Analytics workspace used by the autoscaler | number | 30 |
 | `autoscaler_log_workspace_sku` | The SKU of the Log Analytics workspace to use for the autoscaler | string | PerGB2018 |
+| `autoscaler_max_inactive_revisions` | The maximum number of inactive revisions allowed for the autoscaler. Defaults to the Azure default of 100. | number | 100 |
 | `autoscaler_memory` | The amount of memory to allocate to the autoscaler container in GB | string | 0.5Gi |
 | `autoscaler_ms_delay_before_handling_webhook` | The delay in milliseconds before handling a relevant github action webhook event | number | 2000 |
 | `autoscaler_revision_mode` | The revision mode for the autoscaler | string | Single |
@@ -46,6 +47,9 @@ This module creates a VM scale set of GitHub runners which scale up and down whe
 | `network_subnet_address_prefixes` | The address prefixes of the CI boxes subnet. | list(string) | ["10.0.0.0/24"] |
 | `runner_labels` | The labels to assign to the runner | list(string) | [] |
 | `scale_in_rule` | The rule to use for scaling in | string | OldestVM |
+| `storage_allow_nested_items_to_be_public` | Whether nested items in the storage account can be made public. Set to true to keep storage accounts created with azurerm 3.x unchanged. | bool | false |
+| `storage_cross_tenant_replication_enabled` | Whether cross tenant replication is enabled for the storage account. Set to true to keep storage accounts created with azurerm 3.x unchanged. | bool | false |
+| `subnet_private_endpoint_network_policies` | Network policies for private endpoints on the CI boxes subnet. Defaults to Enabled to match subnets created with azurerm 3.x. | string | Enabled |
 | `username` | Username for CI box | string | ci |
 
 ## Outputs
@@ -69,7 +73,7 @@ These are required by the module.
 
 | name | version |
 | ---- | ------- |
-| `azurerm` | >= 3.108.0 |
+| `azurerm` | >= 5.0.0 |
 | `github` | >= 6.6.0 |
 | `terraform` | >= 1.1.6 |
 | `tls` | >= 4.0.5 |
@@ -80,12 +84,34 @@ These are the providers used by the module.
 
 | name | version |
 | ---- | ------- |
-| `azurerm` | >= 3.108.0 |
+| `azurerm` | >= 5.0.0 |
 | `github` | >= 6.6.0 |
 | `random` |  |
 | `terraform` |  |
 | `tls` | >= 4.0.5 |
 
+
+## Known Issues
+
+### `terraform destroy` fails to delete the container app environment
+
+With azurerm 5.x, `terraform destroy` can fail to delete the container app environment (`<name>-ci`). The provider returns an error and keeps the resource in state even though Azure has deleted it (or is deleting it). See [hashicorp/terraform-provider-azurerm#33433](https://github.com/hashicorp/terraform-provider-azurerm/issues/33433).
+
+If this happens:
+
+1. Delete the container app environment manually, if it still exists, from the Azure portal or with the Azure CLI:
+
+   ```
+   az containerapp env delete --name <name>-ci --resource-group <resource_group_name> --yes
+   ```
+
+2. Remove the container app environment from Terraform state, if it is still there:
+
+   ```
+   terraform state rm 'module.<module_name>.azurerm_container_app_environment.ci'
+   ```
+
+3. Run `terraform destroy` again.
 
 ## Example Use Case
 
