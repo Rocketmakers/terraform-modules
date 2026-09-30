@@ -1,0 +1,40 @@
+name: Main
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  LOG_LEVEL: ${{ vars.LOG_LEVEL }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+      - name: Setup environment
+        uses: ./.github/actions/setup
+      - name: Validate and format
+        run: pnpm turbo --output-logs=full --log-order=stream --ui=stream validate && pnpm format
+        shell: bash
+
+  docs:
+    name: Docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+      - name: Setup environment
+        uses: ./.github/actions/setup
+      - name: Check docs are up to date
+        run: |
+          pnpm turbo --output-logs=full --log-order=stream --ui=stream generate-docs
+          git diff HEAD --exit-code
+        shell: bash

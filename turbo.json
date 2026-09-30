@@ -1,0 +1,29 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "envMode": "loose",
+  "tasks": {
+    "setup-dependencies": {
+      "cache": false
+    },
+    "validate": {
+      "cache": false,
+      "dependsOn": ["setup-dependencies"]
+    },
+    "generate-docs": {
+      "cache": false,
+      "dependsOn": ["setup-dependencies"]
+    },
+    "release-prepare": {
+      "cache": false,
+      "dependsOn": ["setup-dependencies"]
+    },
+    "release-finalise": {
+      "cache": false,
+      "dependsOn": ["setup-dependencies"]
+    },
+    "terratest": {
+      "cache": false,
+      "dependsOn": ["setup-dependencies"]
+    }
+  }
+}
