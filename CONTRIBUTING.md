@@ -139,3 +139,5 @@ This will
 - Create a pull request from the release branch to `main`
 
 Once you are happy, merge the pull request. This will tag the release with the new version, create a GitHub release and send a Slack notification. Once the tag has been created, the new version is officially released and should be referenced via git tag.
+
+The tag is only created when the branch is `release/<version>` for the version in `package.json`. Validate and Docs are not rerun on the release pull request; its changes have already passed them on their feature pull requests and on `main`.
