@@ -38,7 +38,7 @@ module ci {
   name = var.name
 
   ssh_cidr_ranges = var.ssh_cidr_range
-  vm_size         = "Standard_B2s"
+  vm_sizes        = ["Standard_B2s"]
 
   github_api_token = var.github_runner_token
   github_organisation = "Rocketmakers/terraform-modules" # We want to register just for our repository

@@ -103,17 +103,33 @@ resource "azurerm_storage_account" "this" {
   cross_tenant_replication_enabled = var.storage_cross_tenant_replication_enabled
 }
 
-resource "azurerm_linux_virtual_machine_scale_set" "ci_box" {
-  name           = "${var.name}-vm"
-  instances      = 0
-  admin_username = var.username
+resource "azurerm_user_assigned_identity" "ci_box" {
+  name                = "${var.name}-vm-identity"
+  resource_group_name = data.azurerm_resource_group.this.name
+  location            = data.azurerm_resource_group.this.location
+}
+
+resource "azurerm_orchestrated_virtual_machine_scale_set" "ci_box" {
+  name      = "${var.name}-vm"
+  instances = 0
 
   resource_group_name = data.azurerm_resource_group.this.name
   location            = data.azurerm_resource_group.this.location
 
-  sku = var.vm_size
+  sku_name = "Mix"
 
   encryption_at_host_enabled = var.encryption_at_host_enabled
+
+  sku_profile {
+    allocation_strategy = "LowestPrice"
+
+    dynamic "virtual_machine_size" {
+      for_each = var.vm_sizes
+      content {
+        name = virtual_machine_size.value
+      }
+    }
+  }
 
   source_image_reference {
     publisher = var.image_config.publisher
@@ -128,21 +144,26 @@ resource "azurerm_linux_virtual_machine_scale_set" "ci_box" {
     storage_account_type = var.disk_storage_account_type
   }
 
-  disable_password_authentication = true
-  admin_ssh_key {
-    username   = var.username
-    public_key = tls_private_key.ci_ssh.public_key_openssh
+  os_profile {
+    custom_data = base64encode(local.install_github_runner_data)
+    linux_configuration {
+      admin_username                  = var.username
+      disable_password_authentication = true
+      admin_ssh_key {
+        username   = var.username
+        public_key = tls_private_key.ci_ssh.public_key_openssh
+      }
+    }
   }
 
   identity {
-    type = "SystemAssigned"
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.ci_box.id]
   }
 
   boot_diagnostics {
     storage_account_uri = azurerm_storage_account.this.primary_blob_endpoint
   }
-
-  custom_data = base64encode(local.install_github_runner_data)
 
   network_interface {
     name    = "${data.azurerm_resource_group.this.name}-${var.name}-nic"
@@ -152,13 +173,11 @@ resource "azurerm_linux_virtual_machine_scale_set" "ci_box" {
       name      = "ci"
       primary   = true
       subnet_id = azurerm_subnet.ci.id
+
+      public_ip_address {
+        name = "${data.azurerm_resource_group.this.name}-${var.name}-pip"
+      }
     }
-  }
-
-  overprovision = false
-
-  scale_in {
-    rule = var.scale_in_rule
   }
 
   lifecycle {
@@ -166,6 +185,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "ci_box" {
 
     replace_triggered_by = [terraform_data.replace_runner]
   }
+
+  platform_fault_domain_count = 1
 }
 
 ##################################
@@ -186,6 +207,11 @@ resource "azurerm_container_app_environment" "ci" {
   location                   = data.azurerm_resource_group.this.location
   logs_destination           = "log-analytics"
   log_analytics_workspace_id = azurerm_log_analytics_workspace.ci.id
+
+  workload_profile {
+    name                  = "Consumption"
+    workload_profile_type = "Consumption"
+  }
 }
 
 resource "random_string" "github_secret" {
@@ -204,7 +230,7 @@ locals {
     { name = "GITHUB_API_TOKEN", secret_name = "github-api-token" },
     { name = "AZURE_SUBSCRIPTION_ID", secret_name = "github-subscription-id" },
     { name = "AZURE_RESOURCE_GROUP_NAME", value = data.azurerm_resource_group.this.name },
-    { name = "AZURE_VM_SCALE_SET_NAME", value = azurerm_linux_virtual_machine_scale_set.ci_box.name },
+    { name = "AZURE_VM_SCALE_SET_NAME", value = azurerm_orchestrated_virtual_machine_scale_set.ci_box.name },
     { name = "MAX_RUNNERS", value = var.max_instance_count },
     { name = "SCALE_DOWN_RUNNERS", value = "true" },
     { name = "GITHUB_REPO", value = var.github_organisation },
@@ -220,6 +246,8 @@ resource "azurerm_container_app" "autoscaler" {
   resource_group_name          = data.azurerm_resource_group.this.name
   revision_mode                = var.autoscaler_revision_mode
   max_inactive_revisions       = var.autoscaler_max_inactive_revisions
+
+  workload_profile_name = "Consumption"
 
   template {
     container {
@@ -265,13 +293,15 @@ resource "azurerm_container_app" "autoscaler" {
 }
 
 resource "azurerm_role_assignment" "autoscaler_resource_group" {
+  count                = var.role_assignment_enabled ? 1 : 0
   scope                = data.azurerm_resource_group.this.id
   role_definition_name = "Reader"
   principal_id         = azurerm_container_app.autoscaler.identity[0].principal_id
 }
 
 resource "azurerm_role_assignment" "autoscaler_resource_groupvmss" {
-  scope                = azurerm_linux_virtual_machine_scale_set.ci_box.id
+  count                = var.role_assignment_enabled ? 1 : 0
+  scope                = azurerm_orchestrated_virtual_machine_scale_set.ci_box.id
   role_definition_name = "Contributor"
   principal_id         = azurerm_container_app.autoscaler.identity[0].principal_id
 }
@@ -286,9 +316,10 @@ data "azurerm_container_registry" "core" {
 }
 
 resource "azurerm_role_assignment" "acr" {
+  count                = var.role_assignment_enabled ? 1 : 0
   scope                = data.azurerm_container_registry.core.id
   role_definition_name = "AcrPush"
-  principal_id         = azurerm_linux_virtual_machine_scale_set.ci_box.identity[0].principal_id
+  principal_id         = azurerm_user_assigned_identity.ci_box.principal_id
 }
 
 ##############################
