@@ -1,6 +1,32 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
+
+## [4.0.0](https://github.com/Rocketmakers/terraform-modules/compare/v3.9.0...v4.0.0) (2026-09-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* **azure-github-ci:** Minimum azurerm version is now 5.0.0 for azure-gitlab-ci, azure-scalable-gitlab-ci and
+azure-github-ci
+
+### CI
+
+* Move to trunk-based workflow on GitHub with pnpm and turbo ([36492b0](https://github.com/Rocketmakers/terraform-modules/commit/36492b032605f9acb70e188cf7c30aa5880248d6))
+* Pull request reminders ([f8953a6](https://github.com/Rocketmakers/terraform-modules/commit/f8953a6200b29f9378fd4c2e40a916e9b584fb41))
+* Stop concurrent release merges cancelling each other's tags ([26f3f23](https://github.com/Rocketmakers/terraform-modules/commit/26f3f23bc4bcdc96f23b20be21b350e16fe20b41))
+* Validate the release version and branch before tagging ([f8e1036](https://github.com/Rocketmakers/terraform-modules/commit/f8e1036f50bf35ee9cff81b42a65ed272179948e))
+
+
+### Other Changes
+
+* **azure-github-ci:** Document container app environment destroy known issue ([ebb57ee](https://github.com/Rocketmakers/terraform-modules/commit/ebb57ee6b8ef51e0cdc136a9b8a96c20c73e4d2b))
+
+
+### Features
+
+* **azure-github-ci:** Expose inputs for azurerm defaults that changed in v4 and v5 ([f54087d](https://github.com/Rocketmakers/terraform-modules/commit/f54087d28daa452c07077045562e675aeacbe2d0))
+* **azure-github-ci:** Upgrade azurerm to v5 ([dedfb5e](https://github.com/Rocketmakers/terraform-modules/commit/dedfb5eb88a72b766e4db9494cfa7c9764f6254d))
 
 ## [3.9.0](https://gitlab.com/rocketmakers/infrastructure/terraform-modules/compare/v3.8.3...v3.9.0) (2026-02-09)
 

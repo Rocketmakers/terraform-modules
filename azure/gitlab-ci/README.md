@@ -57,7 +57,7 @@ These are required by the module.
 
 | name | version |
 | ---- | ------- |
-| `azurerm` | >= 2.97.0 |
+| `azurerm` | >= 5.0.0 |
 | `terraform` | >= 1.1.6 |
 | `tls` | >= 3.1.0 |
 
@@ -67,7 +67,7 @@ These are the providers used by the module.
 
 | name | version |
 | ---- | ------- |
-| `azurerm` | >= 2.97.0 |
+| `azurerm` | >= 5.0.0 |
 | `tls` | >= 3.1.0 |
 
 
@@ -75,7 +75,7 @@ These are the providers used by the module.
 
 ```
 module ci {
-  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/gitlab-ci?ref=v3.9.0"
+  source = "git::ssh://git@gitlab.com/rocketmakers/infrastructure/terraform-modules.git//azure/gitlab-ci?ref=v4.0.0"
 
   container_registry_name   = var.container_registry_name
   key_vault_name            = var.key_vault_name

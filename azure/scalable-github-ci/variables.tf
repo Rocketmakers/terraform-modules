@@ -87,6 +87,12 @@ variable "autoscaler_revision_mode" {
   default     = "Single"
 }
 
+variable "autoscaler_max_inactive_revisions" {
+  type        = number
+  description = "The maximum number of inactive revisions allowed for the autoscaler. Defaults to the Azure default of 100."
+  default     = 100
+}
+
 variable "autoscaler_cpu" {
   type        = number
   description = "The amount of CPU to allocate to the autoscaler container"
@@ -236,6 +242,29 @@ variable "network_subnet_address_prefixes" {
   type        = list(string)
   description = "The address prefixes of the CI boxes subnet."
   default     = ["10.0.0.0/24"]
+}
+
+variable "storage_allow_nested_items_to_be_public" {
+  type        = bool
+  description = "Whether nested items in the storage account can be made public. Set to true to keep storage accounts created with azurerm 3.x unchanged."
+  default     = false
+}
+
+variable "storage_cross_tenant_replication_enabled" {
+  type        = bool
+  description = "Whether cross tenant replication is enabled for the storage account. Set to true to keep storage accounts created with azurerm 3.x unchanged."
+  default     = false
+}
+
+variable "subnet_private_endpoint_network_policies" {
+  type        = string
+  description = "Network policies for private endpoints on the CI boxes subnet. Defaults to Enabled to match subnets created with azurerm 3.x."
+  default     = "Enabled"
+
+  validation {
+    condition     = contains(["Disabled", "Enabled", "NetworkSecurityGroupEnabled", "RouteTableEnabled"], var.subnet_private_endpoint_network_policies)
+    error_message = "The subnet_private_endpoint_network_policies value must be one of: Disabled, Enabled, NetworkSecurityGroupEnabled, RouteTableEnabled."
+  }
 }
 
 variable "subnet_service_endpoints" {

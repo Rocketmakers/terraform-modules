@@ -1,0 +1,27 @@
+{
+  "name": "@repo/typescript-scripts-core",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "setup-dependencies": "./_shell-scripts/setup-dependencies.sh",
+    "validate": "ts-node validate.ts",
+    "generate-docs": "ts-node readmes.ts",
+    "release-prepare": "ts-node releasePrepare.ts",
+    "release-finalise": "ts-node releaseFinalise.ts",
+    "terratest": "./_shell-scripts/terratest.sh"
+  },
+  "dependencies": {
+    "@rocketmakers/log": "^0.1.0",
+    "@rocketmakers/shell-commands": "8.1.0",
+    "handlebars": "^4.7.7",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.5",
+    "underscore": "^1.13.1"
+  },
+  "devDependencies": {
+    "@types/bunyan": "^1.8.8",
+    "@types/node": "20.17.6",
+    "@types/underscore": "^1.10.23"
+  }
+}

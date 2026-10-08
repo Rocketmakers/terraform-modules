@@ -6,15 +6,26 @@
   - [Documentation](#documentation)
   - [Branching strategy](#branching-strategy)
   - [Release process](#release-process)
-    - [Decide on the new version code](#decide-on-the-new-version-code)
-    - [Branching](#branching)
-    - [Versioning and changelog generation](#versioning-and-changelog-generation)
-    - [Changelog review](#changelog-review)
-    - [Update local branches](#update-local-branches)
+    - [Prepare release](#prepare-release)
+    - [Finalise release](#finalise-release)
 
 ## Getting started
 
-We use `asdf` to manage the terraform version. See [Notion](https://www.notion.so/Managing-CLI-tool-versions-asdf-386a27d8e9e54c44ab3624bf0de6ff09) for a guide on how to install it.
+We use `asdf` to manage tool versions (see `.tool-versions`). See [Notion](https://www.notion.so/Managing-CLI-tool-versions-asdf-386a27d8e9e54c44ab3624bf0de6ff09) for a guide on how to install it.
+
+Install the tools and node dependencies:
+
+```bash
+asdf install
+pnpm install
+```
+
+Scripts are run with [turbo](https://turbo.build), e.g. validate all modules (or pass `-- --directory=gcp` to target one parent directory) and check formatting:
+
+```bash
+pnpm turbo --filter @repo/typescript-scripts-core validate
+pnpm format # or pnpm format-fix
+```
 
 You can test any of these modules by using a **relative path** to the module directory (absolute path will not work) as the `source` in your terraform project, like this:
 
@@ -61,16 +72,16 @@ export WRITE_VARS_FILE_AND_EXIT=true
 # aws
 export AWS_SECRET_ACCESS_KEY=_key_
 export AWS_ACCESS_KEY_ID=_access_key_
-make test TERRATEST_DIR=aws/gitlab-ci
+TERRATEST_DIR=aws/gitlab-ci pnpm turbo --filter @repo/typescript-scripts-core terratest
 
 # azure (you'll need to be added to a group first)
 export ARM_SUBSCRIPTION_ID=68bb123f-6027-4e99-8ab0-a01fb16cdd79
-az login
-make test TERRATEST_DIR=azure/gitlab-ci
+pnpm az-login
+TERRATEST_DIR=azure/gitlab-ci pnpm turbo --filter @repo/typescript-scripts-core terratest
 
 # gcp
 gcloud auth application-default login
-make test TERRATEST_DIR=gcp/gitlab-ci
+TERRATEST_DIR=gcp/gitlab-ci pnpm turbo --filter @repo/typescript-scripts-core terratest
 ```
 
 ## Documentation
@@ -79,86 +90,55 @@ We use [terraform-docs](https://github.com/terraform-docs/terraform-docs) along 
 
 Run the following to install the tools and generate documentation:
 
-```
-make generate-docs
+```bash
+pnpm turbo --filter @repo/typescript-scripts-core generate-docs
 ```
 
 ## Branching strategy
 
-We follow the strategy described in [Notion](https://www.notion.so/Source-Control-59348db1cfb847f88cbdfdc3d0feb48c#ca1f2bb64421489a941e444617280e6b). Some of this process has been automated as described below.
+We're using feature branches targeting `main`.
 
-This relies on the following tools:
+Commit messages follow the conventions enforced by the following tools, which are also used to generate the changelog:
 
 - `commitizen`: Enforcing commit message conventions
-- `cz-conventional-changelog`: Maintaining a changelog based on commit message conventions
+- `commit-and-tag-version`: Maintaining a changelog based on commit message conventions
 
 ## Release process
 
-To release a new version, make sure your local git repo is clean and run the following:
+Releasing requires the [GitHub CLI](https://cli.github.com) (`gh`) to be installed and authenticated. Make sure your local git repo is clean before starting.
 
-### Decide on the new version code
+### Prepare release
 
-```
-# Format
-export NEW_VERSION_CODE=<major>.<minor>.<patch>
-```
-
-### Branching
-
-If the intended release branch doesn't exist, create one with the following commands:
+First prepare a release:
 
 ```bash
-git checkout develop
-git pull
-git checkout -b release/$NEW_VERSION_CODE
+# --as can be 'major', 'minor' or 'patch'
+pnpm turbo --filter @repo/typescript-scripts-core release-prepare -- --as=minor
 ```
 
-If release branch already exists, checkout that branch and make sure you have the latest changes:
+This will
+
+- Check out and pull `main`
+- Bump the `package.json` version to the desired version
+- Update `CHANGELOG.md`
+- Regenerate the module READMEs with the new version
+- Create a new release branch (`release/<version>`)
+
+### Finalise release
+
+Review the changelog, editing if necessary, then finalise the release:
 
 ```bash
-git checkout release/$NEW_VERSION_CODE
-git pull
+pnpm turbo --filter @repo/typescript-scripts-core release-finalise
 ```
 
-### Versioning and changelog generation
+This will
 
-Clean the codebase, increase the version number and generate updates to the changelog with the following commands:
+- Check you are on `release/<version>` for the version in `package.json`
+- Commit the version bump, READMEs and changelog
+- Push the release branch
+- Create a pull request from the release branch to `main`
 
-```bash
-make clean
-make bump-version
-```
+Once you are happy, merge the pull request. This will tag the release with the new version, create a GitHub release and send a Slack notification. Once the tag has been created, the new version is officially released and should be referenced via git tag.
 
-**NB**: If you add any more commits to the changelog after the initial `make bump-version` then you can run `make changelog` to update the changelog based on the new commits. You will want to check the updated changelog for duplicate entries before committing the update.
-
-### Changelog review
-
-The changelog generated in step 2 needs to be reviewed. When finished, commit the updated changelog:
-
-```bash
-git add CHANGELOG.md
-HUSKY_SKIP_HOOKS=1 git commit -m "release: Changelog for v$NEW_VERSION_CODE"
-```
-
-Run the following command to push to origin and auto-generate a merge request from the release branch into `master`:
-
-```bash
-git push origin release/$NEW_VERSION_CODE -o merge_request.create -o merge_request.target=master
-```
-
-Go to https://gitlab.com/rocketmakers/infrastructure/terraform-modules/-/merge_requests to review and merge once the pipeline has passed.
-
-CI is set up to automatically create and push a tag whenever a release branch is merged into master. Once the tag has been created then the new version is officially released and should be referenced via git tag.
-
-### Update local branches
-
-Once the CI has completed the tagged release, you will need to create a merge request from `master` back into `develop`, which will include the new version number and changelog.
-
-Bring your local branches up to date with origin:
-
-```bash
-git checkout master
-git pull origin master
-git checkout develop
-git pull origin develop
-```
+The tag is only created when the branch is `release/<version>` for the version in `package.json`. Validate and Docs are not rerun on the release pull request; its changes have already passed them on their feature pull requests and on `main`.

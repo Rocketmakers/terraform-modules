@@ -1,0 +1,10 @@
+name: Setup
+description: Installs the tools in .tool-versions and the node dependencies
+runs:
+  using: composite
+  steps:
+    - name: Install asdf tools
+      uses: asdf-vm/actions/install@v4
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+      shell: bash
