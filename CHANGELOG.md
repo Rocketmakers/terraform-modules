@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.0.0](https://github.com/Rocketmakers/terraform-modules/compare/v4.0.0...v5.0.0) (2026-10-08)
+
+
+### Other Changes
+
+* Added public ip address for machine scale set ([9837706](https://github.com/Rocketmakers/terraform-modules/commit/9837706e17ea53688fc125a46d496b0a6ea81d44))
+
+
+### Features
+
+* **azure-github-ci:** Added way to disable role assignments for environments where this isn't allowed ([b1ccf5f](https://github.com/Rocketmakers/terraform-modules/commit/b1ccf5f1aabf326b333f5f9b5f50057feaa342d7))
+* **azure-github-ci:** Updated to use orchestrated scalable runner to support multiple skus ([e143dc0](https://github.com/Rocketmakers/terraform-modules/commit/e143dc096b94af22aecf0de9bfcb34f316a56ce7))
+
+
+### Bug Fixes
+
+* **azure-github-ci:** Added missing workload profiles ([5d5872d](https://github.com/Rocketmakers/terraform-modules/commit/5d5872d6b2bebc67da2104d09c7e08dfe19e1d28))
+
 ## [4.0.0](https://github.com/Rocketmakers/terraform-modules/compare/v3.9.0...v4.0.0) (2026-09-30)
 
 
